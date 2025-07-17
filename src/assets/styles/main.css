@@ -1,0 +1,83 @@
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
+    format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+:root {
+  /* Font */
+  --font-main: 'Pretendard', sans-serif;
+
+  /* 숫자가 높아질수록 진한색입니다 */
+
+  /* White */
+  --White00: #ffffff;
+  --White01: #fdfdfd;
+
+  /* Yello */
+  --yello00: #ffcc00;
+  --yello01: #ffbc00;
+
+  /* Brown */
+  --Brown00: #ff6b35;
+  --Brown01: #d97706;
+  --Brown02: #85714d;
+  --Brown03: #60584c;
+  --Brown04: #545045;
+
+  /* Green */
+  --Green00: #69a06f;
+  --Green01: #059669;
+
+  /* Blue */
+  --Blue00: #0ea5e9;
+
+  /* Gray */
+  --Gray00: #f5f6f8;
+  --Gray01: #e9ecef;
+  --Gray02: #d9d9d9;
+  --Gray03: #c7c7c7;
+  --Gray04: #9d9d9d;
+  --Gray05: #8e8e93;
+  --Gray06: #8a8d8f;
+  --Gray07: #6c757d;
+  --Gray08: #666666;
+
+  /* Black */
+  --Black00: #20222b;
+  --Black01: #1a1a1a;
+}
+
+.title {
+  /* 화면 상단 페이지 제목 */
+  font-family: var(--font-main);
+  font-size: 1.25rem; /* 20px */
+  font-weight: 700; /* bold */
+  line-height: 1.5;
+}
+
+.body-text {
+  /* 일단 텍스트 */
+  font-family: var(--font-main);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500; /* medium */
+  line-height: 1.5;
+}
+
+.caption {
+  /* 버튼속텍스트 */
+  font-family: var(--font-main);
+  font-size: 1rem; /* 16px */
+  font-weight: 700; /* bold */
+  line-height: 1.5;
+}
+
+.litle-text {
+  /* 푸터 텍스트 */
+  font-family: var(--font-main);
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600; /* semibold */
+  line-height: 1.5;
+}
