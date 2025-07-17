@@ -1,0 +1,96 @@
+# ====================================
+# 기본 빌드 산출물 및 의존성
+# ====================================
+node_modules/
+dist/
+dist-ssr/
+coverage/
+*.local
+*.tsbuildinfo
+
+# ====================================
+# Cypress 테스트 아티팩트
+# ====================================
+/cypress/videos/
+/cypress/screenshots/
+
+# ====================================
+# 로그 파일
+# ====================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ====================================
+# macOS/Windows 시스템 파일
+# ====================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ====================================
+# IDE & 에디터 설정 (IntelliJ, VSCode)
+# ====================================
+
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# IntelliJ User-specific
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/aws.xml
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+.idea/**/mongoSettings.xml
+.idea/**/sonarlint/
+.idea/httpRequests
+.idea/caches/
+.idea/modules.xml
+.idea/sonarIssues.xml
+.idea/markdown-navigator*
+.idea/codestream.xml
+.idea/azureSettings.xml
+
+# ====================================
+# 기타 빌드 시스템 및 플러그인 캐시
+# ====================================
+
+# Gradle & Maven
+.idea/**/gradle.xml
+.idea/**/libraries
+cmake-build-*/
+
+# Android Studio / Crashlytics
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# ====================================
+# 기타
+# ====================================
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
