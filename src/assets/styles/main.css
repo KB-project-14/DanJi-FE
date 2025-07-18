@@ -20,6 +20,9 @@
   --yello00: #ffcc00;
   --yello01: #ffbc00;
 
+  /*Red*/
+  --Red00: #d44d49;
+
   /* Brown */
   --Brown00: #ff6b35;
   --Brown01: #d97706;
@@ -50,34 +53,65 @@
   --Black01: #1a1a1a;
 }
 
-.title {
-  /* 화면 상단 페이지 제목 */
+.Head0 {
+  font-family: var(--font-main);
+  font-size: 1.5rem; /* 24px */
+  font-weight: 700; /* bold */
+  line-height: 1.5;
+}
+
+.Head01 {
   font-family: var(--font-main);
   font-size: 1.25rem; /* 20px */
   font-weight: 700; /* bold */
   line-height: 1.5;
 }
 
-.body-text {
-  /* 일단 텍스트 */
-  font-family: var(--font-main);
-  font-size: 0.875rem; /* 14px */
-  font-weight: 500; /* medium */
-  line-height: 1.5;
-}
-
-.caption {
-  /* 버튼속텍스트 */
+.Head02 {
   font-family: var(--font-main);
   font-size: 1rem; /* 16px */
   font-weight: 700; /* bold */
   line-height: 1.5;
 }
 
-.litle-text {
-  /* 푸터 텍스트 */
+.Head03 {
   font-family: var(--font-main);
-  font-size: 0.6875rem; /* 11px */
-  font-weight: 600; /* semibold */
+  font-size: 1rem; /* 16px */
+  font-weight: 600; /* semi bold */
+  line-height: 1.5;
+}
+
+.Head04 {
+  font-family: var(--font-main);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600; /* semi bold */
+  line-height: 1.5;
+}
+
+.Body00 {
+  font-family: var(--font-main);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500; /* Medium */
+  line-height: 1.5;
+}
+
+.Body01 {
+  font-family: var(--font-main);
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500; /* Medium */
+  line-height: 1.5;
+}
+
+.Body02 {
+  font-family: var(--font-main);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 700; /* Regular */
+  line-height: 1.5;
+}
+
+.Body03 {
+  font-family: var(--font-main);
+  font-size: 0.75rem; /* 12px */
+  font-weight: 700; /* Regular */
   line-height: 1.5;
 }
