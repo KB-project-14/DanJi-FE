@@ -1,9 +1,13 @@
 @font-face {
   font-family: 'Pretendard';
-  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
-    format('woff');
+  src:
+    url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff2')
+      format('woff2'),
+    url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
+      format('woff');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
 :root {
@@ -16,12 +20,13 @@
   --White00: #ffffff;
   --White01: #fdfdfd;
 
-  /* Yello */
-  --yello00: #ffcc00;
-  --yello01: #ffbc00;
+  /* Yellow */
+  --Yellow00: #ffcc00;
+  --Yellow01: #ffbc00;
 
   /*Red*/
   --Red00: #d44d49;
+  --Red01: #ff0000;
 
   /* Brown */
   --Brown00: #ff6b35;
@@ -105,13 +110,13 @@
 .Body02 {
   font-family: var(--font-main);
   font-size: 0.875rem; /* 14px */
-  font-weight: 700; /* Regular */
+  font-weight: 500; /* Regular */
   line-height: 1.5;
 }
 
 .Body03 {
   font-family: var(--font-main);
   font-size: 0.75rem; /* 12px */
-  font-weight: 700; /* Regular */
+  font-weight: 500; /* Regular */
   line-height: 1.5;
 }
