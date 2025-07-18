@@ -23,7 +23,8 @@ jobs:
           ISSUE_TITLE="${{ github.event.issue.title }}"
           # 알파벳/숫자/하이픈만 허용하여 필터링
           SAFE_TITLE=$(echo "$ISSUE_TITLE" | tr -cd '[:alnum:]- ')
-          JIRA_KEY=$(echo "$SAFE_TITLE" | grep -oE '[A-Z]+-[0-9]+')
+          # 패턴 미매칭 시에도 스크립트가 종료되지 않도록 처리
+          JIRA_KEY=$(echo "$SAFE_TITLE" | grep -oE '[A-Z]+-[0-9]+' || true)
           echo "JIRA_KEY=$JIRA_KEY" >> $GITHUB_ENV
 
       - name: Close Jira issue
