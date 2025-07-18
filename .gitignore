@@ -94,3 +94,4 @@ fabric.properties
 *.njsproj
 *.sln
 *.sw?
+.env
