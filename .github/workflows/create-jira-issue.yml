@@ -21,7 +21,7 @@ jobs:
           ref: main
 
       - name: Issue Parser
-        uses: stefanbuck/github-issue-praser@v3
+        uses: stefanbuck/github-issue-parser@v3
         id: issue-parser
         with:
           template-path: .github/ISSUE_TEMPLATE/issue-form.yml
@@ -59,7 +59,7 @@ jobs:
             }
 
       - name: Log created issue
-        run: echo "Jira Issue ${{ steps.issue-parser.outputs.parentKey }}/${{ steps.create.outputs.issue }} was created"
+        run: echo "Jira Issue ${{ steps.issue-parser.outputs.issueparser_parentKey }}/${{ steps.create.outputs.issue }} was created"
 
       - name: Checkout develop code
         uses: actions/checkout@v4
