@@ -1,5 +1,7 @@
 html {
   margin: 0;
+  font-size: 62.5%;
+  margin: 0 auto;
 }
 html,
 body,
@@ -84,8 +86,6 @@ audio,
 video {
   padding: 0;
   border: 0;
-  font-size: 62.5%;
-  font: inherit;
   vertical-align: baseline;
 }
 

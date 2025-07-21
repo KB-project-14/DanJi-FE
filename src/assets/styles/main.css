@@ -1,10 +1,7 @@
 @font-face {
   font-family: 'Pretendard';
-  src:
-    url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff2')
-      format('woff2'),
-    url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
-      format('woff');
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
+    format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -60,63 +57,70 @@
 
 .Head0 {
   font-family: var(--font-main);
-  font-size: 1.5rem; /* 24px */
+  font-size: 2.4rem; /* 24px */
   font-weight: 700; /* bold */
   line-height: 1.5;
 }
 
 .Head01 {
   font-family: var(--font-main);
-  font-size: 1.25rem; /* 20px */
+  font-size: 2rem; /* 20px */
   font-weight: 700; /* bold */
   line-height: 1.5;
 }
 
 .Head02 {
   font-family: var(--font-main);
-  font-size: 1rem; /* 16px */
+  font-size: 1.6rem; /* 16px */
   font-weight: 700; /* bold */
   line-height: 1.5;
 }
 
 .Head03 {
   font-family: var(--font-main);
-  font-size: 1rem; /* 16px */
+  font-size: 1.6rem; /* 16px */
   font-weight: 600; /* semi bold */
   line-height: 1.5;
 }
 
 .Head04 {
   font-family: var(--font-main);
-  font-size: 0.875rem; /* 14px */
+  font-size: 1.4rem; /* 14px */
   font-weight: 600; /* semi bold */
   line-height: 1.5;
 }
 
 .Body00 {
   font-family: var(--font-main);
-  font-size: 0.875rem; /* 14px */
+  font-size: 1.4rem; /* 14px */
   font-weight: 500; /* Medium */
   line-height: 1.5;
 }
 
 .Body01 {
   font-family: var(--font-main);
-  font-size: 0.75rem; /* 12px */
+  font-size: 1.2rem; /* 12px */
   font-weight: 500; /* Medium */
   line-height: 1.5;
 }
 
 .Body02 {
   font-family: var(--font-main);
-  font-size: 0.875rem; /* 14px */
+  font-size: 1.4rem; /* 14px */
   font-weight: 500; /* Regular */
   line-height: 1.5;
 }
 
 .Body03 {
   font-family: var(--font-main);
-  font-size: 0.75rem; /* 12px */
+  font-size: 1.2rem; /* 12px */
   font-weight: 500; /* Regular */
+  line-height: 1.5;
+}
+
+.Body04 {
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  font-weight: 700;
   line-height: 1.5;
 }
