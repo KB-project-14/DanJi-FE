@@ -35,7 +35,7 @@ jobs:
         run: |
           if [ -f "package.json" ]; then
             # package.json에서 버전 추출
-            VERSION=$(cat package.json | grep '"version"' | cut -d'"' -f4)
+            VERSION=$(jq -r '.version' package.json)
             echo "Found version in package.json: $VERSION"
           else
             # 날짜 기반 버전 생성
