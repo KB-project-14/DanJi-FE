@@ -1,0 +1,162 @@
+name: Release Notes
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pull-requests: read
+  issues: read
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
+
+      - name: Get latest tag
+        id: latest_tag
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "tag=$latest_tag" >> $GITHUB_OUTPUT
+          echo "Latest tag: $latest_tag"
+
+      - name: Generate version
+        id: version
+        run: |
+          if [ -f "package.json" ]; then
+            # package.json에서 버전 추출
+            VERSION=$(cat package.json | grep '"version"' | cut -d'"' -f4)
+            echo "Found version in package.json: $VERSION"
+          else
+            # 날짜 기반 버전 생성
+            VERSION="${{ steps.date.outputs.date }}"
+            echo "Generated date-based version: $VERSION"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: tag_exists
+        run: |
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag v${{ steps.version.outputs.version }} already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Tag v${{ steps.version.outputs.version }} does not exist"
+          fi
+
+      - name: Get commit messages since last tag
+        id: commits
+        run: |
+          if [ -n "${{ steps.latest_tag.outputs.tag }}" ]; then
+            # 마지막 태그 이후 커밋들
+            commits=$(git log ${{ steps.latest_tag.outputs.tag }}..HEAD --oneline --pretty=format:"- %s (%h)" | head -20)
+          else
+            # 태그가 없으면 최근 20개 커밋
+            commits=$(git log --oneline --pretty=format:"- %s (%h)" | head -20)
+          fi
+          
+          # 멀티라인 출력 처리
+          echo "commits<<EOF" >> $GITHUB_OUTPUT
+          echo "$commits" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Get changed files
+        id: changed_files
+        run: |
+          if [ -n "${{ steps.latest_tag.outputs.tag }}" ]; then
+            changed_files=$(git diff --name-only ${{ steps.latest_tag.outputs.tag }}..HEAD | head -10)
+          else
+            changed_files=$(git diff --name-only HEAD~5..HEAD | head -10)
+          fi
+          
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$changed_files" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Get commit count
+        id: commit_count
+        run: |
+          if [ -n "${{ steps.latest_tag.outputs.tag }}" ]; then
+            count=$(git rev-list --count ${{ steps.latest_tag.outputs.tag }}..HEAD)
+          else
+            count=$(git rev-list --count HEAD)
+          fi
+          echo "count=$count" >> $GITHUB_OUTPUT
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat > release_notes.md << 'EOF'
+          ## 🚀 Release v${{ steps.version.outputs.version }}
+          
+          ### 📝 변경사항 (${{ steps.commit_count.outputs.count }}개 커밋)
+          ${{ steps.commits.outputs.commits }}
+          
+          ### 📊 릴리스 정보
+          - **버전**: v${{ steps.version.outputs.version }}
+          - **릴리스 날짜**: ${{ steps.date.outputs.date }}
+          - **브랜치**: ${{ github.ref_name }}
+          - **커밋**: ${{ github.sha }}
+          - **배포자**: ${{ github.actor }}
+          
+          ### 🔗 링크
+          - [전체 변경사항](https://github.com/${{ github.repository }}/compare/${{ steps.latest_tag.outputs.tag }}...v${{ steps.version.outputs.version }})
+          - [커밋 히스토리](https://github.com/${{ github.repository }}/commits/main)
+          EOF
+          
+          # 파일 내용을 GitHub Output에 저장
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          cat release_notes.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: steps.tag_exists.outputs.exists == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          release_name: Release v${{ steps.version.outputs.version }}
+          body: ${{ steps.release_notes.outputs.notes }}
+          draft: false
+          prerelease: false
+
+      - name: Update existing release
+        if: steps.tag_exists.outputs.exists == 'true'
+        run: |
+          echo "Tag already exists. Skipping release creation."
+          echo "You can manually update the release at:"
+          echo "https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"
+
+      - name: Create release notes file
+        run: |
+          mkdir -p docs/releases
+          cat > docs/releases/v${{ steps.version.outputs.version }}.md << 'EOF'
+          ${{ steps.release_notes.outputs.notes }}
+          EOF
+
+      - name: Commit release notes file
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/releases/v${{ steps.version.outputs.version }}.md
+          git commit -m "📝 Add release notes for v${{ steps.version.outputs.version }}" || exit 0
+          git push
+
+      - name: Success notification
+        run: |
+          echo "🎉 릴리스 노트가 성공적으로 생성되었습니다!"
+          echo "📝 버전: v${{ steps.version.outputs.version }}"
+          echo "📊 커밋 수: ${{ steps.commit_count.outputs.count }}"
+          echo "🔗 릴리스 페이지: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.version.outputs.version }}"
