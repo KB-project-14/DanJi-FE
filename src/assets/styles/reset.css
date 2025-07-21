@@ -1,5 +1,6 @@
 html {
   font-size: 62.5%;
+  margin: 0 auto;
 }
 html,
 body,
@@ -82,7 +83,6 @@ time,
 mark,
 audio,
 video {
-  margin: 0 auto;
   padding: 0;
   border: 0;
   vertical-align: baseline;
