@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
+    "preview": "vite preview",     
     "test:unit": "vitest",
     "coverage": "vitest run --coverage",
     "build-only": "vite build",
