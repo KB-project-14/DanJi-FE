@@ -111,3 +111,23 @@
     color: var(--White00);
   }
 }
+
+.chip-danji {
+  @extend .btn;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 1.8rem;
+  border-radius: 2rem;
+  background-color: var(--White01);
+  color: var(--Gray07);
+  border: 2px solid var(--Gray01);
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: var(--Yellow00) !important;
+    color: var(--White01) !important;
+    border: 2px solid var(--Yellow00) !important;
+  }
+}
