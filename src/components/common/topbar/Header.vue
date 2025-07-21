@@ -3,11 +3,17 @@ import '@/assets/styles/main.css'
 import { defineProps, defineEmits } from 'vue'
 import { ChevronLeft, XCircle } from 'lucide-vue-next'
 
-const props = defineProps<{
-  title: string
-  showLeftIcon?: boolean
-  showRightIcon?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    title: string
+    showLeftIcon?: boolean
+    showRightIcon?: boolean
+  }>(),
+  {
+    showLeftIcon: false,
+    showRightIcon: false,
+  },
+)
 
 const emits = defineEmits<{
   (e: 'left-click'): void
