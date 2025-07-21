@@ -9,7 +9,7 @@ defineEmits(['left-click'])
   >
     <!-- 왼쪽 로고 -->
     <div style="cursor: pointer" @click="$emit('left-click')" class="ps-4">
-      <img src="@/assets/images/Danji-Logo-Main.png" alt="단지 로고" style="height: 2.5rem" />
+      <img src="@/assets/images/danji-logo-main.png" alt="단지 로고" style="height: 2.5rem" />
     </div>
   </div>
 </template>
