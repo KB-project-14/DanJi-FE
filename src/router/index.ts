@@ -6,10 +6,7 @@ const routes = [
     path: '/',
     component: Layout,
     props: {
-      headerType: 'basic',
-      headerTitle: 'Home',
-      showLeftIcon: true,
-      isBottomNav: true,
+      headerType: 'main',
     },
   },
 ]
