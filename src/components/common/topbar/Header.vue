@@ -25,11 +25,11 @@ const onRightClick = () => emits('right-click')
 </script>
 
 <template>
-  <div class="header-wrapper d-flex align-items-center justify-content-center bg-white px-3">
+  <div class="relative flex items-center justify-center px-3 h-[7.2rem] bg-white">
     <!-- 왼쪽 아이콘 -->
     <div
       v-if="showLeftIcon"
-      class="left-icon position-absolute start-0 ps-3 d-flex align-items-center"
+      class="absolute left-0 pl-3 flex items-center cursor-pointer"
       @click="onLeftClick"
       role="button"
       aria-label="뒤로가기"
@@ -38,30 +38,15 @@ const onRightClick = () => emits('right-click')
     </div>
 
     <!-- 제목 -->
-    <div class="Head0 text-center">{{ title }}</div>
+    <div class="text-center Head0">{{ title }}</div>
 
     <!-- 오른쪽 아이콘 -->
     <div
       v-if="showRightIcon"
-      class="right-icon position-absolute end-0 pe-3 d-flex align-items-center"
+      class="absolute right-0 pr-3 flex items-center cursor-pointer"
       @click="onRightClick"
     >
-      <XCircle :size="24" class="close-icon" />
+      <XCircle :size="24" class="text-Gray-5" />
     </div>
   </div>
 </template>
-
-<style scoped>
-.header-wrapper {
-  height: 4rem;
-}
-
-.left-icon,
-.right-icon {
-  cursor: pointer;
-}
-
-.close-icon {
-  color: var(--Gray05);
-}
-</style>
