@@ -1,10 +1,13 @@
-import BottomNav from '@/components/common/bottomnav/BottomNav.vue'
+import Layout from '@/components/layout/Layout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
     path: '/',
-    component: BottomNav,
+    component: Layout,
+    props: {
+      headerType: 'main',
+    },
   },
 ]
 
