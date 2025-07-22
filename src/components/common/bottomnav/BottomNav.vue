@@ -11,7 +11,7 @@ const setActive = (item: string) => {
 </script>
 
 <template>
-  <section class="bottomNavWrapper">
+  <section class="flex h-[9rem] justify-between items-center px-[0.75rem] bg-White-0">
     <BottomNavItem
       v-for="(text, _) in ITEMS"
       :key="text"
@@ -21,15 +21,3 @@ const setActive = (item: string) => {
     />
   </section>
 </template>
-
-<style scoped>
-.bottomNavWrapper {
-  display: flex;
-  height: 9rem;
-
-  justify-content: space-between;
-  align-items: center;
-
-  background: var(--White00);
-}
-</style>
