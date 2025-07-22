@@ -8,7 +8,7 @@ defineProps<{
 <template>
   <!-- 카드  -->
   <div
-    class="relative w-full max-w-sm aspect-[1586/1000] mx-auto rounded-xl bg-cover bg-center"
+    class="relative w-full aspect-[1586/1000] mx-auto rounded-xl bg-cover bg-center"
     :style="{
       backgroundImage: `url(${backgroundImageUrl})`,
       border: '1px solid #d9d9d9',

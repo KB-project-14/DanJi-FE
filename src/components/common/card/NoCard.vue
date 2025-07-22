@@ -4,11 +4,12 @@ import { CirclePlus } from 'lucide-vue-next'
 
 <template>
   <div
-    class="w-full aspect-[1.58/1] max-w-sm mx-auto border border-Gray-2 rounded-xl flex items-center justify-center bg-Gray-0"
+    class="w-full aspect-[1.58/1] max-w-sm mx-auto rounded-xl flex items-center justify-center bg-white"
+    style="border: 1px solid #d9d9d9"
   >
     <div class="flex flex-col items-center gap-2">
-      <div class="text-3xl text-Gray-4"><CirclePlus /></div>
-      <p class="text-sm text-Gray-5">지역화폐 발급하기</p>
+      <div class="Body02 text-Gray-4"><CirclePlus /></div>
+      <p class="Body02 text-Gray-4">지역화폐 발급하기</p>
     </div>
   </div>
 </template>
