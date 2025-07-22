@@ -8,17 +8,17 @@ export type LayoutProps =
       headerTitle: string
       showLeftIcon?: boolean
       showRightIcon?: boolean
-      isBottomNav: boolean
+      isBottomNav?: boolean
     }
   | {
       headerType: 'main'
-      isBottomNav: boolean
+      isBottomNav?: boolean
     }
   | {
       headerType: 'pay'
-      isBottomNav: boolean
+      isBottomNav?: boolean
     }
   | {
       headerType: 'none'
-      isBottomNav: boolean
+      isBottomNav?: boolean
     }
