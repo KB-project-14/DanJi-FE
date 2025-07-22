@@ -15,13 +15,13 @@ defineProps<{
     </div>
 
     <!-- 보유 카드 리스트 (가로 스크롤) -->
-    <div class="flex gap-8 overflow-x-auto pb-1">
+    <div class="flex gap-6 overflow-x-auto pb-1">
       <UserCard
         v-for="(card, index) in cards"
         :key="index"
         :balance="card.balance"
         :backgroundImageUrl="card.backgroundImageUrl"
-        class="shrink-0 w-[260px]"
+        class="shrink-0 w-[275px]"
       />
     </div>
 
