@@ -37,7 +37,7 @@ import BottomNav from '../common/bottomnav/BottomNav.vue'
 const headerProps = defineProps<LayoutProps>()
 </script>
 <template>
-  <div class="flex flex-col h-screen w-[37.5rem]">
+  <div class="flex flex-col h-screen minw-[37.5rem]">
     <!-- 헤더 타입에 따라 다른 컴포넌트 렌더링 -->
     <MainHeader v-if="headerProps.headerType === 'main'" />
     <PayHeader v-else-if="headerProps.headerType === 'pay'" />
