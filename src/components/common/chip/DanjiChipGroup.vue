@@ -9,8 +9,6 @@ import DanjiChip from './DanjiChip.vue'
  * Chip 컴포넌트(`DanjiChip`)를 리스트로 렌더링하며,
  * 사용자가 하나를 선택하면 해당 값이 `modelValue`로 업데이트됩니다.
  *
- * 칩이 화면 가로를 넘을 경우 자동 줄바꿈되도록 Bootstrap의 flex-wrap을 활용합니다.
- *
  * @example 기본 사용
  * ```vue
  * <danji-chip-group
