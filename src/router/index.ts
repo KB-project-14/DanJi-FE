@@ -1,4 +1,6 @@
 import Layout from '@/components/layout/Layout.vue'
+import HomePage from '@/views/wallet/home/HomePage.vue'
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -8,6 +10,11 @@ const routes = [
     props: {
       headerType: 'main',
     },
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: HomePage,
   },
 ]
 

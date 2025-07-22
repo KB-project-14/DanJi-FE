@@ -6,6 +6,7 @@ defineProps<{
 </script>
 
 <template>
+  <!-- 카드  -->
   <div
     class="relative w-full max-w-sm aspect-[1586/1000] mx-auto rounded-xl bg-cover bg-center"
     :style="{
