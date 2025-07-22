@@ -1,5 +1,6 @@
 import PayPage from '@/components/pay/PayPage.vue'
 import QRPage from '@/components/pay/QRPage.vue'
+import PayCompletePage from '@/components/pay/PayCompletePage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -10,6 +11,10 @@ const routes = [
   {
     path: '/pay',
     component: PayPage,
+  },
+  {
+    path: '/pay-complete',
+    component: PayCompletePage,
   },
 ]
 
