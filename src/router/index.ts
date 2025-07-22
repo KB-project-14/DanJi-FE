@@ -1,13 +1,15 @@
-import Layout from '@/components/layout/Layout.vue'
+import PayPage from '@/components/pay/PayPage.vue'
+import QRPage from '@/components/pay/QRPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   {
     path: '/',
-    component: Layout,
-    props: {
-      headerType: 'main',
-    },
+    component: QRPage,
+  },
+  {
+    path: '/pay',
+    component: PayPage,
   },
 ]
 
