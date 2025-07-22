@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: 'Pretendard';
   src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
     format('woff');
@@ -9,38 +9,38 @@
 
 :root {
   /* Font */
-  --font-main: 'Pretendard', sans-serif;
+/* --font-main: 'Pretendard', sans-serif; */
 
-  /* 숫자가 높아질수록 진한색입니다 */
+/* 숫자가 높아질수록 진한색입니다 */
 
-  /* White */
-  --White00: #ffffff;
-  --White01: #fdfdfd;
+/* White */
+/* --White00: #ffffff;
+  --White01: #fdfdfd; */
 
-  /* Yellow */
-  --Yellow00: #ffcc00;
-  --Yellow01: #ffbc00;
+/* Yellow */
+/* --Yellow00: #ffcc00;
+  --Yellow01: #ffbc00; */
 
-  /*Red*/
-  --Red00: #d44d49;
-  --Red01: #ff0000;
+/*Red*/
+/* --Red00: #d44d49;
+  --Red01: #ff0000; */
 
-  /* Brown */
-  --Brown00: #ff6b35;
+/* Brown */
+/* --Brown00: #ff6b35;
   --Brown01: #d97706;
   --Brown02: #85714d;
   --Brown03: #60584c;
-  --Brown04: #545045;
+  --Brown04: #545045; */
 
-  /* Green */
-  --Green00: #69a06f;
-  --Green01: #059669;
+/* Green */
+/* --Green00: #69a06f;
+  --Green01: #059669; */
 
-  /* Blue */
-  --Blue00: #0ea5e9;
+/* Blue */
+/* --Blue00: #0ea5e9; */
 
-  /* Gray */
-  --Gray00: #f5f6f8;
+/* Gray */
+/* --Gray00: #f5f6f8;
   --Gray01: #e9ecef;
   --Gray02: #d9d9d9;
   --Gray03: #c7c7c7;
@@ -48,79 +48,79 @@
   --Gray05: #8e8e93;
   --Gray06: #8a8d8f;
   --Gray07: #6c757d;
-  --Gray08: #666666;
+  --Gray08: #666666; */
 
-  /* Black */
-  --Black00: #20222b;
-  --Black01: #1a1a1a;
-}
+/* Black */
+/* --Black00: #20222b;
+  --Black01: #1a1a1a; */
+/* } */
 
-.Head0 {
-  font-family: var(--font-main);
-  font-size: 2.4rem; /* 24px */
-  font-weight: 700; /* bold */
-  line-height: 1.5;
-}
+/* .Head0 { */
+/* font-family: var(--font-main); */
+/* font-size: 2.4rem; 24px */
+/* font-weight: 700; bold */
+/* line-height: 1.5; */
+/* } */
 
-.Head01 {
-  font-family: var(--font-main);
-  font-size: 2rem; /* 20px */
-  font-weight: 700; /* bold */
-  line-height: 1.5;
-}
+/* .Head01 { */
+/* font-family: var(--font-main); */
+/* font-size: 2rem; 20px */
+/* font-weight: 700; bold */
+/* line-height: 1.5; */
+/* } */
 
-.Head02 {
-  font-family: var(--font-main);
-  font-size: 1.6rem; /* 16px */
-  font-weight: 700; /* bold */
-  line-height: 1.5;
-}
+/* .Head02 { */
+/* font-family: var(--font-main); */
+/* font-size: 1.6rem; 16px */
+/* font-weight: 700; bold */
+/* line-height: 1.5; */
+/* } */
 
-.Head03 {
-  font-family: var(--font-main);
-  font-size: 1.6rem; /* 16px */
-  font-weight: 600; /* semi bold */
-  line-height: 1.5;
-}
+/* .Head03 { */
+/* font-family: var(--font-main); */
+/* font-size: 1.6rem; 16px */
+/* font-weight: 600; semi bold */
+/* line-height: 1.5; */
+/* } */
 
-.Head04 {
+/* .Head04 { */
+/* font-family: var(--font-main); */
+/* font-size: 1.4rem; 14px */
+/* font-weight: 600; semi bold */
+/* line-height: 1.5; */
+/* } */
+
+/* .Body00 { */
+/* font-family: var(--font-main); */
+/* font-size: 1.4rem; 14px */
+/* font-weight: 500; Medium */
+/* line-height: 1.5; */
+/* } */
+
+/* .Body01 { */
+/* font-family: var(--font-main); */
+/* font-size: 1.2rem; 12px */
+/* font-weight: 500; Medium */
+/* line-height: 1.5; */
+/* } */
+
+/* .Body02 {
   font-family: var(--font-main);
   font-size: 1.4rem; /* 14px */
-  font-weight: 600; /* semi bold */
-  line-height: 1.5;
-}
+/* font-weight: 500; Regular */
+/* line-height: 1.5; */
+/* } */
 
-.Body00 {
-  font-family: var(--font-main);
-  font-size: 1.4rem; /* 14px */
-  font-weight: 500; /* Medium */
-  line-height: 1.5;
-}
-
-.Body01 {
+/* .Body03 {
   font-family: var(--font-main);
   font-size: 1.2rem; /* 12px */
-  font-weight: 500; /* Medium */
-  line-height: 1.5;
-}
+/* font-weight: 500; /* Regular */
+/* line-height: 1.5; */
+/* }  */
 
-.Body02 {
-  font-family: var(--font-main);
-  font-size: 1.4rem; /* 14px */
-  font-weight: 500; /* Regular */
-  line-height: 1.5;
-}
-
-.Body03 {
-  font-family: var(--font-main);
-  font-size: 1.2rem; /* 12px */
-  font-weight: 500; /* Regular */
-  line-height: 1.5;
-}
-
-.Body04 {
+/* .Body04 {
   font-family: var(--font-main);
   font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.5;
-}
+}  */
