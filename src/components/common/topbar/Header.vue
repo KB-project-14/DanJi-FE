@@ -46,7 +46,7 @@ const onRightClick = () => emits('right-click')
       class="absolute right-0 pr-3 flex items-center cursor-pointer"
       @click="onRightClick"
     >
-      <XCircle :size="24" class="text-Gray-5" />
+      <XCircle :size="24" class="text-Gray-5" role="button" aria-label="닫기" />
     </div>
   </div>
 </template>
