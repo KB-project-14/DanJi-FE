@@ -5,7 +5,7 @@ import TotalWallet from '@/components/wallet/TotalWallet.vue'
 import HasCardSection from '@/components/wallet/HasCardSection.vue'
 import NoCardSection from '@/components/wallet/NoCardSection.vue'
 
-const hasCard = true
+const hasCard = false
 const cards = [
   { balance: 32000, backgroundImageUrl: '/' },
   { balance: 15000, backgroundImageUrl: '/' },
@@ -21,8 +21,8 @@ const cards = [
           <TotalWallet :wallet-amount="82000" :total-asset="582000" />
         </div>
         <!-- 나의 지역화폐카드 -->
-        <div class="pt-20 pb-10">
-          <HasCardSection v-if="hasCard" :cards="cards" class="pl-20" />
+        <div class="pt-20 pb-10 pl-20">
+          <HasCardSection v-if="hasCard" :cards="cards" />
           <NoCardSection v-else class="pl-20 pr-20" />
         </div>
         <!-- 버튼 -->
