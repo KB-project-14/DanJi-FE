@@ -25,6 +25,13 @@ import BottomNav from '../common/bottomnav/BottomNav.vue'
  * @prop {boolean} [showRightIcon=false] - 오른쪽 아이콘 표시 (basic 타입)
  * @prop {boolean} isBottomNav - 하단 네비게이션 표시 여부
  *
+ * @default
+ * - headerType: 'main'
+ * - headerTitle: ''
+ * - showLeftIcon: false
+ * - showRightIcon: false
+ *  - isBottomNav: true
+ *
  * @slot content - 페이지 메인 콘텐츠 영역 (자동 스크롤 처리)
  *
  * @note 헤더 타입별 용도
@@ -34,7 +41,13 @@ import BottomNav from '../common/bottomnav/BottomNav.vue'
  * - none: 헤더 없음
  */
 
-const headerProps = defineProps<LayoutProps>()
+const headerProps = withDefaults(defineProps<LayoutProps>(), {
+  headerType: 'main',
+  headerTitle: '',
+  showLeftIcon: false,
+  showRightIcon: false,
+  isBottomNav: true,
+})
 </script>
 <template>
   <div class="flex flex-col h-screen minw-[37.5rem]">
