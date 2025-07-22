@@ -49,8 +49,8 @@ const headerProps = defineProps<LayoutProps>()
     />
 
     <!-- 메인 콘텐츠 영역 (페이지별 컴포넌트가 들어갈 곳) -->
-    <section class="flex-1 overflow-auto">
-      <slot name="content" class="w-full h-full mt-[7.2rem]">
+    <section class="flex-1 overflow-auto w-full h-full">
+      <slot name="content">
         <!-- 기본 fallback 콘텐츠 -->
         <div class="w-full h-full p-4 text-center text-Gray-5 bg-Gray-1">
           페이지 콘텐츠를 추가해주세요
