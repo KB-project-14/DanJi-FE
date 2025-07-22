@@ -2,8 +2,14 @@
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import TotalWallet from '@/components/wallet/TotalWallet.vue'
+import HasCardSection from '@/components/wallet/HasCardSection.vue'
+import NoCardSection from '@/components/wallet/NoCardSection.vue'
 
 const hasCard = true
+const cards = [
+  { balance: 32000, backgroundImageUrl: '/' },
+  { balance: 15000, backgroundImageUrl: '/' },
+]
 </script>
 
 <template>
@@ -14,18 +20,10 @@ const hasCard = true
         <div class="pr-20 pl-20 pt-14">
           <TotalWallet :wallet-amount="82000" :total-asset="582000" />
         </div>
-        <!-- 나의 지역화폐카드 section -->
-        <div class="pr-20 pl-20 pt-20 pb-10">
-          <!-- 카드 갯수 및 순서 편집 -->
-          <div>
-            <div>나의 카드 개</div>
-          </div>
-          <!-- 내가 가진 카드 -->
-          <div>
-            <UserCard :balance="32000" backgroundImageUrl="/" />
-          </div>
-          <!-- 혜택 안내 -->
-          <div></div>
+        <!-- 나의 지역화폐카드 -->
+        <div class="pt-20 pb-10">
+          <HasCardSection v-if="hasCard" :cards="cards" class="pl-20" />
+          <NoCardSection v-else class="pl-20 pr-20" />
         </div>
         <!-- 버튼 -->
         <div class="flex justify-center gap-10">
