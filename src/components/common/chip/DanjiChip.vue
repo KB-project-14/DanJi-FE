@@ -16,37 +16,35 @@ import { ChevronDown } from 'lucide-vue-next'
  * ```vue
  * <danji-chip :isIcon="true">더보기</danji-chip>
  * ```
+ *
+ * @prop isIcon - ChevronDown 아이콘 표시 여부
+ * @prop isActive - 버튼이 활성화 상태인지 여부
  */
 
 const props = defineProps<{
-  /**
-   * @prop isIcon 아이콘을 표시할지 여부
-   * @default false
-   *
-   * @prop isActive 처음 버튼 활성화 여부
-   * @default false
-   */
   isIcon?: boolean
   isActive?: boolean
 }>()
 
 const emit = defineEmits<{
-  /**
-   * 버튼 클릭 이벤트
-   *
-   * @param event 마우스 클릭 이벤트 객체
-   */
   click: [event: MouseEvent]
 }>()
 </script>
 
 <template>
   <button
-    class="chip-danji Body00"
-    :class="{ active: props.isActive }"
     @click="$emit('click', $event)"
+    class="inline-flex items-center justify-center rounded-full border-2 px-[1.8rem] py-[0.4rem] Body00"
+    :class="[
+      props.isActive
+        ? 'bg-Yellow-0 text-White-0 border-Yellow-0'
+        : 'bg-White-1 text-Gray-7 border-Gray-1',
+      'hover:bg-Yellow-0 hover:text-White-0 hover:border-Yellow-0',
+      'focus:bg-Yellow-0 focus:text-White-0 focus:border-Yellow-0',
+      'active:bg-Yellow-0 active:text-White-0 active:border-Yellow-0',
+    ]"
   >
     <slot></slot>
-    <chevron-down v-if="isIcon" :size="20" :stroke-width="1" class="ms-1" />
+    <ChevronDown v-if="props.isIcon" :size="20" :stroke-width="1" class="ms-1" />
   </button>
 </template>
