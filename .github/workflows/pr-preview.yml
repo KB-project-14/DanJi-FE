@@ -1,0 +1,80 @@
+name: Pr preview Vercel
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main, develop]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+  pages: write
+  deployments: write
+
+concurrency: preview-${{ github.ref }}
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL: '1'
+
+    outputs:
+      preview_url: ${{ steps.deploy.outputs.preview_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set PR Preview Path
+        run: echo "PREVIEW_PATH=pr-preview/pr-${{ github.event.number }}" >> "$GITHUB_ENV"
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Get Vercel Environment Variables
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Install Dependencies and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Vercel Build (Generates .vercel/output)
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel (Static dist/)
+        id: deploy
+        run: |
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
+
+          echo "🔍 Raw vercel-output.txt content:"
+          cat vercel-output.txt
+
+          preview_url=$(grep -Eo 'https://[a-zA-Z0-9.-]+\.vercel\.app' vercel-output.txt | head -n 1)
+          echo "🔍 Extracted preview_url: $preview_url"
+
+          echo "preview_url=$preview_url" >> $GITHUB_OUTPUT
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          separator: '\n'
+
+      - name: Generate comment body
+        run: |
+          {
+            echo "🎉 Preview 🎉"
+            echo "${{ steps.deploy.outputs.preview_url }}"
+          } > comment.md
+
+      - name: Comment PR with Preview URL and changed files
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: comment.md
