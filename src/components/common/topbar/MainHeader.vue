@@ -4,31 +4,10 @@ defineEmits(['left-click'])
 </script>
 
 <template>
-  <div class="main-header">
+  <div class="flex items-center justify-start w-full h-[7.2rem] pt-4 pb-4 px-4 bg-white">
     <!-- 왼쪽 로고 -->
-    <div class="main-header-logo" @click="$emit('left-click')">
-      <img src="@/assets/images/danji-logo-main.png" alt="단지 로고" />
+    <div class="pl-4 cursor-pointer" @click="$emit('left-click')">
+      <img src="../../../assets/images/danji-logo-main.png" alt="단지 로고" class="h-14" />
     </div>
   </div>
 </template>
-
-<style scoped>
-.main-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background-color: white;
-  padding: 1rem 1rem 0 1rem;
-  width: 100%;
-  height: 4.5rem;
-}
-
-.main-header-logo {
-  padding-left: 1rem;
-  cursor: pointer;
-}
-
-.main-header-logo img {
-  height: 3rem;
-}
-</style>
