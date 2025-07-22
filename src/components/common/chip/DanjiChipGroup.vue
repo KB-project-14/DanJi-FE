@@ -53,7 +53,7 @@ function isSelected(option: string) {
 </script>
 
 <template>
-  <div class="d-flex flex-wrap gap-2">
+  <div class="flex flex-wrap gap-[1rem]">
     <danji-chip
       v-for="option in options"
       :key="option"
