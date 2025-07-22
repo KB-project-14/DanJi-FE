@@ -5,6 +5,35 @@ import PayHeader from '../common/topbar/PayHeader.vue'
 import Header from '../common/topbar/Header.vue'
 import BottomNav from '../common/bottomnav/BottomNav.vue'
 
+/**
+ * Layout 컴포넌트
+ *
+ * 공용 레이아웃 템플릿으로 페이지 구조를 제공합니다.
+ *
+ * @example 기본 사용법
+ * ```vue
+ * <Layout :header-type="'basic'" :header-title="'제목'" :is-bottom-nav="false">
+ *   <template #content>
+ *     <YourPageContent />
+ *   </template>
+ * </Layout>
+ * ```
+ *
+ * @prop {('main'|'pay'|'basic'|'none')} headerType - 헤더 타입
+ * @prop {string} [headerTitle] - 헤더 제목 (basic 타입에서만 필수)
+ * @prop {boolean} [showLeftIcon=false] - 왼쪽 아이콘 표시 (basic 타입)
+ * @prop {boolean} [showRightIcon=false] - 오른쪽 아이콘 표시 (basic 타입)
+ * @prop {boolean} isBottomNav - 하단 네비게이션 표시 여부
+ *
+ * @slot content - 페이지 메인 콘텐츠 영역 (자동 스크롤 처리)
+ *
+ * @note 헤더 타입별 용도
+ * - main: 홈페이지
+ * - pay: 결제페이지
+ * - basic: 일반페이지 (제목+아이콘 표시하는 헤더)
+ * - none: 헤더 없음
+ */
+
 const headerProps = defineProps<LayoutProps>()
 </script>
 <template>
