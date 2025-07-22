@@ -1,4 +1,4 @@
-@import 'bootstrap/scss/bootstrap';
+@use 'bootstrap/scss/bootstrap' as *;
 
 .btn-danji-large {
   @extend .btn, .btn-lg;
@@ -125,6 +125,7 @@
 
   &:hover,
   &:focus,
+  &.active,
   &:active {
     background-color: var(--Yellow00) !important;
     color: var(--White01) !important;

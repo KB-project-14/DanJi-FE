@@ -20,10 +20,14 @@ import { ChevronDown } from 'lucide-vue-next'
 
 const props = defineProps<{
   /**
-   * ChevronDown 아이콘을 표시할지 여부
+   * @prop isIcon 아이콘을 표시할지 여부
+   * @default false
+   *
+   * @prop isActive 처음 버튼 활성화 여부
    * @default false
    */
   isIcon?: boolean
+  isActive?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -37,7 +41,11 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <button class="chip-danji Body00" @click="$emit('click', $event)">
+  <button
+    class="chip-danji Body00"
+    :class="{ active: props.isActive }"
+    @click="$emit('click', $event)"
+  >
     <slot></slot>
     <chevron-down v-if="isIcon" :size="20" :stroke-width="1" class="ms-1" />
   </button>
