@@ -4,7 +4,9 @@ import { useRouter } from 'vue-router'
 import fail from '@/assets/icons/fail.svg'
 
 const router = useRouter()
-const emit = defineEmits<['close']>()
+const emit = defineEmits<{
+  close: []
+}>()
 
 const goToChargePage = () => {
   emit('close')

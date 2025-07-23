@@ -2,7 +2,9 @@
 import DanjiButton from '../button/DanjiButton.vue'
 import { useRouter } from 'vue-router'
 
-const emit = defineEmits<['close']>()
+const emit = defineEmits<{
+  close: []
+}>()
 
 const router = useRouter()
 
