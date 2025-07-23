@@ -54,7 +54,7 @@ const saveOrder = () => {
 </script>
 
 <template>
-  <Layout
+  <layout
     :header-type="'basic'"
     :header-title="'순서변경'"
     :is-bottom-nav="false"
@@ -93,13 +93,13 @@ const saveOrder = () => {
           </draggable>
         </div>
 
-        <!-- 하단 고정 버튼 -->
+        <!-- 하단 저장 버튼 -->
         <div class="pt-4 border-t border-gray-200">
           <danji-button variant="large" @click="saveOrder">저장하기</danji-button>
         </div>
       </div>
     </template>
-  </Layout>
+  </layout>
 </template>
 
 <style scoped>
