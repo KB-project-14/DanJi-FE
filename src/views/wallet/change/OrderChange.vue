@@ -51,9 +51,9 @@ const saveOrder = () => {
     :showLeftIcon="true"
   >
     <template #content>
-      <div class="px-4 py-6">
-        <!-- 카드 영역 -->
-        <div class="flex-1 overflow-y-auto px-4 pt-6">
+      <div class="flex flex-col h-full px-6 py-8">
+        <!-- 카드 리스트  -->
+        <div class="flex-1 overflow-y-auto pt-6">
           <div class="mb-4 Body04 text-Black2">지갑 순서를 바꿔보세요</div>
 
           <div class="flex flex-col gap-4 pb-6">
@@ -68,7 +68,8 @@ const saveOrder = () => {
           </div>
         </div>
 
-        <div class="mt-6">
+        <!-- 하단 고정 버튼 -->
+        <div class="pt-4">
           <danji-button variant="large" @click="saveOrder">저장하기</danji-button>
         </div>
       </div>
