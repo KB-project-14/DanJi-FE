@@ -47,7 +47,7 @@ const menuItems = [
           <div
             v-for="(item, index) in menuItems"
             :key="item.label"
-            class="flex items-center justify-between w-full h-[7rem] px-[1rem] bg-White-0 cursor-pointer hover:bg-gray-50 transition-colors"
+            class="flex items-center justify-between w-full h-[7rem] px-[2rem] bg-White-0 cursor-pointer hover:bg-gray-50 transition-colors"
             :class="item.rounded"
           >
             <span class="Body00 select-none">{{ item.label }}</span>
