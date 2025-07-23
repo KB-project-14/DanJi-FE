@@ -3,7 +3,7 @@ import { XCircle } from 'lucide-vue-next'
 </script>
 
 <template>
-  <div class="flex items-center bg-white px-3 h-[72rem]">
+  <div class="flex items-center bg-white px-3 h-[7.2rem]">
     <!-- 왼쪽 텍스트 -->
     <div class="Head0 flex-1 pl-3">단지Pay</div>
 
