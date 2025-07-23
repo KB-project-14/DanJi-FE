@@ -1,16 +1,61 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import TotalWallet from '@/components/wallet/TotalWallet.vue'
 import HasCardSection from '@/components/wallet/HasCardSection.vue'
 import NoCardSection from '@/components/wallet/NoCardSection.vue'
 
+interface Card {
+  id: number
+  name: string
+  balance: number
+  backgroundImageUrl: string
+  order: number
+  benefit_type: string
+  percentage: number
+}
+
 const hasCard = true
-const cards = [
-  { id: 1, balance: 32000, backgroundImageUrl: '/', order: 1 },
-  { id: 2, balance: 15000, backgroundImageUrl: '/', order: 2 },
-  { id: 3, balance: 25000, backgroundImageUrl: '/', order: 3 },
-]
+
+const cards = ref<Card[]>([
+  {
+    id: 1,
+    name: '동백전',
+    balance: 32000,
+    backgroundImageUrl: '/',
+    order: 3,
+    benefit_type: '캐시백',
+    percentage: 10,
+  },
+  {
+    id: 2,
+    name: '서울Pay',
+    balance: 15000,
+    backgroundImageUrl: '/',
+    order: 1,
+    benefit_type: '캐시백',
+    percentage: 5,
+  },
+  {
+    id: 3,
+    name: '강원상품권',
+    balance: 25000,
+    backgroundImageUrl: '/',
+    order: 2,
+    benefit_type: '인센티브',
+    percentage: 7,
+  },
+  {
+    id: 4,
+    name: '부산Pay',
+    balance: 25000,
+    backgroundImageUrl: '/',
+    order: 4,
+    benefit_type: '인센티브',
+    percentage: 8,
+  },
+])
 </script>
 
 <template>

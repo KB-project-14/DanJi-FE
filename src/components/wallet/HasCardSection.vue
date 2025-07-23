@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick, defineProps } from 'vue'
 import UserCard from '@/components/common/card/UserCard.vue'
 
 interface Card {
@@ -14,47 +14,12 @@ interface Card {
   percentage: number
 }
 
-const cards = ref<Card[]>([
-  {
-    id: 1,
-    name: '동백전',
-    balance: 32000,
-    backgroundImageUrl: '/',
-    order: 3,
-    benefit_type: '캐시백',
-    percentage: 10,
-  },
-  {
-    id: 2,
-    name: '서울Pay',
-    balance: 15000,
-    backgroundImageUrl: '/',
-    order: 1,
-    benefit_type: '캐시백',
-    percentage: 5,
-  },
-  {
-    id: 3,
-    name: '강원상품권',
-    balance: 25000,
-    backgroundImageUrl: '/',
-    order: 2,
-    benefit_type: '인센티브',
-    percentage: 7,
-  },
-  {
-    id: 4,
-    name: '부산Pay',
-    balance: 25000,
-    backgroundImageUrl: '/',
-    order: 4,
-    benefit_type: '인센티브',
-    percentage: 8,
-  },
-])
+// ✅ props로 cards 받기
+const props = defineProps<{
+  cards: Card[]
+}>()
 
-const sortedCards = computed(() => [...cards.value].sort((a, b) => a.order - b.order))
-
+const sortedCards = computed(() => [...props.cards].sort((a, b) => a.order - b.order))
 const swiperEl = ref<any>(null)
 const currentSlideIndex = ref(1)
 
@@ -69,6 +34,7 @@ onMounted(() => {
   })
 })
 </script>
+
 <template>
   <div class="flex flex-col gap-4 max-w-full overflow-hidden">
     <div class="flex items-center justify-between">
