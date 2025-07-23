@@ -2,6 +2,24 @@
 import Layout from '@/components/layout/Layout.vue'
 import DanjiChip from '@/components/common/chip/DanjiChip.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
+import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
+import { ref } from 'vue'
+
+const isModalVisible = ref<boolean>(false)
+const selectedCity = ref<string>('경상북도')
+
+const openModal = (): void => {
+  isModalVisible.value = true
+}
+
+const handleModalClose = (): void => {
+  isModalVisible.value = false
+}
+
+const handleModalConfirm = (selection: string): void => {
+  selectedCity.value = selection
+  isModalVisible.value = false
+}
 </script>
 
 <template>
@@ -11,7 +29,22 @@ import DanjiButton from '@/components/common/button/DanjiButton.vue'
       <div class="w-full h-[0.1rem] bg-Gray-0" />
 
       <!-- 지역 선택 칩 -->
-      <danji-chip class="ms-[2.7rem] mt-[1.2rem]" is-active is-icon> 부산시 </danji-chip>
+      <danji-chip
+        class="ms-[2.7rem] mt-[1.2rem]"
+        :is-active="true"
+        :is-icon="true"
+        @click="openModal"
+      >
+        {{ selectedCity }}
+      </danji-chip>
+
+      <!-- 지역 필터 모달 -->
+      <local-filter-modal
+        :is-visible="isModalVisible"
+        :initial-city="selectedCity"
+        @close="handleModalClose"
+        @confirm="handleModalConfirm"
+      />
 
       <!-- 카드 이미지 임시 div -->
       <div
