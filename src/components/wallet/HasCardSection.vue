@@ -21,7 +21,7 @@ defineProps<{
         :key="index"
         :balance="card.balance"
         :backgroundImageUrl="card.backgroundImageUrl"
-        class="shrink-0 w-[275px]"
+        class="shrink-0 w-[270px]"
       />
     </div>
 
