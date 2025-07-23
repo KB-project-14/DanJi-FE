@@ -33,6 +33,10 @@ const routes = [
     path: '/order',
     component: OrderChange,
   },
+  {
+    path: '/qr',
+    component: QRPage,
+  },
 ]
 
 const router = createRouter({

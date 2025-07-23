@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import DanjiChip from '@/components/common/chip/DanjiChip.vue'
 import Layout from '@/components/layout/Layout.vue'
+import VueQr from 'qrcode.vue'
+import type { Level, RenderAs, GradientType, ImageSettings } from 'qrcode.vue'
+import danjiLogoMain from '@/assets/images/danji-logo-main.png'
 
 type PaymentType = 'field' | 'qr'
 
@@ -10,6 +13,28 @@ const selectedPayment = ref<PaymentType>('field')
 const selectPayment = (type: PaymentType) => {
   selectedPayment.value = type
 }
+
+// QR 코드 관련 변수
+const value = ref('qrcode')
+const level = ref<Level>('M')
+const renderAs = ref<RenderAs>('svg')
+const background = ref('#ffffff')
+const foreground = ref('#000000')
+const margin = ref(0)
+
+const imageSettings = ref<ImageSettings>({
+  src: danjiLogoMain,
+  width: 30,
+  height: 30,
+  // x: 10,
+  // y: 10,
+  excavate: true,
+})
+
+const gradient = ref(false)
+const gradientType = ref<GradientType>('linear')
+const gradientStartColor = ref('#000000')
+const gradientEndColor = ref('#38bdf8')
 </script>
 <template>
   <Layout :header-type="'pay'" :is-bottom-nav="false">
@@ -33,9 +58,25 @@ const selectPayment = (type: PaymentType) => {
             QR스캔</DanjiChip
           >
         </section>
-        <!-- 하얀 네모 (전체 화면 중앙에 배치) -->
+        <!-- QR 영역 (전체 화면 중앙에 배치) -->
         <div class="absolute inset-0 flex items-center justify-center">
-          <div class="w-[26.1rem] h-[26.1rem] bg-White-0 shadow-sm rounded-lg"></div>
+          <div
+            class="flex items-center justify-center w-[26.1rem] h-[26.1rem] bg-White-0 shadow-sm rounded-lg"
+          >
+            <vue-qr
+              class="w-[22.9rem] h-[22.9rem]"
+              :value="value"
+              :level="level"
+              :render-as="renderAs"
+              :background="background"
+              :foreground="foreground"
+              :gradient="gradient"
+              :gradient-type="gradientType"
+              :gradient-start-color="gradientStartColor"
+              :gradient-end-color="gradientEndColor"
+              :image-settings="imageSettings"
+            ></vue-qr>
+          </div>
         </div>
       </div>
     </template>
