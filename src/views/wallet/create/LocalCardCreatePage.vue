@@ -6,18 +6,16 @@ import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
 import { ref } from 'vue'
 
 const isModalVisible = ref<boolean>(false)
-const selectedCity = ref<string>('경상북도')
+const selectedRegion = ref<string>('경상북도')
+const selectedCity = ref<string>('포항')
 
-const openModal = (): void => {
-  isModalVisible.value = true
+const handleClickModal = (): void => {
+  isModalVisible.value = !isModalVisible.value
 }
 
-const handleModalClose = (): void => {
-  isModalVisible.value = false
-}
-
-const handleModalConfirm = (selection: string): void => {
-  selectedCity.value = selection
+const handleModalConfirm = (region: string, city: string): void => {
+  selectedRegion.value = region
+  selectedCity.value = city
   isModalVisible.value = false
 }
 </script>
@@ -33,16 +31,17 @@ const handleModalConfirm = (selection: string): void => {
         class="ms-[2.7rem] mt-[1.2rem]"
         :is-active="true"
         :is-icon="true"
-        @click="openModal"
+        @click="handleClickModal"
       >
-        {{ selectedCity }}
+        {{ selectedCity }}시
       </danji-chip>
 
       <!-- 지역 필터 모달 -->
       <local-filter-modal
         :is-visible="isModalVisible"
+        :inital-region="selectedRegion"
         :initial-city="selectedCity"
-        @close="handleModalClose"
+        @close="handleClickModal"
         @confirm="handleModalConfirm"
       />
 
