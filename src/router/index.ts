@@ -7,6 +7,7 @@ import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import MypagePage from '@/views/mypage/MypagePage.vue'
 import HomePage from '@/views/wallet/home/HomePage.vue'
 import OrderChange from '@/views/wallet/change/OrderChange.vue'
+import WalletView from '@/views/wallet/home/WalletView.vue'
 
 const routes = [
   {
@@ -32,6 +33,10 @@ const routes = [
   {
     path: '/order',
     component: OrderChange,
+  },
+  {
+    path: '/wallet/view',
+    component: WalletView,
   },
 ]
 
