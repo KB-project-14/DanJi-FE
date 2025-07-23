@@ -1,16 +1,24 @@
 <script setup lang="ts">
 import DanjiButton from '../common/button/DanjiButton.vue'
 import Layout from '../layout/Layout.vue'
-import PayModal from '@/components/common/modal/PayModal.vue'
 import checkboxSelected from '@/assets/icons/checkbox-activated.svg'
 import checkboxUnselected from '@/assets/icons/checkbox-inactivated.svg'
+
 import { ref } from 'vue'
+import LocalPayFailModal from '@/components/common/modal/LocalPayFailModal.vue'
+import CashPayFailModal from '../common/modal/CashPayFailModal.vue'
+
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // 결제 방식 타입 (최대 하나만 선택)
 type PaymentType = 'local' | 'cash' | null
 
 const selectedPayment = ref<PaymentType>(null)
-const showModal = ref(false)
+const showLocalFailModal = ref(false)
+const showCashFailModal = ref(false)
+const showModal = ref(false) // 잔액 부족 여부 판단해서 모달 표시
 
 // 실제로는 API 등에서 가져온 지역화폐 잔액
 const localBalance = ref(50000) // 예: 5만원
@@ -23,10 +31,21 @@ const selectPayment = (type: PaymentType) => {
 
 // 결제 버튼 클릭 함수
 const onClickPay = () => {
-  if (selectedPayment.value === 'local' && localBalance.value < paymentAmount.value) {
-    showModal.value = true
+  if (selectedPayment.value === null) return
+
+  // 결제 금액보다 잔액이 부족한 경우 → 수단에 따라 모달 분기
+  const isInsufficient = localBalance.value < paymentAmount.value
+
+  if (isInsufficient) {
+    if (selectedPayment.value === 'local') {
+      showLocalFailModal.value = true
+    } else if (selectedPayment.value === 'cash') {
+      showCashFailModal.value = true
+    }
     return
   }
+
+  router.push('/pay-complete')
 }
 
 // 모달 닫기 함수 - 추가 필요시 사용
@@ -124,7 +143,8 @@ const onClickPay = () => {
           >결제하기</DanjiButton
         >
       </div>
-      <PayModal v-if="showModal" />
+      <LocalPayFailModal v-if="showLocalFailModal" @close="showLocalFailModal = false" />
+      <CashPayFailModal v-if="showCashFailModal" @close="showCashFailModal = false" />
     </template>
   </Layout>
 </template>
