@@ -6,18 +6,51 @@ import UserCard from '@/components/common/card/UserCard.vue'
 
 interface Card {
   id: number
+  name: string
   balance: number
   backgroundImageUrl: string
   order: number
+  benefit_type: string
+  percentage: number
 }
 
 const cards = ref<Card[]>([
-  { id: 1, balance: 32000, backgroundImageUrl: '/', order: 3 },
-  { id: 2, balance: 15000, backgroundImageUrl: '/', order: 1 },
-  { id: 3, balance: 25000, backgroundImageUrl: '/', order: 2 },
-  { id: 4, balance: 25000, backgroundImageUrl: '/', order: 4 },
-  { id: 5, balance: 25000, backgroundImageUrl: '/', order: 5 },
-  { id: 6, balance: 25000, backgroundImageUrl: '/', order: 6 },
+  {
+    id: 1,
+    name: '동백전',
+    balance: 32000,
+    backgroundImageUrl: '/',
+    order: 3,
+    benefit_type: '캐시백',
+    percentage: 10,
+  },
+  {
+    id: 2,
+    name: '서울Pay',
+    balance: 15000,
+    backgroundImageUrl: '/',
+    order: 1,
+    benefit_type: '캐시백',
+    percentage: 5,
+  },
+  {
+    id: 3,
+    name: '강원상품권',
+    balance: 25000,
+    backgroundImageUrl: '/',
+    order: 2,
+    benefit_type: '인센티브',
+    percentage: 7,
+  },
+  {
+    id: 4,
+    name: '부산Pay',
+    balance: 25000,
+    backgroundImageUrl: '/',
+    order: 4,
+    benefit_type: '인센티브',
+    percentage: 8,
+  },
 ])
 
 const sortedCards = computed(() => [...cards.value].sort((a, b) => a.order - b.order))
@@ -39,12 +72,13 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4 max-w-full overflow-hidden">
     <div class="flex items-center justify-between">
-      <div class="Body02 text-Gray-6">
+      <!-- 나의 카드 + 순서 바꾸기 버튼 -->
+      <div class="Body02 text-Black-2">
         나의 카드 {{ currentSlideIndex }} / {{ sortedCards.length }}개
       </div>
-      <button class="Body04 text-Gray-6 underline pr-20">순서 바꾸기</button>
+      <button class="Body04 text-Gray-4 underline pr-20">순서 바꾸기</button>
     </div>
-
+    <!-- 카드 사진 -->
     <div class="overflow-hidden">
       <Swiper
         ref="swiperEl"
@@ -67,6 +101,15 @@ onMounted(() => {
           />
         </SwiperSlide>
       </Swiper>
+    </div>
+
+    <!-- 혜택 안내 -->
+    <div class="Body04 text-Gray-5 px-4 w-full text-right pr-20">
+      <span v-if="sortedCards[currentSlideIndex - 1]">
+        {{ sortedCards[currentSlideIndex - 1].name }}의 혜택 :
+        {{ sortedCards[currentSlideIndex - 1].benefit_type }}
+        {{ sortedCards[currentSlideIndex - 1].percentage }}%
+      </span>
     </div>
   </div>
 </template>
