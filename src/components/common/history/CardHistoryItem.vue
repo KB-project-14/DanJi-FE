@@ -23,7 +23,7 @@ const getAmountColor = (direction: string) => {
 <template>
   <div class="flex flex-col py-[1.2rem] border-b border-Gray-1">
     <!-- 상호명 + 결제 금액 -->
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between pb-[0.5rem] items-center">
       <span class="Head02 text-Black2">{{ comment }}</span>
       <span :class="['Head02', getAmountColor(direction)]">
         {{ getDisplayText(direction, type) }} {{ (amount ?? 0).toLocaleString() }} 원
