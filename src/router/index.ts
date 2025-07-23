@@ -8,6 +8,7 @@ import MypagePage from '@/views/mypage/MypagePage.vue'
 import HomePage from '@/views/wallet/home/HomePage.vue'
 import OrderChange from '@/views/wallet/change/OrderChange.vue'
 import WalletView from '@/views/wallet/home/WalletView.vue'
+import CardHistoryView from '@/views/wallet/history/CardHistoryView.vue'
 
 const routes = [
   {
@@ -37,6 +38,10 @@ const routes = [
   {
     path: '/wallet/view',
     component: WalletView,
+  },
+  {
+    path: '/card/history',
+    component: CardHistoryView,
   },
 ]
 
