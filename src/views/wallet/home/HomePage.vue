@@ -7,8 +7,9 @@ import NoCardSection from '@/components/wallet/NoCardSection.vue'
 
 const hasCard = true
 const cards = [
-  { balance: 32000, backgroundImageUrl: '/' },
-  { balance: 15000, backgroundImageUrl: '/' },
+  { id: 1, balance: 32000, backgroundImageUrl: '/', order: 1 },
+  { id: 2, balance: 15000, backgroundImageUrl: '/', order: 2 },
+  { id: 3, balance: 25000, backgroundImageUrl: '/', order: 3 },
 ]
 </script>
 
@@ -23,9 +24,9 @@ const cards = [
           </div>
         </div>
         <!-- 나의 지역화폐카드 -->
-        <div class="pt-20 pb-10 pl-20">
+        <div class="pl-20 pt-20 pb-10 px-4">
           <HasCardSection v-if="hasCard" :cards="cards" />
-          <NoCardSection v-else class="pl-20 pr-20" />
+          <NoCardSection v-else class="px-4" />
         </div>
         <!-- 버튼 -->
         <div class="flex justify-center gap-10">
