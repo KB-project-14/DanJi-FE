@@ -57,7 +57,7 @@ const saveOrder = () => {
     :showLeftIcon="true"
   >
     <template #content>
-      <div class="flex flex-col h-full px-[1.5rem] py-[2rem] bg-[#F3F4F7]">
+      <div class="flex flex-col h-full px-[1.5rem] py-[2rem] bg-background">
         <div class="flex-1 overflow-y-auto">
           <div class="mb-[1rem] Body04 text-Black2">지갑 순서를 바꿔보세요</div>
 
