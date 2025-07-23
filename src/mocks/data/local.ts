@@ -8,7 +8,7 @@ export const localData = {
       { id: 8, name: '충청북도' },
     ],
     cities: {
-      '1': [
+      1: [
         { id: 101, name: '춘천' },
         { id: 102, name: '원주' },
         { id: 103, name: '강릉' },
@@ -17,7 +17,7 @@ export const localData = {
         { id: 106, name: '태백' },
         { id: 107, name: '삼척' },
       ],
-      '3': [
+      3: [
         { id: 301, name: '창원' },
         { id: 302, name: '진주' },
         { id: 303, name: '통영' },
@@ -27,7 +27,7 @@ export const localData = {
         { id: 307, name: '거제' },
         { id: 308, name: '양산' },
       ],
-      '4': [
+      4: [
         { id: 401, name: '포항' },
         { id: 402, name: '경주' },
         { id: 403, name: '김천' },
@@ -39,14 +39,14 @@ export const localData = {
         { id: 409, name: '문경' },
         { id: 410, name: '경산' },
       ],
-      '5': [
+      5: [
         { id: 501, name: '목포' },
         { id: 502, name: '여수' },
         { id: 503, name: '순천' },
         { id: 504, name: '나주' },
         { id: 505, name: '광양' },
       ],
-      '8': [
+      8: [
         { id: 801, name: '청주' },
         { id: 802, name: '충주' },
         { id: 803, name: '제천' },
