@@ -84,6 +84,7 @@ onMounted(() => {
     class="fixed inset-0 bg-Black-1 z-50 flex transition-all duration-300"
     :class="isVisible ? 'bg-opacity-50 pointer-events-auto' : 'bg-opacity-0 pointer-events-none'"
     @click="emit('close')"
+    @touchmove.prevent
   >
     <div
       class="flex flex-col w-full h-[45rem] px-[2.6rem] mt-auto pt-[2.8rem] pb-[0.8rem] bg-white rounded-t-[2rem] overflow-y-auto transition-transform duration-300 ease-out"
