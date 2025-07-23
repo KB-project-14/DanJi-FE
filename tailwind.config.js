@@ -43,10 +43,16 @@ export default {
           6: '#8a8d8f',
           7: '#6c757d',
           8: '#666666',
+          9: '#f0f2f5',
+          10: '#eeeeee',
         },
         Black: {
           0: '#20222b',
           1: '#1a1a1a',
+          2: '#000000',
+        },
+        Background: {
+          DEFAULT: '#F3F4F7',
         },
       },
     },
