@@ -22,7 +22,7 @@ const handlePayment = () => {
         <!-- 결제 실패 -->
         <PayFail v-else />
         <DanjiButton class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]"
-          >결제하기</DanjiButton
+          >지갑으로 가기</DanjiButton
         >
       </div>
     </template>
