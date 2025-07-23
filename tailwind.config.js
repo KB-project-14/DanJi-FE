@@ -51,7 +51,7 @@ export default {
           1: '#1a1a1a',
           2: '#000000',
         },
-        background: {
+        Background: {
           DEFAULT: '#F3F4F7',
         },
       },
