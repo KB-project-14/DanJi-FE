@@ -76,7 +76,7 @@ onMounted(() => {
       <div class="Body02 text-Black-2">
         나의 카드 {{ currentSlideIndex }} / {{ sortedCards.length }}개
       </div>
-      <button class="Body04 text-Gray-4 underline pr-20">순서 바꾸기</button>
+      <button class="pr-20 Body04 text-Gray-4 underline">순서 바꾸기</button>
     </div>
     <!-- 카드 사진 -->
     <div class="overflow-hidden">
@@ -104,7 +104,7 @@ onMounted(() => {
     </div>
 
     <!-- 혜택 안내 -->
-    <div class="Body04 text-Gray-4 px-4 w-full text-right pr-20">
+    <div class="w-full text-right pr-20 Body04 text-Gray-4">
       <span v-if="sortedCards[currentSlideIndex - 1]">
         {{ sortedCards[currentSlideIndex - 1].name }}의 혜택 :
         {{ sortedCards[currentSlideIndex - 1].benefit_type }}
