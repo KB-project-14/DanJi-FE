@@ -4,8 +4,7 @@ import { CirclePlus } from 'lucide-vue-next'
 
 <template>
   <div
-    class="w-[275px] shrink-0 aspect-[1.58/1] rounded-xl flex items-center justify-center bg-white"
-    style="border: 1px solid #d9d9d9"
+    class="w-[275px] shrink-0 aspect-[1.58/1] rounded-xl flex items-center justify-center bg-white border border-solid border-Gray-3"
   >
     <div class="flex flex-col items-center gap-2">
       <div class="Body02 text-Gray-4"><CirclePlus /></div>
