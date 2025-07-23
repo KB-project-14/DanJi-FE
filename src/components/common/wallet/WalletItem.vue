@@ -6,7 +6,6 @@ defineProps<{
   balance: number
   bgColorClass?: string
   showMenu?: boolean
-  isDragMode?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -26,7 +25,6 @@ const emit = defineEmits<{
     <div class="Head02 text-Black2">잔액 {{ balance.toLocaleString() }}원</div>
 
     <!-- 햄버거 (순서변경) -->
-    <!-- 여기 수정 -->
     <div class="text-Black2 w-[20px] flex justify-end">
       <Menu
         v-if="showMenu"
