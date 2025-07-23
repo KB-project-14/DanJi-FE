@@ -1,4 +1,5 @@
 import Layout from '@/components/layout/Layout.vue'
+import OrderChange from '@/views/wallet/change/OrderChange.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -7,6 +8,13 @@ const routes = [
     component: Layout,
     props: {
       headerType: 'main',
+    },
+  },
+  {
+    path: '/order',
+    component: OrderChange,
+    props: {
+      headerType: 'basic',
     },
   },
 ]

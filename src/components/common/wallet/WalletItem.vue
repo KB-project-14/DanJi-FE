@@ -5,24 +5,25 @@ defineProps<{
   name: string
   balance: number
   bgColorClass?: string
+  showMenu?: boolean
 }>()
 </script>
 <template>
   <div
-    class="flex items-center justify-between px-4 py-3 rounded-xl shadow-sm"
+    class="flex items-center justify-between px-6 py-5 rounded-xl shadow-sm"
     :class="bgColorClass"
   >
-    <!-- 지역화폐 이름 -->
-    <div class="font-medium text-sm text-white">
+    <!-- 지역화폐카드 이름 -->
+    <div class="Body00 text-Black2">
       {{ name }}
     </div>
 
-    <!-- 잔액 -->
-    <div class="font-semibold text-sm text-white">잔액 {{ balance.toLocaleString() }}원</div>
+    <!-- 지역화폐카드 잔액 -->
+    <div class="Head02 text-Black2">잔액 {{ balance.toLocaleString() }}원</div>
 
-    <!-- 햄버거 아이콘 -->
-    <div class="text-white">
-      <Menu :size="20" />
+    <!-- 햄버거 (순서변경)-->
+    <div class="text-Black2 w-[20px] flex justify-end">
+      <Menu v-if="showMenu" :size="20" />
     </div>
   </div>
 </template>
