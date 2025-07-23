@@ -5,6 +5,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PayModal from '@/components/common/modal/LocalPayFailModal.vue'
 import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import HomePage from '@/views/wallet/home/HomePage.vue'
+import OrderChange from '@/views/wallet/change/OrderChange.vue'
 
 const routes = [
   {
@@ -22,6 +23,10 @@ const routes = [
   {
     path: '/pay-complete',
     component: PayCompletePage,
+  },
+  {
+    path: '/order',
+    component: OrderChange,
   },
 ]
 
