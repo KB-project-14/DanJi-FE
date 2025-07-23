@@ -1,20 +1,19 @@
-<<<<<<< HEAD
-import Layout from '@/components/layout/Layout.vue'
-import HomePage from '@/views/wallet/home/HomePage.vue'
-
-=======
 import PayPage from '@/views/pay/PayPage.vue'
 import QRPage from '@/views/qr/QRPage.vue'
 import PayCompletePage from '@/views/pay/PayCompletePage.vue'
->>>>>>> develop
 import { createRouter, createWebHistory } from 'vue-router'
 import PayModal from '@/components/common/modal/LocalPayFailModal.vue'
 import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
+import HomePage from '@/views/wallet/home/HomePage.vue'
 
 const routes = [
   {
     path: '/',
     component: CashPayFailModal,
+  },
+  {
+    path: '/home',
+    component: HomePage,
   },
   {
     path: '/pay',
@@ -23,11 +22,6 @@ const routes = [
   {
     path: '/pay-complete',
     component: PayCompletePage,
-  },
-  {
-    path: '/home',
-    name: 'Home',
-    component: HomePage,
   },
 ]
 
