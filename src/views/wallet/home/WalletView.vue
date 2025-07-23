@@ -44,7 +44,7 @@ const cards: WalletCard[] = [
     :showLeftIcon="true"
   >
     <template #content>
-      <div class="flex flex-col h-full px-[1.5rem] py-[2rem] gap-4">
+      <div class="flex flex-col h-full px-[1.5rem] py-[2rem] bg-[#F3F4F7] gap-4">
         <wallet-item
           v-for="card in cards"
           :key="card.id"
