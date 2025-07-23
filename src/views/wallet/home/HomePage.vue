@@ -14,7 +14,7 @@ const cards = [
 </script>
 
 <template>
-  <Layout :header-type="'main'" :is-bottom-nav="true">
+  <Layout :header-type="'main'" header-title="메인" :is-bottom-nav="true">
     <template #content>
       <div class="bg-[#F3F4F7] min-h-full">
         <!-- 통합지갑 section -->
@@ -26,7 +26,7 @@ const cards = [
         <!-- 나의 지역화폐카드 -->
         <div class="pl-20 pt-20 pb-10 px-4">
           <HasCardSection v-if="hasCard" :cards="cards" />
-          <NoCardSection v-else class="px-4" />
+          <NoCardSection v-else />
         </div>
         <!-- 버튼 -->
         <div class="flex justify-center gap-10">
