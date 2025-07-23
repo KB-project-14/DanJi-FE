@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
-import WalletOrderItem from '@/components/common/wallet/WalletItem.vue'
+import WalletItem from '@/components/common/wallet/WalletItem.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import draggable from 'vuedraggable'
 
@@ -66,7 +66,7 @@ const saveOrder = () => {
           <div class="mb-4 Body04 text-Black2">지갑 순서를 바꿔보세요</div>
 
           <!-- 통합지갑 고정 -->
-          <wallet-order-item
+          <wallet-item
             :name="cards[0].name"
             :balance="cards[0].balance"
             :bgColorClass="cards[0].bgColorClass"
@@ -83,7 +83,7 @@ const saveOrder = () => {
             ghost-class="drag-ghost"
           >
             <template #item="{ element }">
-              <wallet-order-item
+              <wallet-item
                 :name="element.name"
                 :balance="element.balance"
                 :bgColorClass="element.bgColorClass"
