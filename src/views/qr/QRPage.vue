@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import DanjiChip from '../common/chip/DanjiChip.vue'
-import Layout from '../layout/Layout.vue'
+import DanjiChip from '@/components/common/chip/DanjiChip.vue'
+import Layout from '@/components/layout/Layout.vue'
 
 type PaymentType = 'field' | 'qr'
 
@@ -26,7 +26,7 @@ const selectPayment = (type: PaymentType) => {
           >
           <DanjiChip
             class="w-[14.9rem] h-[4.6rem] text-Head04"
-            :is-Icon="false"
+            :is-icon="false"
             :is-active="selectedPayment === 'qr'"
             @click="selectPayment('qr')"
           >

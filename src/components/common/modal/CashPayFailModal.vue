@@ -4,8 +4,10 @@ import { useRouter } from 'vue-router'
 import fail from '@/assets/icons/fail.svg'
 
 const router = useRouter()
+const emit = defineEmits<['close']>()
 
 const goToChargePage = () => {
+  emit('close')
   router.push('/') // 임시로 홈 이동 설정(나중에 아마도 변경 예정)
 }
 </script>
@@ -13,7 +15,7 @@ const goToChargePage = () => {
 <template>
   <div class="fixed inset-0 z-[1000] flex items-center justify-center">
     <!-- 오버레이 -->
-    <div class="absolute inset-0 bg-black bg-opacity-50 z-[1000]" />
+    <div class="absolute inset-0 bg-Black-1 bg-opacity-50 z-[1000]" />
 
     <!-- 모달 박스 -->
     <div

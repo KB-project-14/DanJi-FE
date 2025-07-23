@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import Layout from '../layout/Layout.vue'
-import DanjiButton from '../common/button/DanjiButton.vue'
-import PaySuccess from '../pay/PaySuccess.vue'
-import PayFail from '../pay/PayFail.vue'
+import Layout from '@/components/layout/Layout.vue'
+import DanjiButton from '@/components/common/button/DanjiButton.vue'
+import PaySuccess from '@/components/pay/PaySuccess.vue'
+import PayFail from '@/components/pay/PayFail.vue'
 
 const paySuccess = ref<boolean | null>(null) // null: 초기상태, true: 성공, false: 실패
 
@@ -20,7 +20,12 @@ const handlePayment = () => {
         <PaySuccess v-if="paySuccess === true" />
 
         <!-- 결제 실패 -->
-        <PayFail v-else />
+        <PayFail v-else-if="paySuccess === false" />
+
+        <!-- (null 상태)초기 상태 또는 로딩 상태 -->
+        <div v-else class="flex items-center justify-center">
+          <span class="Head03">결제 처리 중...</span>
+        </div>
         <DanjiButton class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]"
           >지갑으로 가기</DanjiButton
         >

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import DanjiButton from '../common/button/DanjiButton.vue'
-import Layout from '../layout/Layout.vue'
+import DanjiButton from '@/components/common/button/DanjiButton.vue'
+import Layout from '@/components/layout/Layout.vue'
 import checkboxSelected from '@/assets/icons/checkbox-activated.svg'
 import checkboxUnselected from '@/assets/icons/checkbox-inactivated.svg'
 
 import { ref } from 'vue'
 import LocalPayFailModal from '@/components/common/modal/LocalPayFailModal.vue'
-import CashPayFailModal from '../common/modal/CashPayFailModal.vue'
+import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 
 import { useRouter } from 'vue-router'
 
@@ -33,9 +33,16 @@ const selectPayment = (type: PaymentType) => {
 const onClickPay = () => {
   if (selectedPayment.value === null) return
 
-  // 결제 금액보다 잔액이 부족한 경우 → 수단에 따라 모달 분기
-  const isInsufficient = localBalance.value < paymentAmount.value
+  // 결제 금액보다 잔액이 부족한 경우(결제 수단별 분기)
+  let isInsufficient = false
 
+  // 지역화폐 결제의 경우 잔액 확인
+  if (selectedPayment.value === 'local') {
+    isInsufficient = localBalance.value < paymentAmount.value
+  } else if (selectedPayment.value === 'cash') {
+    // 일반결제는 현금 잔액과 비교
+    isInsufficient = false // 임시로 false 설정
+  }
   if (isInsufficient) {
     if (selectedPayment.value === 'local') {
       showLocalFailModal.value = true
