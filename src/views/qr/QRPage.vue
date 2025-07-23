@@ -165,6 +165,17 @@ const gradientEndColor = ref('#38bdf8')
             class="absolute inset-0 flex flex-col items-center w-full h-full z-10 pt-[6rem]"
           >
             <video ref="videoRef" class="w-full h-full bg-Gray-4 object-cover" autoplay></video>
+
+            <!-- 오버레이 (가이드 영역) -->
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
+            >
+              <!--QR 코드 영역 표시용 박스 -->
+              <div class="w-[20rem] h-[20rem] border-4 border-Yellow-0 rounded-[1rem] mb-4"></div>
+
+              <!-- 안내 텍스트 -->
+              <p class="text-White-0 text-lg font-bold Body0">QR을 스캔하세요</p>
+            </div>
           </div>
         </div>
       </div>
