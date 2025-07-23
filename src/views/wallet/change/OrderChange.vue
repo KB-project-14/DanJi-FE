@@ -42,11 +42,6 @@ const cards = ref<WalletCard[]>([
 // 통합지갑 제외 나머지 카드만 드래그 가능
 const otherCards = ref(cards.value.slice(1))
 
-const isDragMode = ref(false)
-const toggleDragMode = () => {
-  isDragMode.value = !isDragMode.value
-}
-
 const saveOrder = () => {
   const newOrder = [cards.value[0], ...otherCards.value]
   console.log('저장 로직 구현')
