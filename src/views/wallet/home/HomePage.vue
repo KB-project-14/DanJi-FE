@@ -16,9 +16,9 @@ const cards = [
 <template>
   <Layout :header-type="'main'" header-title="메인" :is-bottom-nav="true">
     <template #content>
-      <div class="bg-[#F3F4F7] min-h-full">
+      <div class="min-h-full bg-[#F3F4F7]">
         <!-- 통합지갑 section -->
-        <div class="pt-10 flex justify-center">
+        <div class="flex justify-center pt-10">
           <div class="w-[270px]">
             <TotalWallet :wallet-amount="82000" :total-asset="582000" />
           </div>
