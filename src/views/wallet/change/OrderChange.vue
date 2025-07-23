@@ -89,7 +89,7 @@ const saveOrder = () => {
         </div>
 
         <!-- 하단 저장 버튼 -->
-        <div class="pt-4 border-t border-gray-200">
+        <div class="pt-4">
           <danji-button variant="large" @click="saveOrder">저장하기</danji-button>
         </div>
       </div>
