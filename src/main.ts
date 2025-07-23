@@ -10,7 +10,7 @@ import router from './router'
 
 if (import.meta.env.DEV) {
   const { worker } = await import('./mocks/browser.test')
-  await worker.start()
+  await worker.start({ onUnhandledRequest: 'bypass' })
 }
 
 const app = createApp(App)
