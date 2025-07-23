@@ -45,6 +45,7 @@ const otherCards = ref(cards.value.slice(1))
 const saveOrder = () => {
   const newOrder = [cards.value[0], ...otherCards.value]
   console.log('저장 로직 구현')
+  //   추후에 연동 예정
 }
 </script>
 
@@ -56,9 +57,9 @@ const saveOrder = () => {
     :showLeftIcon="true"
   >
     <template #content>
-      <div class="flex flex-col h-full px-6 py-8">
-        <div class="flex-1 overflow-y-auto pt-6">
-          <div class="mb-4 Body04 text-Black2">지갑 순서를 바꿔보세요</div>
+      <div class="flex flex-col h-full px-[1.5rem] py-[2rem]">
+        <div class="flex-1 overflow-y-auto pt-[2rem]">
+          <div class="mb-[1rem] Body04 text-Black2">지갑 순서를 바꿔보세요</div>
 
           <!-- 통합지갑 고정 -->
           <wallet-item
@@ -68,12 +69,11 @@ const saveOrder = () => {
             :showMenu="false"
           />
 
-          <!-- 나머지 드래그 가능 -->
           <draggable
             v-model="otherCards"
             item-key="id"
             handle=".drag-handle"
-            class="flex flex-col gap-4 pb-6 mt-4"
+            class="flex flex-col gap-[1rem] pb-[1.5rem] mt-[1rem]"
             animation="200"
             ghost-class="drag-ghost"
           >
@@ -88,8 +88,7 @@ const saveOrder = () => {
           </draggable>
         </div>
 
-        <!-- 하단 저장 버튼 -->
-        <div class="pt-4">
+        <div class="pt-[1rem]">
           <danji-button variant="large" @click="saveOrder">저장하기</danji-button>
         </div>
       </div>

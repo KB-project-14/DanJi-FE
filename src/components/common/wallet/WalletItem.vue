@@ -15,7 +15,7 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="flex items-center justify-between px-6 py-5 rounded-xl shadow-sm"
+    class="flex items-center justify-between px-[1.5rem] py-[1.4rem] rounded-xl shadow-sm"
     :class="bgColorClass"
   >
     <!-- 지역화폐카드 이름 -->
@@ -25,11 +25,10 @@ const emit = defineEmits<{
     <div class="Head02 text-Black2">잔액 {{ balance.toLocaleString() }}원</div>
 
     <!-- 햄버거 (순서변경) -->
-    <div class="text-Black2 w-[20px] flex justify-end">
+    <div class="text-Black2 w-[4rem] flex justify-end">
       <Menu
         v-if="showMenu"
-        :size="20"
-        class="drag-handle cursor-grab"
+        class="drag-handle cursor-grab w-[2rem] h-[2rem]"
         @click.stop="emit('toggle-drag')"
       />
     </div>
