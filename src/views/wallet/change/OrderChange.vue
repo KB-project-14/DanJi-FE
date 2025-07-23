@@ -57,7 +57,7 @@ const saveOrder = () => {
           <div class="mb-4 Body04 text-Black2">지갑 순서를 바꿔보세요</div>
 
           <div class="flex flex-col gap-4 pb-6">
-            <WalletReorderItem
+            <wallet-reorder-item
               v-for="card in cards"
               :key="card.id"
               :name="card.name"
