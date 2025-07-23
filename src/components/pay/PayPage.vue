@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DanjiButton from '../common/button/DanjiButton.vue'
 import Layout from '../layout/Layout.vue'
+import PayModal from '@/components/common/modal/PayModal.vue'
 import checkboxSelected from '@/assets/icons/checkbox-activated.svg'
 import checkboxUnselected from '@/assets/icons/checkbox-inactivated.svg'
 import { ref } from 'vue'
@@ -9,11 +10,29 @@ import { ref } from 'vue'
 type PaymentType = 'local' | 'cash' | null
 
 const selectedPayment = ref<PaymentType>(null)
+const showModal = ref(false)
+
+// 실제로는 API 등에서 가져온 지역화폐 잔액
+const localBalance = ref(50000) // 예: 5만원
+const paymentAmount = ref(60000) // 예: 결제금액 6만원
 
 // 결제 방식 선택 함수 (라디오 버튼처럼 동작)
 const selectPayment = (type: PaymentType) => {
   selectedPayment.value = selectedPayment.value === type ? null : type
 }
+
+// 결제 버튼 클릭 함수
+const onClickPay = () => {
+  if (selectedPayment.value === 'local' && localBalance.value < paymentAmount.value) {
+    showModal.value = true
+    return
+  }
+}
+
+// 모달 닫기 함수 - 추가 필요시 사용
+// const closeModal = () => {
+//   showModal.value = false
+// }
 </script>
 <template>
   <Layout
@@ -98,10 +117,14 @@ const selectPayment = (type: PaymentType) => {
             </div>
           </div>
         </section>
-        <DanjiButton class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]"
+        <DanjiButton
+          class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]"
+          @click="onClickPay"
+          :disabled="selectedPayment === null"
           >결제하기</DanjiButton
         >
       </div>
+      <PayModal v-if="showModal" />
     </template>
   </Layout>
 </template>
