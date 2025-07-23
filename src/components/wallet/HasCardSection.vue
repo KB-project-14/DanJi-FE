@@ -104,7 +104,7 @@ onMounted(() => {
     </div>
 
     <!-- 혜택 안내 -->
-    <div class="Body04 text-Gray-5 px-4 w-full text-right pr-20">
+    <div class="Body04 text-Gray-4 px-4 w-full text-right pr-20">
       <span v-if="sortedCards[currentSlideIndex - 1]">
         {{ sortedCards[currentSlideIndex - 1].name }}의 혜택 :
         {{ sortedCards[currentSlideIndex - 1].benefit_type }}
