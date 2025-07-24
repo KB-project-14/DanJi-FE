@@ -37,6 +37,10 @@ const routes = [
     component: OrderChange,
   },
   {
+    path: '/qr',
+    component: QRPage,
+  },
+  {
     path: '/wallet/view',
     component: WalletView,
   },
