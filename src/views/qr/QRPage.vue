@@ -55,6 +55,7 @@ const startScan = async () => {
 
     if (devices.length === 0) {
       scanError.value = '카메라 장치를 찾을 수 없습니다.'
+      isScanning.value = false
       return
     }
 
