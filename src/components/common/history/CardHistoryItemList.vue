@@ -17,22 +17,46 @@ const props = defineProps<{
 }>()
 
 // 디폴트 값 (추후 API 연동 예정)
-const appliedFilter = ref({
+const appliedFilter = ref<{
+  period: string
+  type: string
+  order: string
+  startDate: Date | null
+  endDate: Date | null
+}>({
   period: '1개월',
   type: '전체',
   order: '최신순',
+  startDate: null,
+  endDate: null,
 })
 
 const isFilterOpen = ref(false)
 const openFilter = () => (isFilterOpen.value = true)
 const closeFilter = () => (isFilterOpen.value = false)
 
-const applyFilter = (filter: { period: string; type: string; order: string }) => {
+const applyFilter = (filter: {
+  period: string
+  type: string
+  order: string
+  startDate: Date | null
+  endDate: Date | null
+}) => {
   appliedFilter.value = filter
 }
 
 const filteredHistories = computed(() => {
   let list = [...props.histories]
+
+  // 날짜 필터링
+  if (appliedFilter.value.startDate && appliedFilter.value.endDate) {
+    const start = appliedFilter.value.startDate.getTime()
+    const end = appliedFilter.value.endDate.getTime()
+    list = list.filter((h) => {
+      const historyDate = new Date(h.createdAt).getTime()
+      return historyDate >= start && historyDate <= end
+    })
+  }
 
   // 거래 유형
   if (appliedFilter.value.type === '입금만') {
@@ -48,14 +72,6 @@ const filteredHistories = computed(() => {
     return appliedFilter.value.order === '최신순' ? dateB - dateA : dateA - dateB
   })
 
-  // 기간 필터링 (UI용 / 실제 API 연동 시 서버에서 처리 예정)
-  if (appliedFilter.value.period === '3개월') {
-    const threeMonthsAgo = new Date()
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
-    list = list.filter((h) => new Date(h.createdAt) >= threeMonthsAgo)
-  }
-  // 1개월, 직접 설정은 나중에 API 연동 시 처리
-
   return list
 })
 </script>
@@ -63,9 +79,8 @@ const filteredHistories = computed(() => {
 <template>
   <div class="flex flex-col">
     <!-- 상단 헤더 -->
-    <div class="flex justify-between items-center p-[1rem] pr-[1.4rem] pl-[1.4rem] bg-Gray-1">
-      <span class="text-Gray-7 Body00"> 이용내역</span>
-      <button class="flex items-center gap-1 Body02 text-Gray-5" @click="openFilter">
+    <div class="flex items-center p-[1rem] pr-[1.4rem] pl-[1.4rem] bg-Gray-1">
+      <button class="flex items-center gap-1 Body02 text-Gray-5 ml-auto" @click="openFilter">
         {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
         <ChevronDown class="w-[1.6rem] h-[1.6rem]" />
       </button>

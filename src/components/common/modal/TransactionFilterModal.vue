@@ -29,9 +29,23 @@ const selectPeriod = (label: '1개월' | '3개월' | '직접 입력', months?: n
   }
 }
 
+// 필터링 확인 누르고 갱신되는 값
 const confirmFilter = () => {
-  const periodText = `${startDate.value?.toLocaleDateString()} ~ ${endDate.value?.toLocaleDateString()}`
-  emit('confirm', { period: periodText, type: type.value, order: order.value })
+  let periodText = ''
+
+  if (period.value === '직접 입력') {
+    periodText = `${startDate.value?.toLocaleDateString()} ~ ${endDate.value?.toLocaleDateString()}`
+  } else {
+    periodText = period.value
+  }
+
+  emit('confirm', {
+    period: periodText,
+    type: type.value,
+    order: order.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
+  })
   emit('close')
 }
 </script>
@@ -72,7 +86,7 @@ const confirmFilter = () => {
           </button>
         </div>
 
-        <!-- 직접입력일 때만 날짜 입력 박스 노출 -->
+        <!-- 직접 설정일 때만 날짜 입력 박스 노출 -->
         <div v-if="period === '직접 입력'" class="flex items-center gap-2 mb-4">
           <!-- 시작일 -->
           <DatePicker
