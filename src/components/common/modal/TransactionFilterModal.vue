@@ -7,7 +7,8 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-const period = ref('3개월')
+// 디폴트값 설정
+const period = ref('1개월')
 const type = ref('전체')
 const order = ref('최신순')
 
@@ -19,12 +20,13 @@ onMounted(() => {
   })
 })
 
+// 필터링 모달 확인
 const confirmFilter = () => {
   emit('confirm', { period: period.value, type: type.value, order: order.value })
   emit('close')
 }
 
-// 색상 조건부 함수
+// 필터링 버튼 색상
 const getButtonClass = (isActive: boolean) =>
   isActive ? 'text-Black-1 bg-Gray-3' : 'text-Gray-7 bg-Gray-1'
 </script>

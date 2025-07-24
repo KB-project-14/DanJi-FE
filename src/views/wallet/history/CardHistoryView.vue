@@ -4,6 +4,7 @@ import Layout from '@/components/layout/Layout.vue'
 import CardHistoryItemList from '@/components/common/history/CardHistoryItemList.vue'
 import { CircleQuestionMark } from 'lucide-vue-next'
 
+// 카드 정보 더미데이터 (추후 API 연동 예정)
 const cardInfo = ref({
   name: '부산지역화폐',
   balance: 101000,
@@ -13,7 +14,7 @@ const cardInfo = ref({
   benefit_type: '인센티브',
   percentage: 7,
 })
-
+// 거래 내역 더미데이터 (추후 API 연동 예정)
 const transaction: {
   comment: string
   amount: number
@@ -72,7 +73,6 @@ onBeforeUnmount(() => {
     :showLeftIcon="true"
   >
     <template #content>
-      <!-- 카드 잔액 영역 -->
       <!-- 카드 잔액 영역 -->
       <div class="p-[3rem]">
         <div class="flex justify-between items-center mb-[2rem]">

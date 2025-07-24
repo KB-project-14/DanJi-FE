@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-vue-next'
 import CardHistoryItem from './CardHistoryItem.vue'
 import TransactionFilterModal from '../modal/TransactionFilterModal.vue'
 
+// 필터링 더미데이터 (추후 API 연동 예정)
 const props = defineProps<{
   histories: {
     comment: string
@@ -15,8 +16,9 @@ const props = defineProps<{
   }[]
 }>()
 
+// 디폴트 값 (추후 API 연동 예정)
 const appliedFilter = ref({
-  period: '3개월',
+  period: '1개월',
   type: '전체',
   order: '최신순',
 })
