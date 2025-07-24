@@ -61,10 +61,20 @@ onMounted(() => {
 
 // 확인 버튼
 const confirmFilter = () => {
-  const periodText =
-    period.value === '직접 입력'
-      ? `${startDate.value?.toLocaleDateString()} ~ ${endDate.value?.toLocaleDateString()}`
-      : period.value
+  let periodText = ''
+  const today = new Date()
+
+  if (period.value === '1개월') {
+    startDate.value = subMonths(today, 1)
+    endDate.value = today
+    periodText = '1개월'
+  } else if (period.value === '3개월') {
+    startDate.value = subMonths(today, 3)
+    endDate.value = today
+    periodText = '3개월'
+  } else {
+    periodText = `${startDate.value?.toLocaleDateString()} ~ ${endDate.value?.toLocaleDateString()}`
+  }
 
   emit('confirm', {
     period: periodText,

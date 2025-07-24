@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { subMonths } from 'date-fns'
 import { ChevronDown } from 'lucide-vue-next'
 import CardHistoryItem from './CardHistoryItem.vue'
 import TransactionFilterModal from '../modal/TransactionFilterModal.vue'
@@ -16,7 +17,12 @@ const props = defineProps<{
   }[]
 }>()
 
-// 디폴트 값 (추후 API 연동 예정)
+// 날짜 계산
+const today = new Date()
+const oneMonthAgo = subMonths(today, 1)
+const threeMonthsAgo = subMonths(today, 3)
+
+// 초기값 (추후 API 연동 예정)
 const appliedFilter = ref<{
   period: string
   type: string
@@ -27,8 +33,8 @@ const appliedFilter = ref<{
   period: '1개월',
   type: '전체',
   order: '최신순',
-  startDate: null,
-  endDate: null,
+  startDate: oneMonthAgo,
+  endDate: today,
 })
 
 const isFilterOpen = ref(false)
@@ -75,26 +81,22 @@ const filteredHistories = computed(() => {
   return list
 })
 </script>
-
 <template>
   <div class="flex flex-col">
-    <!-- 상단 헤더 -->
     <div class="flex items-center p-[1rem] pr-[1.4rem] pl-[1.4rem] bg-Gray-1">
-      <button class="flex items-center gap-1 Body02 text-Gray-5 ml-auto" @click="openFilter">
+      <button class="flex items-center ml-auto gap-1 Body02 text-Gray-5" @click="openFilter">
         {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
         <ChevronDown class="w-[1.6rem] h-[1.6rem]" />
       </button>
-      <!-- 필터 모달 -->
       <transaction-filter-modal
         v-if="isFilterOpen"
-        :initial-filter="appliedFilter"
+        :initialFilter="appliedFilter"
         @close="closeFilter"
         @confirm="applyFilter"
       />
     </div>
 
     <div class="p-[1rem] pr-[1.4rem] pl-[1.4rem]">
-      <!-- 거래 내역 리스트 -->
       <card-history-item
         v-for="(history, index) in filteredHistories"
         :key="index"

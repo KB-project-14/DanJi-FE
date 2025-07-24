@@ -48,10 +48,10 @@ const transaction: {
     createdAt: '2025-05-10T10:20:40',
   },
   {
-    comment: '단지',
-    amount: 500000,
+    comment: '단지카페',
+    amount: 100000,
     afterBalance: 501000,
-    direction: 'INCOME',
+    direction: 'EXPENSE',
     type: 'CHARGE',
     createdAt: '2025-04-18T10:20:40',
   },
