@@ -14,7 +14,14 @@ const cardInfo = ref({
   percentage: 7,
 })
 
-const transaction = [
+const transaction: {
+  comment: string
+  amount: number
+  afterBalance: number
+  direction: 'INCOME' | 'EXPENSE'
+  type: 'CHARGE' | 'REFUND' | 'CONVERT' | 'PAYMENT'
+  createdAt: string
+}[] = [
   {
     comment: '가맹점',
     amount: 10000,
