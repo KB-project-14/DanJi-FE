@@ -61,7 +61,7 @@ const cards = ref<Card[]>([
 <template>
   <Layout :header-type="'main'" header-title="메인" :is-bottom-nav="true">
     <template #content>
-      <div class="min-h-full bg-[#F3F4F7]">
+      <div class="min-h-full bg-background">
         <!-- 통합지갑 section -->
         <div class="flex justify-center pt-10">
           <div class="w-[270px]">
