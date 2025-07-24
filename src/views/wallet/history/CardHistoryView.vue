@@ -52,7 +52,7 @@ const transaction: {
     amount: 100000,
     afterBalance: 501000,
     direction: 'EXPENSE',
-    type: 'CHARGE',
+    type: 'PAYMENT',
     createdAt: '2025-04-18T10:20:40',
   },
   {
