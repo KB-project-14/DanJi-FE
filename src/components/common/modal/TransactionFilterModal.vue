@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, defineProps } from 'vue'
+import { ref, watch, defineProps, onMounted } from 'vue'
 import DatePicker from 'vue-datepicker-next'
 import 'vue-datepicker-next/index.css'
 import { subMonths } from 'date-fns'
@@ -29,18 +29,18 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-// 로컬 상태 (props 기반으로 초기화)
-const period = ref<'1개월' | '3개월' | '직접 입력'>(props.initialFilter.period as any)
+// 상태
+const period = ref<'1개월' | '3개월' | '직접 입력'>('1개월')
 const type = ref(props.initialFilter.type)
 const order = ref(props.initialFilter.order)
-const startDate = ref<Date | null>(props.initialFilter.startDate || new Date())
-const endDate = ref<Date | null>(props.initialFilter.endDate || new Date())
+const startDate = ref<Date | null>(null)
+const endDate = ref<Date | null>(null)
 
-// 버튼
+// 버튼 스타일
 const getButtonClass = (isActive: boolean) =>
   isActive ? 'text-Black-1 bg-Gray-3' : 'text-Gray-7 bg-Gray-1'
 
-// 기간 선택
+// 기간 선택 함수
 const selectPeriod = (label: '1개월' | '3개월' | '직접 입력', months?: number) => {
   period.value = label
   if (months) {
@@ -50,7 +50,16 @@ const selectPeriod = (label: '1개월' | '3개월' | '직접 입력', months?: n
   }
 }
 
-// 확인 버튼 눌러야만 필터링 적용
+// **모달 열릴 때 자동 초기화 → 항상 오늘 기준**
+onMounted(() => {
+  if (props.initialFilter.period === '3개월') {
+    selectPeriod('3개월', 3)
+  } else {
+    selectPeriod('1개월', 1)
+  }
+})
+
+// 확인 버튼
 const confirmFilter = () => {
   const periodText =
     period.value === '직접 입력'
@@ -100,7 +109,7 @@ const confirmFilter = () => {
       </button>
     </div>
 
-    <!--  DatePicker -->
+    <!-- 직접 설정일 때만 DatePicker 표시 -->
     <div v-if="period === '직접 입력'" class="flex items-center gap-2 mb-[0.8rem]">
       <DatePicker v-model:value="startDate" type="date" format="YYYY-MM-DD">
         <template #input>
