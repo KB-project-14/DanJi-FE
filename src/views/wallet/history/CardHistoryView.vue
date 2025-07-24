@@ -39,6 +39,14 @@ const transaction: {
     type: 'CHARGE',
     createdAt: '2025-07-18T10:20:40',
   },
+  {
+    comment: '단지',
+    amount: 500000,
+    afterBalance: 501000,
+    direction: 'INCOME',
+    type: 'CHARGE',
+    createdAt: '2025-05-18T10:20:40',
+  },
 ]
 const showTooltip = ref(false)
 const tooltipRef = ref<HTMLElement | null>(null)
