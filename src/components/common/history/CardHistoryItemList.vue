@@ -85,7 +85,12 @@ const filteredHistories = computed(() => {
         <ChevronDown class="w-[1.6rem] h-[1.6rem]" />
       </button>
       <!-- 필터 모달 -->
-      <transaction-filter-modal v-if="isFilterOpen" @close="closeFilter" @confirm="applyFilter" />
+      <transaction-filter-modal
+        v-if="isFilterOpen"
+        :initial-filter="appliedFilter"
+        @close="closeFilter"
+        @confirm="applyFilter"
+      />
     </div>
 
     <div class="p-[1rem] pr-[1.4rem] pl-[1.4rem]">
