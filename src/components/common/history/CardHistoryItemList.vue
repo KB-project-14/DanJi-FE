@@ -46,7 +46,7 @@ const filteredHistories = computed(() => {
     return appliedFilter.value.order === '최신순' ? dateB - dateA : dateA - dateB
   })
 
-  // 3) 기간 필터링 (UI용 / 실제 API 연동 시 서버에서 처리 예정)
+  // 기간 필터링 (UI용 / 실제 API 연동 시 서버에서 처리 예정)
   if (appliedFilter.value.period === '3개월') {
     const threeMonthsAgo = new Date()
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
@@ -59,14 +59,16 @@ const filteredHistories = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col p-[1.5rem]">
     <!-- 상단 헤더 -->
     <div class="flex justify-between items-center mb-3">
-      <span class="text-Gray-7 Body0"> 이용내역</span>
-      <button class="flex items-center gap-1 text-sm text-gray-500" @click="openFilter">
+      <span class="text-Gray-7 Body00"> 이용내역</span>
+      <button class="flex items-center gap-1 Body02 text-Gray-5" @click="openFilter">
         {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
-        <ChevronDown class="w-4 h-4" />
+        <ChevronDown class="w-[1.8rem] h-[1.8rem]" />
       </button>
+      <!-- 필터 모달 -->
+      <transaction-filter-modal v-if="isFilterOpen" @close="closeFilter" @confirm="applyFilter" />
     </div>
 
     <!-- 거래 내역 리스트 -->
@@ -80,8 +82,5 @@ const filteredHistories = computed(() => {
       :type="history.type"
       :createdAt="history.createdAt"
     />
-
-    <!-- 필터 모달 -->
-    <transaction-filter-modal v-if="isFilterOpen" @close="closeFilter" @confirm="applyFilter" />
   </div>
 </template>
