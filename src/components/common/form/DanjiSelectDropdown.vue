@@ -9,7 +9,7 @@
  *
  * @example 기본 사용법
  * ```vue
- * <danji-dropdown-options
+ * <danji-select-dropdown
  *   :model-value="selectedOption"
  *   :options="['서울', '부산', '대전']"
  *   @select="handleSelect"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { ChevronDown } from 'lucide-vue-next'
-import DanjiSelectDropDown from './DanjiSelectDropDown.vue'
+import DanjiSelectDropdown from './DanjiSelectDropdown.vue'
 
 /**
  * DanjiSelect - 기본 드롭다운 셀렉트 컴포넌트
@@ -107,7 +107,7 @@ onUnmounted(() => {
         leave-from-class="transform scale-100 opacity-100"
         leave-to-class="transform scale-95 opacity-0"
       >
-        <DanjiSelectDropDown
+        <danji-select-dropdown
           v-if="isOpen"
           :modelValue="modelValue"
           :options="options"

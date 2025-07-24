@@ -114,12 +114,12 @@ onMounted(async () => {
         >
           <!-- 지역 선택 -->
           <div>
-            <DanjiSelect v-model="selectedRegion" label="지역 선택:" :options="regionOptions" />
+            <danji-select v-model="selectedRegion" label="지역 선택:" :options="regionOptions" />
           </div>
 
           <!-- 화폐 선택 -->
           <div>
-            <DanjiSelect v-model="selectedCard" label="화폐 선택:" :options="cardOptions" />
+            <danji-select v-model="selectedCard" label="화폐 선택:" :options="cardOptions" />
 
             <!-- 혜택 정보 -->
             <div class="ms-[0.6rem] mt-[0.2rem] space-y-[0.4rem]">
@@ -134,7 +134,7 @@ onMounted(async () => {
           <!-- 비밀번호 입력 -->
           <div>
             <label class="block mb-[0.4rem] text-Black-1 Head02"> 비밀번호 </label>
-            <DanjiInput
+            <danji-input
               v-model="password"
               type="password"
               placeholder="지갑 비밀번호"
@@ -145,13 +145,13 @@ onMounted(async () => {
 
         <!-- 발급하기 버튼 -->
         <div class="mt-[2.6rem] flex justify-center">
-          <DanjiButton
+          <danji-button
             variant="large"
             :disabled="!selectedRegion || !selectedCard || !password"
             @click="handleSubmit"
           >
             발급하기
-          </DanjiButton>
+          </danji-button>
         </div>
       </div>
     </template>
