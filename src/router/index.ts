@@ -46,7 +46,8 @@ const routes = [
     component: LocalCardCreatePage,
   },
   {
-    path: '/wallet/card/create-detail',
+    path: '/wallet/card/create/:region/:city',
+    name: 'LocalCardCreateDetail',
     component: LocalCardCreateDetailPage,
   },
 ]
