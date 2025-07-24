@@ -41,24 +41,24 @@ const getButtonClass = (isActive: boolean) =>
     <div class="pr-[0.5rem] pl-[0.5rem]">
       <!-- 조회 기간 -->
       <div class="mb-[1.6rem]">
-        <p class="mb-[0.5rem] Black-2 Body04">조회 기간</p>
+        <p class="mb-[0.5rem] Black-2 Body03">조회 기간</p>
         <div class="flex gap-2">
           <button
-            class="flex-1 py-[1rem] rounded"
+            class="flex-1 py-[1rem] rounded Body04"
             :class="getButtonClass(period === '1개월')"
             @click="period = '1개월'"
           >
             1개월
           </button>
           <button
-            class="flex-1 py-[1rem] rounded"
+            class="flex-1 py-[1rem] rounded Body04"
             :class="getButtonClass(period === '3개월')"
             @click="period = '3개월'"
           >
             3개월
           </button>
           <button
-            class="flex-1 py-[1rem] rounded"
+            class="flex-1 py-[1rem] rounded Body04"
             :class="getButtonClass(period === '직접 설정')"
             @click="period = '직접 설정'"
           >
@@ -69,24 +69,24 @@ const getButtonClass = (isActive: boolean) =>
 
       <!-- 거래 유형 -->
       <div class="mb-[1.6rem]">
-        <p class="mb-[0.5rem] Black-2 Body04">거래 유형</p>
+        <p class="mb-[0.5rem] Black-2 Body03">거래 유형</p>
         <div class="flex gap-2">
           <button
-            class="flex-1 py-[1rem] rounded"
+            class="flex-1 py-[1rem] rounded Body04"
             :class="getButtonClass(type === '전체')"
             @click="type = '전체'"
           >
             전체
           </button>
           <button
-            class="flex-1 py-[1rem] rounded"
+            class="flex-1 py-[1rem] rounded Body04"
             :class="getButtonClass(type === '입금만')"
             @click="type = '입금만'"
           >
             입금만
           </button>
           <button
-            class="flex-1 py-[1rem] rounded"
+            class="flex-1 py-[1rem] rounded Body04"
             :class="getButtonClass(type === '출금만')"
             @click="type = '출금만'"
           >
@@ -97,17 +97,17 @@ const getButtonClass = (isActive: boolean) =>
 
       <!-- 정렬 -->
       <div class="mb-[1.6rem]">
-        <p class="mb-[0.5rem] Black-2 Body04">거래내역 정렬</p>
+        <p class="mb-[0.5rem] Black-2 Body03">거래내역 정렬</p>
         <div class="flex gap-2">
           <button
-            class="flex-1 py-[1rem] rounded"
+            class="flex-1 py-[1rem] rounded Body04"
             :class="getButtonClass(order === '최신순')"
             @click="order = '최신순'"
           >
             최신순
           </button>
           <button
-            class="flex-1 py-[1rem] rounded"
+            class="flex-1 py-[1rem] rounded Body04"
             :class="getButtonClass(order === '오래된 순')"
             @click="order = '오래된 순'"
           >
