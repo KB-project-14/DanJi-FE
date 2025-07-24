@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import CardHistoryItemList from '@/components/common/history/CardHistoryItemList.vue'
+import { CircleQuestionMark } from 'lucide-vue-next'
 
 const cardInfo = ref({
   name: '부산지역화폐',
@@ -9,6 +10,8 @@ const cardInfo = ref({
   benefit: 10000,
   maximum: 500000,
   chargedThisMonth: 100000,
+  benefit_type: '인센티브',
+  percentage: 7,
 })
 
 const transaction = [
@@ -29,6 +32,29 @@ const transaction = [
     createdAt: '2025-07-18T10:20:40',
   },
 ]
+const showTooltip = ref(false)
+const tooltipRef = ref<HTMLElement | null>(null)
+const iconRef = ref<HTMLElement | null>(null)
+
+const handleClickOutside = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (
+    tooltipRef.value &&
+    !tooltipRef.value.contains(target) &&
+    iconRef.value &&
+    !iconRef.value.contains(target)
+  ) {
+    showTooltip.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <template>
@@ -43,17 +69,35 @@ const transaction = [
       <!-- 카드 잔액 영역 -->
       <div class="p-[3rem]">
         <div class="flex justify-between items-center mb-[2rem]">
-          <!-- 왼쪽: 카드 정보 -->
+          <!-- 카드 정보 -->
           <div>
             <p class="Body04 text-Black-2">{{ cardInfo.name }}</p>
             <p class="Head0 text-Black-2">{{ cardInfo.balance.toLocaleString() }} 원</p>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 relative">
               <p class="Body01 text-Black-2">이번 달 혜택 :</p>
               <p class="Body01 text-Blue-0">{{ cardInfo.benefit.toLocaleString() }}원</p>
+
+              <!-- 툴팁 아이콘 -->
+              <CircleQuestionMark
+                ref="iconRef"
+                class="w-[1.2rem] h-[1.2rem] text-Gray-5 cursor-pointer"
+                @click.stop="showTooltip = !showTooltip"
+              />
+
+              <!-- 툴팁 : 문구 너비만큼 유동적 -->
+              <div
+                v-if="showTooltip"
+                ref="tooltipRef"
+                @click.stop
+                class="absolute rounded-md shadow z-50 top-full left-0 mt-[0.5rem] p-[1rem] w-max bg-Black-2 text-White-0 Body04"
+              >
+                이번달 {{ cardInfo.name }}의 {{ cardInfo.benefit_type }}은
+                {{ cardInfo.percentage }} %입니다.
+              </div>
             </div>
           </div>
 
-          <!-- 오른쪽: 카드 이미지 -->
+          <!-- 카드 이미지 -->
           <div
             class="relative w-[10rem] aspect-[1000/1586] rounded-xl bg-cover bg-center border border-Gray-3"
             :style="{ backgroundImage: `url('/images/sample-card.png')` }"
