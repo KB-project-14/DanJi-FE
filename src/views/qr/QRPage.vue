@@ -81,6 +81,8 @@ const startScan = async () => {
     )
   } catch (err) {
     console.error(err)
+    scanError.value = '카메라 접근 권한이 필요합니다.'
+    isScanning.value = false
   }
 }
 
@@ -164,7 +166,17 @@ const gradientEndColor = ref('#38bdf8')
             v-show="selectedPayment === 'qr'"
             class="absolute inset-0 flex flex-col items-center w-full h-full z-10 pt-[6rem]"
           >
-            <video ref="videoRef" class="w-full h-full bg-Gray-4 object-cover" autoplay></video>
+            <video
+              ref="videoRef"
+              class="w-full h-full bg-Gray-4 object-cover"
+              autoplay
+              muted
+              playsinline
+            ></video>
+            <!-- 에러 메시지 표시 -->
+            <div v-if="scanError" class="absolute top-20 bg-red-500 text-white px-4 py-2 rounded">
+              {{ scanError }}
+            </div>
 
             <!-- 오버레이 (가이드 영역) -->
             <div
