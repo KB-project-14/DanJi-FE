@@ -10,6 +10,7 @@ import OrderChange from '@/views/wallet/change/OrderChange.vue'
 import WalletView from '@/views/wallet/home/WalletView.vue'
 import LocalCardCreatePage from '@/views/wallet/create/LocalCardCreatePage.vue'
 import { Component } from 'lucide-vue-next'
+import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 
 const routes = [
   {
@@ -47,6 +48,11 @@ const routes = [
   {
     path: '/wallet/card/create',
     component: LocalCardCreatePage,
+  },
+  {
+    path: '/wallet/card/create/:region/:city',
+    name: 'LocalCardCreateDetail',
+    component: LocalCardCreateDetailPage,
   },
 ]
 
