@@ -22,7 +22,7 @@ const goToCardRemove = () => {
       <div class="flex flex-col bg-White-1">
         <!-- 비밀번호 수정 -->
         <div
-          class="flex justify-between items-center py-[2rem] px-[2rem]"
+          class="flex justify-between items-center py-[2rem] px-[2.4rem]"
           @click="goToPasswordChange"
         >
           <span class="Body00 text-Black-1">비밀번호 수정</span>
@@ -30,7 +30,10 @@ const goToCardRemove = () => {
         </div>
 
         <!-- 카드 해지 -->
-        <div class="flex justify-between items-center py-[2rem] px-[2rem]" @click="goToCardRemove">
+        <div
+          class="flex justify-between items-center py-[2rem] px-[2.4rem]"
+          @click="goToCardRemove"
+        >
           <span class="Body00 text-Black-1">카드 해지</span>
           <ChevronRight class="w-[1.2rem] y-[1.2rem] text-Gray-5" />
         </div>
