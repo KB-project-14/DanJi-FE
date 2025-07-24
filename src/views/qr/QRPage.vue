@@ -29,8 +29,14 @@ const selectPayment = async (type: PaymentType) => {
 
   if (type === 'qr') {
     // QR스캔 탭 선택 시 카메라 스캔 시작
-    await nextTick()
-    await startScan()
+    try {
+      // QR스캔 탭 선택 시 카메라 스캔 시작
+      await nextTick()
+      await startScan()
+    } catch (error) {
+      console.error('QR 스캔 시작 중 오류:', error)
+      scanError.value = 'QR 스캔을 시작할 수 없습니다.'
+    }
   } else {
     // 현장결제 탭 선택 시 스캔 중지
     stopScan()
