@@ -115,25 +115,25 @@ const gradientStartColor = ref('#000000')
 const gradientEndColor = ref('#38bdf8')
 </script>
 <template>
-  <Layout :header-type="'pay'" :is-bottom-nav="false">
+  <layout :header-type="'pay'" :is-bottom-nav="false">
     <template #content>
       <div class="w-full h-full bg-Gray-0">
         <section class="relative z-20 flex items-center justify-center pt-[1.6rem] col gap-[1rem]">
-          <DanjiChip
+          <danji-chip
             class="w-[14.9rem] h-[4.6rem] text-Head04"
             :is-icon="false"
             :is-active="selectedPayment === 'field'"
             @click="selectPayment('field')"
           >
-            현장결제</DanjiChip
+            현장결제</danji-chip
           >
-          <DanjiChip
+          <danji-chip
             class="w-[14.9rem] h-[4.6rem] text-Head04"
             :is-icon="false"
             :is-active="selectedPayment === 'qr'"
             @click="selectPayment('qr')"
           >
-            QR스캔</DanjiChip
+            QR스캔</danji-chip
           >
         </section>
 
@@ -180,6 +180,6 @@ const gradientEndColor = ref('#38bdf8')
         </div>
       </div>
     </template>
-  </Layout>
+  </layout>
 </template>
 <style scoped></style>
