@@ -4,6 +4,7 @@ import DanjiChip from '@/components/common/chip/DanjiChip.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
 import { ref } from 'vue'
+import router from '@/router'
 
 const isModalVisible = ref<boolean>(false)
 const selectedRegion = ref<string>('경상북도')
@@ -17,6 +18,16 @@ const handleModalConfirm = (region: string, city: string): void => {
   selectedRegion.value = region
   selectedCity.value = city
   isModalVisible.value = false
+}
+
+const handleCardCreateConfirm = (): void => {
+  router.push({
+    name: 'LocalCardCreateDetail',
+    params: {
+      region: selectedRegion.value,
+      city: selectedCity.value,
+    },
+  })
 }
 </script>
 
@@ -72,7 +83,7 @@ const handleModalConfirm = (region: string, city: string): void => {
 
       <!-- 하단 버튼 -->
       <div class="flex justify-center mt-[1.6rem]">
-        <danji-button variant="large">발급하기</danji-button>
+        <danji-button variant="large" @click="handleCardCreateConfirm">발급하기</danji-button>
       </div>
     </template>
   </layout>
