@@ -6,7 +6,16 @@ import { subMonths } from 'date-fns'
 import DanjiButton from '../button/DanjiButton.vue'
 
 const emit = defineEmits<{
-  (e: 'confirm', filter: { period: string; type: string; order: string }): void
+  (
+    e: 'confirm',
+    filter: {
+      period: string
+      type: string
+      order: string
+      startDate: Date | null
+      endDate: Date | null
+    },
+  ): void
   (e: 'close'): void
 }>()
 
