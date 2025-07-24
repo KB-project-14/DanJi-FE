@@ -59,28 +59,30 @@ const filteredHistories = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col p-[1.5rem]">
+  <div class="flex flex-col">
     <!-- 상단 헤더 -->
-    <div class="flex justify-between items-center mb-3">
+    <div class="flex justify-between items-center p-[1rem] pr-[1.4rem] pl-[1.4rem] bg-Gray-1">
       <span class="text-Gray-7 Body00"> 이용내역</span>
       <button class="flex items-center gap-1 Body02 text-Gray-5" @click="openFilter">
         {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
-        <ChevronDown class="w-[1.8rem] h-[1.8rem]" />
+        <ChevronDown class="w-[1.6rem] h-[1.6rem]" />
       </button>
       <!-- 필터 모달 -->
       <transaction-filter-modal v-if="isFilterOpen" @close="closeFilter" @confirm="applyFilter" />
     </div>
 
-    <!-- 거래 내역 리스트 -->
-    <card-history-item
-      v-for="(history, index) in filteredHistories"
-      :key="index"
-      :comment="history.comment"
-      :amount="history.amount"
-      :afterBalance="history.afterBalance"
-      :direction="history.direction"
-      :type="history.type"
-      :createdAt="history.createdAt"
-    />
+    <div class="p-[1rem] pr-[1.4rem] pl-[1.4rem]">
+      <!-- 거래 내역 리스트 -->
+      <card-history-item
+        v-for="(history, index) in filteredHistories"
+        :key="index"
+        :comment="history.comment"
+        :amount="history.amount"
+        :afterBalance="history.afterBalance"
+        :direction="history.direction"
+        :type="history.type"
+        :createdAt="history.createdAt"
+      />
+    </div>
   </div>
 </template>

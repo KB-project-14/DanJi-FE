@@ -21,7 +21,7 @@ const getAmountColor = (direction: string) => {
 }
 </script>
 <template>
-  <div class="flex flex-col py-[1.2rem] border-b border-Gray-1">
+  <div class="flex flex-col py-[1.6rem] border-b border-Gray-1">
     <!-- 상호명 + 결제 금액 -->
     <div class="flex justify-between pb-[0.5rem] items-center">
       <span class="Head02 text-Black2">{{ comment }}</span>

@@ -11,7 +11,7 @@ const transaction = [
     afterBalance: 91000,
     direction: 'EXPENSE',
     type: 'PAYMENT',
-    createdAt: '2025-07-18T10:20:40',
+    createdAt: '2025-07-20T10:30:40',
   },
   {
     comment: '단지',
