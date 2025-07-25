@@ -6,10 +6,11 @@ import PayModal from '@/components/common/modal/LocalPayFailModal.vue'
 import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import MypagePage from '@/views/mypage/MypagePage.vue'
 import HomePage from '@/views/wallet/home/HomePage.vue'
-import OrderChange from '@/views/wallet/change/OrderChange.vue'
-import WalletView from '@/views/wallet/home/WalletView.vue'
+import OrderChangePage from '@/views/wallet/change/OrderChangePage.vue'
+import WalletPage from '@/views/wallet/home/WalletPage.vue'
 import LocalCardCreatePage from '@/views/wallet/create/LocalCardCreatePage.vue'
-import CardHistoryView from '@/views/wallet/history/CardHistoryView.vue'
+import CardHistoryPage from '@/views/wallet/history/CardHistoryPage.vue'
+import CardSettingPage from '@/views/wallet/history/CardSettingPage.vue'
 import { Component } from 'lucide-vue-next'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 
@@ -36,7 +37,7 @@ const routes = [
   },
   {
     path: '/order',
-    component: OrderChange,
+    component: OrderChangePage,
   },
   {
     path: '/qr',
@@ -44,7 +45,7 @@ const routes = [
   },
   {
     path: '/wallet/view',
-    component: WalletView,
+    component: WalletPage,
   },
   {
     path: '/wallet/card/create',
@@ -52,7 +53,11 @@ const routes = [
   },
   {
     path: '/card/history',
-    component: CardHistoryView,
+    component: CardHistoryPage,
+  },
+  {
+    path: '/card/setting',
+    component: CardSettingPage,
   },
   {
     path: '/wallet/card/create/:region/:city',
