@@ -83,6 +83,7 @@ const setAmount = (val: number) => {
 
 // 충전하기 버튼 클릭 시
 const handleCharge = () => {
+  // 유효성 체크
   if (isDisabled.value) {
     if (!isHundredUnit.value) {
       alert('100원 단위로 입력해주세요.')
@@ -92,11 +93,12 @@ const handleCharge = () => {
     return
   }
 
-  // 실패 조건
-  if (amount.value + fee.value > walletCurrentBalance.value) {
-    // 실패 페이지로 이동
+  const totalCost = Math.floor(amount.value + fee.value)
+
+  // 실패 조건: 총 결제 금액 > 통합지갑 잔액
+  if (totalCost > walletCurrentBalance.value) {
     router.push({
-      name: 'ChargeComplete',
+      name: 'ChargeCompletePage',
       query: { success: 'false' },
     })
     return
@@ -104,23 +106,16 @@ const handleCharge = () => {
 
   // 성공 로직
   cardInfo.value.balance += amount.value + incentive.value
-  walletCurrentBalance.value -= amount.value + fee.value
+  walletCurrentBalance.value -= totalCost
+
+  // 입력값 초기화
   amount.value = 0
 
   // 성공 페이지로 이동
   router.push({
-    name: 'ChargeComplete',
+    name: 'ChargeCompletePage',
     query: { success: 'true' },
   })
-
-  // 지역화폐 잔액 업데이트
-  cardInfo.value.balance += amount.value + incentive.value
-
-  // 통합지갑 잔액 차감
-  walletCurrentBalance.value -= amount.value + fee.value
-
-  // 금액 입력 초기화
-  amount.value = 0
 }
 </script>
 
@@ -133,7 +128,7 @@ const handleCharge = () => {
   >
     <template #content>
       <!-- 전체 flex 레이아웃 -->
-      <div class="flex flex-col h-full px-[1.6rem] py-[1.8rem] bg-Background">
+      <div class="flex flex-col h-full px-[1.6rem] py-[1.6rem] bg-Background">
         <!-- 상단 내용 영역 -->
         <div class="flex-1 overflow-y-auto">
           <!-- 충전 금액 섹션 -->
@@ -183,7 +178,7 @@ const handleCharge = () => {
             </div>
 
             <!-- 혜택 계산 -->
-            <div class="space-y-[0.4rem] Body03 mt-[1.2rem]">
+            <div class="space-y-[0.4rem] mt-[1.2rem] Body03">
               <p>
                 예상 수수료(1%):
                 <span class="text-Yellow-0">{{ fee.toLocaleString() }}원</span>
