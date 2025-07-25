@@ -74,7 +74,7 @@ const handleCharge = () => {
     return
   }
   console.log('충전 실행', amount.value)
-  // API 연동 시 cardInfo.value.balance 업데이트
+  // API 연동 예정
 }
 </script>
 
@@ -87,7 +87,7 @@ const handleCharge = () => {
   >
     <template #content>
       <!-- 전체 flex 레이아웃 -->
-      <div class="flex flex-col h-full px-[1.4rem] py-[2rem] bg-Background">
+      <div class="flex flex-col h-full px-[1.6rem] py-[1.8rem] bg-Background">
         <!-- 상단 내용 영역 -->
         <div class="flex-1 overflow-y-auto">
           <!-- 충전 금액 섹션 -->
