@@ -13,7 +13,7 @@ const onRightClick = () => emits('right-click')
     <div class="Head0 flex-1 pl-3">단지Pay</div>
 
     <!-- 오른쪽 닫기 아이콘 -->
-    <div class="cursor-pointer" @click="$emit('right-click')">
+    <div class="cursor-pointer" @click="onRightClick">
       <XCircle :size="24" class="text-Gray-5" />
     </div>
   </div>
