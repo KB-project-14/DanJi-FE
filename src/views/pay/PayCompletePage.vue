@@ -13,7 +13,7 @@ const handlePayment = () => {
 }
 </script>
 <template>
-  <Layout :header-type="'basic'" :header-title="'결제하기'" :is-bottom-nav="false">
+  <layout :header-type="'basic'" :header-title="'결제하기'" :is-bottom-nav="false">
     <template #content>
       <div class="relative flex flex-col items-center h-full px-[2rem] pt-[6rem] bg-Gray-0">
         <!-- 결제 성공 -->
@@ -31,6 +31,6 @@ const handlePayment = () => {
         >
       </div>
     </template>
-  </Layout>
+  </layout>
 </template>
 <style scoped></style>
