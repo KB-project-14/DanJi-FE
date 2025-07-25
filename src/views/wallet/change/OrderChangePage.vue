@@ -50,11 +50,12 @@ const saveOrder = () => {
 </script>
 
 <template>
-  <layout
-    :header-type="'basic'"
-    :header-title="'순서변경'"
+  <Layout
+    :header-type="'setting'"
+    :header-title="'설정'"
+    :show-left-icon="true"
+    :show-right-icon="true"
     :is-bottom-nav="false"
-    :showLeftIcon="true"
   >
     <template #content>
       <div class="flex flex-col h-full px-[1.5rem] py-[2rem] bg-background">
@@ -93,7 +94,7 @@ const saveOrder = () => {
         </div>
       </div>
     </template>
-  </layout>
+  </Layout>
 </template>
 
 <style scoped>

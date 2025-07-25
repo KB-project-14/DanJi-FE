@@ -19,10 +19,12 @@ interface Card {
 
 const router = useRouter()
 
+// 통합 지갑 선택시 총자산보기 페이지 이동
 const goWalletPage = () => {
   router.push('/wallet/view')
 }
 
+// 충전 버튼 선택시 충전하기 페이지 이동
 const goChangePage = () => {
   router.push('/card/charge')
 }

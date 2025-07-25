@@ -120,11 +120,12 @@ const handleCharge = () => {
 </script>
 
 <template>
-  <Layout
+  <layout
     :header-type="'basic'"
-    :header-title="'충전하기'"
+    :header-title="'결제하기'"
+    :show-right-icon="true"
     :is-bottom-nav="false"
-    :showLeftIcon="true"
+    @right-click="router.push('/home')"
   >
     <template #content>
       <!-- 전체 flex 레이아웃 -->
@@ -237,5 +238,5 @@ const handleCharge = () => {
         </div>
       </div>
     </template>
-  </Layout>
+  </layout>
 </template>

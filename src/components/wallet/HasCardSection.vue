@@ -18,7 +18,7 @@ interface Card {
 const router = useRouter()
 
 const orderCardPage = () => {
-  router.push('/wallet/view')
+  router.push('/order')
 }
 
 // props로 cards 받기
