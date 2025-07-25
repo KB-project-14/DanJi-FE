@@ -6,18 +6,16 @@ import DanjiButton from '@/components/common/button/DanjiButton.vue'
 // 지역화폐 정보 - 추후 API 연동 예정
 const cardInfo = ref({
   name: '동백전',
-  balance: 0,
+  balance: 1000,
   benefit: 10000,
   maximum: 500000,
   chargedThisMonth: 100000,
   benefit_type: '인센티브',
   percentage: 10,
 })
-// 통합지갑 잔액 - 추후 API 연동 예정
-const walletBalance = ref(200000)
 
 // 충전할 금액
-const amount = ref<number | null>(null)
+const amount = ref<number>(0)
 
 // 금액 포맷 (콤마 + 원)
 const formattedAmount = computed(() => {
@@ -32,7 +30,7 @@ const isHundredUnit = computed(() => {
 // input 입력 시 숫자만 저장
 const handleInput = (e: Event) => {
   const target = e.target as HTMLInputElement
-  amount.value = parseInt(target.value.replace(/[^0-9]/g, ''), 10) || null
+  amount.value = parseInt(target.value.replace(/[^0-9]/g, ''), 10) || 0
 }
 
 // focus 시 숫자만 보여주기
@@ -52,7 +50,7 @@ const fee = computed(() => (amount.value ? amount.value * 0.01 : 0))
 
 // 인센티브
 const incentive = computed(() =>
-  amount.value ? amount.value * (cardInfo.value.percentage / 100) : 0,
+  amount.value > 0 ? amount.value * (cardInfo.value.percentage / 100) : 0,
 )
 
 // 실제 결제 금액 (통합지갑에서 빠질 금액)
@@ -60,7 +58,6 @@ const actualCharge = computed(() => (amount.value ? amount.value + fee.value : 0
 
 // 충전 후 지역화폐 잔액
 const localCurrencyAfterCharge = computed(() => {
-  if (!amount.value) return cardInfo.value.balance
   return cardInfo.value.balance + amount.value + incentive.value
 })
 
