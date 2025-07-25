@@ -87,7 +87,7 @@ const cards = ref<Card[]>([
         <!-- 버튼 -->
         <div class="flex justify-center gap-10">
           <danji-button variant="small" @click="goChangePage">충전</danji-button>
-          <danji-button variant="small">전환</danji-button>
+          <danji-button variant="small">환전</danji-button>
         </div>
       </div>
     </template>
