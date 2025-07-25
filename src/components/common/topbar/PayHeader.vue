@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { XCircle } from 'lucide-vue-next'
-</script>
 
+const emits = defineEmits<{
+  (e: 'right-click'): void
+}>()
+
+const onRightClick = () => emits('right-click')
+</script>
 <template>
   <div class="flex items-center bg-white px-3 h-[7.2rem]">
     <!-- 왼쪽 텍스트 -->

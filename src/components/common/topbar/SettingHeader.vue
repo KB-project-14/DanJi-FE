@@ -2,14 +2,15 @@
 import '@/assets/styles/main.css'
 import { defineProps, defineEmits } from 'vue'
 import { ChevronLeft, Settings } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = withDefaults(
   defineProps<{
     title: string
     showLeftIcon?: boolean
     showRightIcon?: boolean
-    emitLeftClick?: () => void
-    emitRightClick?: () => void
   }>(),
   {
     showLeftIcon: false,
@@ -23,7 +24,12 @@ const emits = defineEmits<{
 }>()
 
 const onLeftClick = () => emits('left-click')
-const onRightClick = () => emits('right-click')
+
+// SettingHeader에서 설정 아이콘 클릭 시
+const onRightClick = () => {
+  emits('right-click')
+  router.push('/card/setting')
+}
 </script>
 
 <template>

@@ -13,8 +13,6 @@ interface HeaderWithTitle {
   headerTitle: string
   showLeftIcon?: boolean
   showRightIcon?: boolean
-  emitLeftIconClick?: () => void
-  emitRightIconClick?: () => void
 }
 
 interface PayHeaderProps {
