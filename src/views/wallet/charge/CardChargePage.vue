@@ -3,8 +3,19 @@ import { ref, computed } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 
-const amount = ref<number | null>(null) // 충전 금액
-const balance = ref(500000) // 현재 잔액
+// 더미 데이터
+const cardInfo = ref({
+  name: '부산지역화폐',
+  balance: 101000, // 현재 잔액
+  benefit: 10000, // 이번 달 적립 혜택
+  maximum: 500000, // 월 충전 한도
+  chargedThisMonth: 100000, // 이번 달 충전액
+  benefit_type: '인센티브', // 혜택 유형
+  percentage: 7, // 인센티브 비율 (%)
+})
+
+// 충전할 금액
+const amount = ref<number | null>(null)
 
 // 금액 포맷 (콤마 + 원)
 const formattedAmount = computed(() => {
@@ -34,13 +45,15 @@ const handleBlur = (e: Event) => {
   target.value = formattedAmount.value
 }
 
-// 계산
+// 예상 수수료 / 인센티브 / 결제 금액 계산
 const fee = computed(() => (amount.value ? amount.value * 0.01 : 0))
-const incentive = computed(() => (amount.value ? amount.value * 0.1 : 0))
+const incentive = computed(() =>
+  amount.value ? amount.value * (cardInfo.value.percentage / 100) : 0,
+)
 const total = computed(() => (amount.value ? amount.value - fee.value : 0))
 
 // 충전 후 잔액
-const afterBalance = computed(() => balance.value + (amount.value || 0))
+const afterBalance = computed(() => cardInfo.value.balance + (amount.value || 0))
 
 // 버튼 활성화 여부
 const isDisabled = computed(() => !amount.value || amount.value < 10000 || !isHundredUnit.value)
@@ -50,7 +63,7 @@ const setAmount = (val: number) => {
   amount.value = val
 }
 
-// 저장하기(충전하기) 클릭 시
+// 충전하기 버튼 클릭 시
 const handleCharge = () => {
   if (isDisabled.value) {
     if (!isHundredUnit.value) {
@@ -61,7 +74,7 @@ const handleCharge = () => {
     return
   }
   console.log('충전 실행', amount.value)
-  // API 호출 or 다음 페이지 이동 로직
+  // API 연동 시 cardInfo.value.balance 업데이트
 }
 </script>
 
@@ -73,17 +86,18 @@ const handleCharge = () => {
     :showLeftIcon="true"
   >
     <template #content>
-      <div class="flex flex-col h-full px-[1.6rem] py-[2rem] bg-background">
+      <!-- 전체 flex 레이아웃 -->
+      <div class="flex flex-col h-full px-[1.4rem] py-[2rem] bg-Background">
         <!-- 상단 내용 영역 -->
         <div class="flex-1 overflow-y-auto">
           <!-- 충전 금액 섹션 -->
           <section class="mb-[2rem] rounded-xl border border-Gray-2 bg-white p-[1.6rem]">
             <h2 class="mb-[1.2rem] Head02">
               충전할 금액
-              <span class="text-Gray-4 Body04"> (최소 10,000원 이상 / 100원 단위 충전 가능) </span>
+              <span class="text-Gray-4 Body04">(최소 10,000원 이상 / 100원 단위 충전 가능)</span>
             </h2>
 
-            <!-- 5/10/20만원 버튼 -->
+            <!-- 금액 버튼 -->
             <div class="flex gap-[0.8rem] mb-[1.2rem] Body03">
               <button
                 class="flex-1 py-[1rem] rounded-lg border border-Gray-3"
@@ -116,20 +130,20 @@ const handleCharge = () => {
                 @focus="handleFocus"
                 @blur="handleBlur"
               />
-              <!-- 충전 금액 경고 문구 -->
+              <!-- 경고 문구 -->
               <p v-if="amount && !isHundredUnit" class="mt-[0.4rem] text-Red-0 Body04">
                 100원 단위로 입력해주세요.
               </p>
             </div>
 
-            <!-- 혜택 계산  -->
+            <!-- 혜택 계산 -->
             <div class="space-y-[0.4rem] Body03 mt-[1.2rem]">
               <p>
                 예상 수수료(1%):
                 <span class="text-Yellow-0">{{ fee.toLocaleString() }}원</span>
               </p>
               <p>
-                인센티브(10%):
+                인센티브({{ cardInfo.percentage }}%):
                 <span class="text-Yellow-0">{{ incentive.toLocaleString() }}원</span>
               </p>
               <p>
@@ -139,18 +153,18 @@ const handleCharge = () => {
             </div>
           </section>
 
-          <!-- 통합 지갑에서 충전 -->
+          <!-- 충전 후 잔액 -->
           <section class="mb-[2rem] p-[1.6rem] rounded-xl border border-Gray-2 bg-White-1">
-            <h2 class="mb-[1rem] Head02">통합 지갑에서 충전</h2>
+            <div class="mb-[1rem] Head02">충전 후 잔액</div>
 
             <div class="p-[1rem] mb-[1.2rem] border border-Gray-2 rounded-lg Body02 text-right">
               {{ (amount || 0).toLocaleString() }}원
             </div>
 
-            <div class="space-y-[0.4rem]">
-              <p class="flex justify-between">
+            <div class="space-y-[1.6rem] p-[1.3rem] rounded-xl Body03 bg-Gray-0">
+              <p class="flex justify-between pb-[1.2rem] border-b border-Gray-2">
                 <span>현재 잔액:</span>
-                <span>{{ balance.toLocaleString() }}원</span>
+                <span>{{ cardInfo.balance.toLocaleString() }}원</span>
               </p>
               <p class="flex justify-between">
                 <span>충전 후 잔액:</span>
@@ -160,7 +174,7 @@ const handleCharge = () => {
           </section>
         </div>
 
-        <!-- 충전 버튼  -->
+        <!-- 하단 버튼 -->
         <div class="pt-[1rem]">
           <danji-button
             variant="large"
