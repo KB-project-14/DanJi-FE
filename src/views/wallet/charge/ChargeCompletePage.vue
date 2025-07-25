@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
 
 import Layout from '@/components/layout/Layout.vue'
@@ -8,15 +8,17 @@ import ChargeSuccess from '@/components/wallet/modal/ChargeSuccess.vue'
 import ChargeFail from '@/components/wallet/modal/ChargeFail.vue'
 
 const route = useRoute()
+const router = useRouter()
+
 const chargeSuccess = computed(() => route.query.success === 'true')
 
 const goWallet = () => {
-  // 라우터 사용 시
-  // router.push('/wallet')
-  console.log('지갑으로 이동')
+  // 지갑으로 이동
+  router.push('/home')
 }
 const retryCharge = () => {
-  console.log('재충전 ')
+  // 전 페이지로 이동
+  router.back()
 }
 </script>
 
