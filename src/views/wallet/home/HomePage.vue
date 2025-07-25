@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
@@ -14,6 +15,12 @@ interface Card {
   order: number
   benefit_type: string
   percentage: number
+}
+
+const router = useRouter()
+
+const goWalletPage = () => {
+  router.push('/wallet/view')
 }
 
 const hasCard = true
@@ -63,7 +70,7 @@ const cards = ref<Card[]>([
     <template #content>
       <div class="min-h-full bg-Background">
         <!-- 통합지갑 section -->
-        <div class="flex justify-center pt-10">
+        <div class="flex justify-center pt-10" @click="goWalletPage">
           <div class="w-[270px]">
             <TotalWallet :wallet-amount="82000" :total-asset="582000" />
           </div>
