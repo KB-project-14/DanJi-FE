@@ -33,7 +33,8 @@ const isHundredUnit = computed(() => {
 // input 입력 시 숫자만 저장
 const handleInput = (e: Event) => {
   const target = e.target as HTMLInputElement
-  amount.value = parseInt(target.value.replace(/[^0-9]/g, ''), 10) || 0
+  const numericValue = target.value.replace(/[^0-9]/g, '')
+  amount.value = numericValue ? parseInt(numericValue, 10) : 0
 }
 
 // focus 시 숫자만 보여주기
