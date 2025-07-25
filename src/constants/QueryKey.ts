@@ -11,11 +11,11 @@
 // }
 
 // 마이페이지 쿼리 키
-const MYPAGE_KEYS = {
+export const MYPAGE_KEYS = {
   all: ['mypage'] as const,
 }
 
 // 결제하기 페이지 쿼리 키
-const PAY_KEYS = {
+export const PAY_KEYS = {
   all: ['pay'] as const,
 }
