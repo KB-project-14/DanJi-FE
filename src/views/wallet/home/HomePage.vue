@@ -23,6 +23,10 @@ const goWalletPage = () => {
   router.push('/wallet/view')
 }
 
+const goChangePage = () => {
+  router.push('/card/charge')
+}
+
 const hasCard = true
 
 const cards = ref<Card[]>([
@@ -82,7 +86,7 @@ const cards = ref<Card[]>([
         </div>
         <!-- 버튼 -->
         <div class="flex justify-center gap-10">
-          <danji-button variant="small">충전</danji-button>
+          <danji-button variant="small" @click="goChangePage">충전</danji-button>
           <danji-button variant="small">전환</danji-button>
         </div>
       </div>
