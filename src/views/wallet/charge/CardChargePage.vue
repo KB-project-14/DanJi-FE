@@ -82,40 +82,48 @@ const setAmount = (val: number) => {
   amount.value += val
 }
 
-// 충전하기 버튼 클릭 시
-const handleCharge = () => {
-  // 유효성 체크
-  if (isDisabled.value) {
-    if (!isHundredUnit.value) {
-      alert('100원 단위로 입력해주세요.')
-    } else if (!amount.value || amount.value < 10000) {
-      alert('최소 10,000원 이상 입력해야 합니다.')
-    }
-    return
+// 유효성 검증
+const validateChargeAmount = () => {
+  if (!isHundredUnit.value) {
+    return '100원 단위로 입력해주세요.'
   }
+  if (!amount.value || amount.value < 10000) {
+    return '최소 10,000원 이상 입력해야 합니다.'
+  }
+  return null
+}
 
+// 충전 처리 로직
+const processCharge = () => {
+  // 소수점 없이
   const totalCost = Math.floor(amount.value + fee.value)
 
-  // 실패 조건: 총 결제 금액 > 통합지갑 잔액
+  // 통합지갑 잔액 부족 시
   if (totalCost > walletCurrentBalance.value) {
-    router.push({
-      name: 'ChargeCompletePage',
-      query: { success: 'false' },
-    })
+    return { success: false, totalCost }
+  }
+
+  // 성공 시 잔액 업데이트
+  cardInfo.value.balance += amount.value + incentive.value
+  walletCurrentBalance.value -= totalCost
+  amount.value = 0
+
+  return { success: true, totalCost }
+}
+
+const handleCharge = () => {
+  const errorMsg = validateChargeAmount()
+  if (errorMsg) {
+    alert(errorMsg)
     return
   }
 
-  // 성공 로직
-  cardInfo.value.balance += amount.value + incentive.value
-  walletCurrentBalance.value -= totalCost
+  // 충전 처리
+  const result = processCharge()
 
-  // 입력값 초기화
-  amount.value = 0
-
-  // 성공 페이지로 이동
   router.push({
     name: 'ChargeCompletePage',
-    query: { success: 'true' },
+    query: { success: result.success ? 'true' : 'false' },
   })
 }
 </script>
@@ -123,7 +131,7 @@ const handleCharge = () => {
 <template>
   <layout
     :header-type="'basic'"
-    :header-title="'결제하기'"
+    :header-title="'충전하기'"
     :show-right-icon="true"
     :is-bottom-nav="false"
     @right-click="router.push('/home')"
