@@ -75,7 +75,7 @@ const isDisabled = computed(() => !amount.value || amount.value < 10000 || !isHu
 
 // 금액 버튼 클릭 시
 const setAmount = (val: number) => {
-  amount.value = val
+  amount.value += val
 }
 
 // 충전하기 버튼 클릭 시
@@ -88,8 +88,24 @@ const handleCharge = () => {
     }
     return
   }
-  console.log('충전 실행', amount.value)
-  // API 연동 예정
+
+  // 실패 조건: 충전 금액이 통합지갑 잔액보다 많을 때
+  if (amount.value + fee.value > walletCurrentBalance.value) {
+    alert('충전 금액과 수수료의 합이 통합지갑 잔액보다 많습니다.')
+    return
+  }
+
+  // 성공 로직
+  console.log('충전 성공', amount.value)
+
+  // 지역화폐 잔액 업데이트
+  cardInfo.value.balance += amount.value + incentive.value
+
+  // 통합지갑 잔액 차감
+  walletCurrentBalance.value -= amount.value + fee.value
+
+  // 금액 입력 초기화
+  amount.value = 0
 }
 </script>
 
