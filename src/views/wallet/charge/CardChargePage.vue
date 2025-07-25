@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
+
+const router = useRouter()
 
 // 지역화폐 정보 - 추후 API 연동 예정
 const cardInfo = ref({
@@ -89,14 +92,26 @@ const handleCharge = () => {
     return
   }
 
-  // 실패 조건: 충전 금액이 통합지갑 잔액보다 많을 때
+  // 실패 조건
   if (amount.value + fee.value > walletCurrentBalance.value) {
-    alert('충전 금액과 수수료의 합이 통합지갑 잔액보다 많습니다.')
+    // 실패 페이지로 이동
+    router.push({
+      name: 'ChargeComplete',
+      query: { success: 'false' },
+    })
     return
   }
 
   // 성공 로직
-  console.log('충전 성공', amount.value)
+  cardInfo.value.balance += amount.value + incentive.value
+  walletCurrentBalance.value -= amount.value + fee.value
+  amount.value = 0
+
+  // 성공 페이지로 이동
+  router.push({
+    name: 'ChargeComplete',
+    query: { success: 'true' },
+  })
 
   // 지역화폐 잔액 업데이트
   cardInfo.value.balance += amount.value + incentive.value

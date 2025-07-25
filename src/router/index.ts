@@ -63,8 +63,10 @@ const routes = [
   },
   {
     path: '/wallet/charge-complete',
-    name: 'ChargeCompletePage',
+    name: 'ChargeComplete',
+    component: ChargeCompletePage,
   },
+
   {
     path: '/card/setting',
     component: CardSettingPage,

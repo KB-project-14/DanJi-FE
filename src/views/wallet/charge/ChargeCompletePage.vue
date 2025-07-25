@@ -1,11 +1,19 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import ChargeSuccess from '@/components/wallet/modal/ChargeSuccess.vue'
 import ChargeFail from '@/components/wallet/modal/ChargeFail.vue'
 
+const route = useRoute()
 const chargeSuccess = ref<boolean | null>(null) // null: 초기 상태, true: 성공, false: 실패
+
+if (route.query.success === 'true') {
+  chargeSuccess.value = true
+} else if (route.query.success === 'false') {
+  chargeSuccess.value = false
+}
 
 // 충전 결과 처리 (API 연동 예정)
 const handleChargeResult = () => {
@@ -41,9 +49,9 @@ const goWallet = () => {
         </div>
 
         <!-- 하단 버튼 -->
-        <DanjiButton class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]" @click="goWallet">
+        <danji-button class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]" @click="goWallet">
           지갑으로 가기
-        </DanjiButton>
+        </danji-button>
       </div>
     </template>
   </Layout>
