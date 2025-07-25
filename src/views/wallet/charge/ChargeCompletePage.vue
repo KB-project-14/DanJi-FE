@@ -15,12 +15,15 @@ const goWallet = () => {
   // router.push('/wallet')
   console.log('지갑으로 이동')
 }
+const retryCharge = () => {
+  console.log('재충전 ')
+}
 </script>
 
 <template>
   <Layout :header-type="'basic'" :header-title="'충전 완료'" :is-bottom-nav="false">
     <template #content>
-      <div class="relative flex flex-col items-center h-full px-[2rem] pt-[6rem] bg-Gray-0">
+      <div class="relative flex flex-col items-center h-full pt-[6rem] px-[2rem] bg-Gray-0">
         <!-- 충전 성공 -->
         <charge-success v-if="chargeSuccess" />
 
@@ -28,9 +31,36 @@ const goWallet = () => {
         <charge-fail v-else />
 
         <!-- 하단 버튼 -->
-        <danji-button class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]" @click="goWallet">
+        <!-- 성공일 때: 버튼 1개 -->
+        <danji-button
+          v-if="chargeSuccess"
+          class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[34.3rem] h-[5.8rem] mb-[3rem]"
+          @click="goWallet"
+        >
           지갑으로 가기
         </danji-button>
+
+        <!-- 실패일 때: 버튼 2개 -->
+        <div
+          v-else
+          class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[34.3rem] mb-[3rem] flex gap-3"
+        >
+          <danji-button
+            class="!px-[0.5rem] !py-[0.5rem] flex-1 h-[5.8rem] whitespace-nowrap text-center"
+            variant="smallOutline"
+            @click="retryCharge"
+          >
+            다시 충전하기
+          </danji-button>
+
+          <danji-button
+            class="!px-[0.5rem] !py-[0.5rem] flex-1 h-[5.8rem] whitespace-nowrap text-center"
+            variant="small"
+            @click="goWallet"
+          >
+            지갑으로 가기
+          </danji-button>
+        </div>
       </div>
     </template>
   </Layout>
