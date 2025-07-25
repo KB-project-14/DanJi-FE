@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import { ref, computed, onMounted, nextTick, defineProps } from 'vue'
@@ -14,7 +15,13 @@ interface Card {
   percentage: number
 }
 
-// ✅ props로 cards 받기
+const router = useRouter()
+
+const orderCardPage = () => {
+  router.push('/order')
+}
+
+// props로 cards 받기
 const props = defineProps<{
   cards: Card[]
 }>()
@@ -42,7 +49,7 @@ onMounted(() => {
       <div class="Body02 text-Black-2">
         나의 카드 {{ currentSlideIndex }} / {{ sortedCards.length }}개
       </div>
-      <button class="pr-20 Body04 text-Gray-4 underline">순서 바꾸기</button>
+      <button class="pr-20 Body04 text-Gray-4 underline" @click="orderCardPage">순서 바꾸기</button>
     </div>
     <!-- 카드 사진 -->
     <div class="overflow-hidden">
