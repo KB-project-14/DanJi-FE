@@ -4,6 +4,7 @@ import MainHeader from '../common/topbar/MainHeader.vue'
 import PayHeader from '../common/topbar/PayHeader.vue'
 import Header from '../common/topbar/Header.vue'
 import BottomNav from '../common/bottomnav/BottomNav.vue'
+import SettingHeader from '../common/topbar/SettingHeader.vue'
 
 /**
  * Layout 컴포넌트
@@ -48,17 +49,35 @@ const headerProps = withDefaults(defineProps<LayoutProps>(), {
   showRightIcon: false,
   isBottomNav: true,
 })
+
+const emit = defineEmits<{
+  (e: 'left-click'): void
+  (e: 'right-click'): void
+}>()
 </script>
 <template>
   <div class="flex flex-col h-screen">
     <!-- 헤더 타입에 따라 다른 컴포넌트 렌더링 -->
     <MainHeader v-if="headerProps.headerType === 'main'" />
-    <PayHeader v-else-if="headerProps.headerType === 'pay'" />
+    <PayHeader
+      v-else-if="headerProps.headerType === 'pay'"
+      @right-click="headerProps.emitRightIconClick"
+    />
     <Header
       v-else-if="headerProps.headerType === 'basic'"
       :title="headerProps.headerTitle"
       :show-left-icon="headerProps.showLeftIcon"
       :show-right-icon="headerProps.showRightIcon"
+      @left-click="headerProps.emitLeftIconClick"
+      @right-click="headerProps.emitRightIconClick"
+    />
+    <SettingHeader
+      v-else-if="headerProps.headerType === 'setting'"
+      :title="headerProps.headerTitle"
+      :show-left-icon="headerProps.showLeftIcon"
+      :show-right-icon="headerProps.showRightIcon"
+      @left-click="headerProps.emitLeftIconClick"
+      @right-click="headerProps.emitRightIconClick"
     />
 
     <!-- 메인 콘텐츠 영역 (페이지별 컴포넌트가 들어갈 곳) -->

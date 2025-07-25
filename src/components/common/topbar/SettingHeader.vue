@@ -8,6 +8,8 @@ const props = withDefaults(
     title: string
     showLeftIcon?: boolean
     showRightIcon?: boolean
+    emitLeftClick?: () => void
+    emitRightClick?: () => void
   }>(),
   {
     showLeftIcon: false,
