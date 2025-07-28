@@ -14,12 +14,12 @@ const handleTabClick = (index: number) => {
 </script>
 
 <template>
-  <div class="flex m-[2rem] bg-White-1 rounded-lg shadow-sm">
+  <div class="flex bg-White-1 rounded-lg shadow-sm">
     <button
       v-for="(tab, index) in tabs"
       :key="index"
       @click="handleTabClick(index)"
-      class="flex-1 py-[1rem] text-center Body01"
+      class="flex-1 py-[1.8rem] text-center Body01"
       :class="
         activeIndex === index ? 'text-Yellow-1 border-b-2 border-Yellow-1 Body00' : 'text-Gray-5'
       "

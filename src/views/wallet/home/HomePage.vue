@@ -24,6 +24,10 @@ const goChangePage = () => {
   router.push('/card/charge')
 }
 
+const goExchange = (id: number, balance: number) => {
+  router.push(`/exchange/${id}`)
+}
+
 const goCardHistory = (id: number) => {
   router.push(`/card/history/${id}`)
 }
@@ -90,7 +94,9 @@ const cards = ref<Card[]>([
         <!-- 버튼 -->
         <div class="flex justify-center gap-10">
           <danji-button variant="small" @click="goChangePage">충전</danji-button>
-          <danji-button variant="small">환전</danji-button>
+          <danji-button variant="small" @click="goExchange(cards[0].id, cards[0].balance)">
+            환전
+          </danji-button>
         </div>
       </div>
     </template>
