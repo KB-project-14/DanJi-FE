@@ -24,7 +24,7 @@ const goWalletPage = () => {
 
     <!-- 하단 영역: 1/3 비율 -->
     <div
-      class="bg-White-0/40 p-4 flex items-center justify-end flex-[1] gap-1"
+      class="flex items-center justify-end flex-[1] gap-1 p-4 bg-White-0/40 p-4"
       @click="goWalletPage"
     >
       <span class="Body02 text-Gray-6"> 지역화폐 잔액 보기 </span>
