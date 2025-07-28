@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import Layout from '@/components/layout/Layout.vue'
 import checkboxSelected from '@/assets/icons/checkbox-activated.svg'
 import checkboxUnselected from '@/assets/icons/checkbox-inactivated.svg'
 
-import { ref } from 'vue'
 import LocalPayFailModal from '@/components/common/modal/LocalPayFailModal.vue'
 import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 
@@ -18,11 +19,10 @@ type PaymentType = 'local' | 'cash' | null
 const selectedPayment = ref<PaymentType>(null)
 const showLocalFailModal = ref(false)
 const showCashFailModal = ref(false)
-const showModal = ref(false) // 잔액 부족 여부 판단해서 모달 표시
 
-// 실제로는 API 등에서 가져온 지역화폐 잔액
-const localBalance = ref(50000) // 예: 5만원
-const paymentAmount = ref(60000) // 예: 결제금액 6만원
+const localBalance = ref(50000) // 실제로는 API에서 가져온 지역화폐 잔액
+const paymentAmount = ref(600000) // 전체 결제요금 임시 설정 (6만원)
+const localPaymentAmount = ref(paymentAmount) // 지역화폐로 결제할 금액
 
 // 결제 방식 선택 함수 (라디오 버튼처럼 동작)
 const selectPayment = (type: PaymentType) => {
@@ -32,6 +32,7 @@ const selectPayment = (type: PaymentType) => {
 // 결제 버튼 클릭 함수
 const onClickPay = () => {
   if (selectedPayment.value === null) return
+  if (localPaymentAmount.value === 0) return // 지역화폐 0원 결제 방지
 
   // 결제 금액보다 잔액이 부족한 경우(결제 수단별 분기)
   let isInsufficient = false
@@ -55,10 +56,39 @@ const onClickPay = () => {
   router.push('/pay-complete')
 }
 
-// 모달 닫기 함수 - 추가 필요시 사용
-// const closeModal = () => {
-//   showModal.value = false
-// }
+const displayAmount = computed(() => localPaymentAmount.value.toLocaleString())
+
+const handleInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const value = target.value
+
+  // 숫자만 추출
+  const numericValue = value.replace(/[^\d]/g, '')
+  const cleanedValue = numericValue.replace(/^0+/, '')
+
+  // 즉시 input 값 업데이트 (문자 제거)
+  target.value = cleanedValue ? parseInt(cleanedValue).toLocaleString() : ''
+
+  // 상태 업데이트
+  localPaymentAmount.value = parseInt(cleanedValue) || 0
+}
+
+// 결제버튼 비활성화 여부 판단 함수
+const isPayDisabled = computed(() => {
+  // 결제 수단 미선택 시 비활성화
+  if (!selectedPayment.value) return true
+
+  // 지역화폐 결제 선택 시
+  if (selectedPayment.value === 'local') {
+    // 0원 입력 또는 잔액 초과 시 비활성화
+    if (localPaymentAmount.value === 0 || localPaymentAmount.value > localBalance.value) {
+      return true
+    }
+  }
+
+  // 그 외엔 활성화
+  return false
+})
 </script>
 <template>
   <layout
@@ -74,7 +104,7 @@ const onClickPay = () => {
         <section
           class="relative flex flex-col w-full h-[10rem] px-[2.4rem] py-[2rem] mb-[1.4rem] bg-White-0 rounded-[1.6rem]"
         >
-          <span class="text-Black-2 Head03">결제 금액</span>
+          <span class="text-Black-2 Head03">전체 금액</span>
           <span class="absolute bottom-[2rem] right-[2.4rem] text-Yellow-0 Head03"> 600,000원</span>
         </section>
 
@@ -144,10 +174,40 @@ const onClickPay = () => {
             </div>
           </div>
         </section>
+
+        <!-- 결제할 금액 나타내는 섹션 -->
+        <section
+          v-if="selectedPayment === 'local'"
+          class="relative flex flex-col w-full px-[2.4rem] py-[2rem] mb-[1.4rem] bg-White-0 rounded-[1.6rem]"
+        >
+          <span class="text-Black-2 Head03">지역화폐로 결제할 금액</span>
+
+          <div class="flex justify-center items-center mt-[1.5rem]">
+            <input
+              :value="displayAmount"
+              @input="handleInput"
+              type="text"
+              class="w-full h-[5.4rem] Head03 text-right no-spin border border-Gray-2 rounded-[1.6rem] pr-[1.2rem] px-3"
+              placeholder="결제할 금액을 입력해주세요"
+            />
+            <span class="top-1/2 mt-[2.2rem] ml-[0.5rem] -translate-y-1/2 text-Black-2 Head03"
+              >원</span
+            >
+          </div>
+          <p v-if="localPaymentAmount > paymentAmount" class="text-red-500 text-sm mt-[0.7rem]">
+            총 결제 금액을 초과할 수 없습니다.
+          </p>
+          <p
+            v-if="selectedPayment === 'local' && localPaymentAmount > localBalance"
+            class="text-red-500 text-sm mt-[0.7rem]"
+          >
+            지역화폐 잔액({{ localBalance.toLocaleString() }}원)을 초과했습니다.
+          </p>
+        </section>
         <DanjiButton
           class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]"
           @click="onClickPay"
-          :disabled="selectedPayment === null"
+          :disabled="isPayDisabled"
           >결제하기</DanjiButton
         >
       </div>
@@ -156,4 +216,12 @@ const onClickPay = () => {
     </template>
   </layout>
 </template>
-<style scoped></style>
+<style scoped>
+.no-spin::-webkit-inner-spin-button,
+.no-spin::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.no-spin {
+  -moz-appearance: textfield;
+}
+</style>
