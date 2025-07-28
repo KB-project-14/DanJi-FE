@@ -54,8 +54,10 @@ const routes = [
     component: LocalCardCreatePage,
   },
   {
-    path: '/card/history',
+    path: '/card/history/:id',
+    name: 'CardHistory',
     component: CardHistoryPage,
+    props: true,
   },
   {
     path: '/card/charge',
