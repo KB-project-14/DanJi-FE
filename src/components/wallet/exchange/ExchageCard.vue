@@ -14,7 +14,7 @@ const selectedCard = ref('')
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 p-[2rem] pb-[12rem] rounded-lg shadow-sm bg-White-1">
+  <div class="flex flex-col gap-3 p-[2rem] pb-[9rem] rounded-lg shadow-sm bg-White-1">
     <!-- 환전 가능 금액 -->
     <div>
       <p class="Body02 text-Gray-5">환전 가능한 금액</p>
@@ -59,8 +59,8 @@ const selectedCard = ref('')
         </div>
       </div>
 
-      <p v-if="exchangeInput" class="text-Yellow-1 Body03 mt-1">
-        <span class="line-through"> 예상 수수료(1%): 3,000원 </span>
+      <p class="mt-1 text-Yellow-1 Body03" :class="{ invisible: !exchangeInput }">
+        <span class="line-through">예상 수수료(1%): 3,000원</span>
         <span class="text-Red-0"> 수수료 면제 대상입니다!</span>
       </p>
     </div>

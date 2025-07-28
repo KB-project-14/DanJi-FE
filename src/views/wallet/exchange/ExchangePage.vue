@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { HandCoins } from 'lucide-vue-next'
+import { CircleAlert } from 'lucide-vue-next'
 
 import Layout from '@/components/layout/Layout.vue'
 import ExchangeTabs from '@/components/wallet/exchange/ExchangeTab.vue'
@@ -32,10 +31,15 @@ const exchangeInput = ref<number | null>(null)
       <div class="min-h-full flex flex-col justify-between bg-Background">
         <div class="min-h-full flex flex-col bg-Background">
           <!-- 상단 영역 (헤더 밑) -->
-          <div class="p-[1.8rem]">
+          <div class="pr-[1.8rem] pl-[1.8rem] pt-[1rem]">
             <exchange-tabs :tabs="tabs" :activeIndex="activeTab" @change="handleTabChange" />
           </div>
-
+          <div
+            class="flex items-center justify-end pt-[1rem] pr-[2rem] pb-[1rem] gap-1 text-right text-Gray-7"
+          >
+            <CircleAlert class="w-4 h-4" />
+            <span>환전 시 수수료 1%가 부과됩니다.</span>
+          </div>
           <!-- 중간 콘텐츠 -->
           <div class="flex-1 overflow-y-auto px-[1.8rem]">
             <div v-if="activeTab === 0">
