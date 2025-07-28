@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import TotalWallet from '@/components/wallet/TotalWallet.vue'
@@ -19,9 +20,12 @@ interface Card {
 
 const router = useRouter()
 
-// 충전 버튼 선택시 충전하기 페이지 이동
 const goChangePage = () => {
   router.push('/card/charge')
+}
+
+const goCardHistory = (id: number) => {
+  router.push(`/card/history/${id}`)
 }
 
 const hasCard = true
@@ -76,11 +80,13 @@ const cards = ref<Card[]>([
             <TotalWallet :wallet-amount="82000" :total-asset="582000" />
           </div>
         </div>
+
         <!-- 나의 지역화폐카드 -->
         <div class="pl-20 pt-[4rem] pb-[3rem] px-[1rem]">
-          <HasCardSection v-if="hasCard" :cards="cards" />
+          <HasCardSection v-if="hasCard" :cards="cards" @click-card="goCardHistory" />
           <NoCardSection v-else />
         </div>
+
         <!-- 버튼 -->
         <div class="flex justify-center gap-10">
           <danji-button variant="small" @click="goChangePage">충전</danji-button>
