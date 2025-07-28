@@ -19,11 +19,6 @@ interface Card {
 
 const router = useRouter()
 
-// 통합 지갑 선택시 총자산보기 페이지 이동
-const goWalletPage = () => {
-  router.push('/wallet/view')
-}
-
 // 충전 버튼 선택시 충전하기 페이지 이동
 const goChangePage = () => {
   router.push('/card/charge')
@@ -82,7 +77,7 @@ const cards = ref<Card[]>([
           </div>
         </div>
         <!-- 나의 지역화폐카드 -->
-        <div class="pl-20 pt-20 pb-10 px-4" @click="goWalletPage">
+        <div class="pl-20 pt-20 pb-10 px-4">
           <HasCardSection v-if="hasCard" :cards="cards" />
           <NoCardSection v-else />
         </div>
