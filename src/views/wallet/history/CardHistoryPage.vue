@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import Layout from '@/components/layout/Layout.vue'
@@ -93,30 +93,6 @@ const transaction: HistoryItem[] = [
     createdAt: '2025-04-18T10:20:40',
   },
 ]
-
-const showTooltip = ref(false)
-const tooltipRef = ref<HTMLElement | null>(null)
-const iconRef = ref<HTMLElement | null>(null)
-
-const handleClickOutside = (e: MouseEvent) => {
-  const target = e.target as HTMLElement
-  if (
-    tooltipRef.value &&
-    !tooltipRef.value.contains(target) &&
-    iconRef.value &&
-    !iconRef.value.contains(target)
-  ) {
-    showTooltip.value = false
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
 </script>
 
 <template>
@@ -138,8 +114,9 @@ onBeforeUnmount(() => {
               <p class="Body01 text-Black-2">이번 달 혜택 :</p>
               <p class="Body01 text-Blue-0">{{ cardInfo?.benefit.toLocaleString() }}원</p>
 
-              <!-- 툴팁  -->
-              <tooltip
+              <!-- Tooltip 컴포넌트 사용 -->
+              <Tooltip
+                position="bottom"
                 :message="`이번달 ${cardInfo?.name}의 ${cardInfo?.benefit_type}은 ${cardInfo?.percentage}% 입니다.`"
               />
             </div>

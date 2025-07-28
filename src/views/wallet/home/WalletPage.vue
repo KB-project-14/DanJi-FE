@@ -1,33 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-
-import { HelpCircle } from 'lucide-vue-next'
 import Layout from '@/components/layout/Layout.vue'
 import WalletItem from '@/components/common/wallet/WalletItem.vue'
-
-const showTooltip = ref(false)
-const tooltipRef = ref<HTMLElement | null>(null)
-const iconRef = ref<HTMLElement | null>(null)
-
-// 바깥 클릭 시 툴팁 닫기
-const handleClickOutside = (e: MouseEvent) => {
-  const target = e.target as HTMLElement
-  if (
-    tooltipRef.value &&
-    !tooltipRef.value.contains(target) &&
-    iconRef.value &&
-    !iconRef.value.contains(target)
-  ) {
-    showTooltip.value = false
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 
 interface WalletCard {
   id: number
@@ -38,22 +12,28 @@ interface WalletCard {
 
 const cards: WalletCard[] = [
   {
+    id: 1,
+    name: '서울Pay',
+    balance: 32000,
+    bgColorClass: 'bg-[#0078D7] text-White-1',
+  },
+  {
     id: 2,
-    name: '울산페이',
+    name: '강원상품권',
     balance: 39400,
-    bgColorClass: 'bg-[#77C3E4] text-white',
+    bgColorClass: 'bg-[#77C3E4] text-White-1',
   },
   {
     id: 3,
-    name: '강릉페이',
+    name: '동백전',
     balance: 39400,
-    bgColorClass: 'bg-[#C89E59] text-white',
+    bgColorClass: 'bg-[#C89E59] text-White-1',
   },
   {
     id: 4,
-    name: '부산페이',
+    name: '부산Pay',
     balance: 39400,
-    bgColorClass: 'bg-[#F1F1F1] text-black',
+    bgColorClass: 'bg-[#F1F1F1] text-Black-1',
   },
 ]
 </script>
@@ -68,9 +48,7 @@ const cards: WalletCard[] = [
     <template #content>
       <div class="flex flex-col h-full px-[1rem] py-[2.4rem] bg-Background gap-4">
         <!-- 상단 총 잔액 영역 -->
-        <div
-          class="flex items-center justify-between p-[2rem] rounded-lg shadow-sm bg-White-1 rounded-lg shadow-sm p-[2rem]"
-        >
+        <div class="flex items-center justify-between p-[2rem] rounded-lg shadow-sm bg-White-1">
           <!-- 왼쪽 텍스트 -->
           <p class="Body00 text-Gray-4">
             사용자의 지역화폐 총 잔액은
@@ -80,23 +58,12 @@ const cards: WalletCard[] = [
             입니다.
           </p>
 
-          <!-- 툴팁 아이콘 -->
-          <div class="relative flex items-center">
-            <HelpCircle
-              ref="iconRef"
-              class="w-[1.6rem] h-[1.6rem] text-Gray-5 cursor-pointer"
-              @click.stop="showTooltip = !showTooltip"
-            />
-
-            <div
-              v-if="showTooltip"
-              ref="tooltipRef"
-              @click.stop
-              class="absolute mt-[0.5rem] p-[1rem] w-max rounded-md shadow z-50 top-full right-0 bg-Black-2 text-White-0 Body04"
-            >
-              통합지갑을 제외한 나의 각 지역화폐카드 잔액을 한 눈에 볼 수 있습니다.
-            </div>
-          </div>
+          <!-- 툴팁 컴포넌트 -->
+          <tooltip
+            message="통합지갑을 제외한 나의 각 지역화폐카드 잔액을 한 눈에 볼 수 있습니다."
+            position="bottom"
+            align="end"
+          />
         </div>
 
         <!-- 카드 리스트 -->
