@@ -13,6 +13,7 @@ import CardHistoryPage from '@/views/wallet/history/CardHistoryPage.vue'
 import CardSettingPage from '@/views/wallet/history/CardSettingPage.vue'
 import CardChargePage from '@/views/wallet/charge/CardChargePage.vue'
 import ChargeCompletePage from '@/views/wallet/charge/ChargeCompletePage.vue'
+import ExchangePage from '@/views/wallet/exchange/ExchangePage.vue'
 import { Component } from 'lucide-vue-next'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 
@@ -71,6 +72,10 @@ const routes = [
   {
     path: '/card/setting',
     component: CardSettingPage,
+  },
+  {
+    path: '/card/exchange',
+    component: ExchangePage,
   },
   {
     path: '/wallet/card/create/:region/:city',
