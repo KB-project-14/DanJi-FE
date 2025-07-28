@@ -72,7 +72,10 @@ const cards: WalletCard[] = [
           <!-- 왼쪽 텍스트 -->
           <p class="Body00 text-Gray-4">
             사용자의 지역화폐 총 잔액은
-            <span class="text-Blue-0">930,000원</span> 입니다.
+            <span class="text-Blue-0"
+              >{{ cards.reduce((sum, card) => sum + card.balance, 0).toLocaleString() }}원</span
+            >
+            입니다.
           </p>
 
           <!-- 툴팁 아이콘 -->
