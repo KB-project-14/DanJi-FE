@@ -70,9 +70,9 @@ const cards: WalletCard[] = [
         <!-- 상단 총 잔액 영역 -->
         <div class="bg-white rounded-lg shadow-sm p-[2rem] flex items-center justify-between">
           <!-- 왼쪽 텍스트 -->
-          <p class="Body02 text-Gray-4">
+          <p class="Body00 text-Gray-4">
             사용자의 지역화폐 총 잔액은
-            <span class="text-Blue-0 font-semibold">930,000원</span> 입니다.
+            <span class="text-Blue-0">930,000원</span> 입니다.
           </p>
 
           <!-- 툴팁 아이콘 -->
