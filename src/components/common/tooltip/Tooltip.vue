@@ -28,7 +28,6 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 
 <template>
   <div class="relative flex items-center">
-    <!-- lucide HelpCircle 아이콘 -->
     <HelpCircle
       ref="iconRef"
       class="w-[1.6rem] h-[1.6rem] text-Gray-5 cursor-pointer"
@@ -39,7 +38,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
     <div
       v-if="showTooltip"
       ref="tooltipRef"
-      class="absolute rounded-md shadow z-50 top-full right-0 mt-[0.5rem] p-[1rem] w-max bg-Black-2 text-White-0 Body04"
+      class="absolute top-full right-0 mt-[0.5rem] p-[1rem] w-max rounded-md shadow z-50 top-full right-0 mt-[0.5rem] p-[1rem] w-max bg-Black-2 text-White-0 Body04"
     >
       {{ message }}
     </div>
