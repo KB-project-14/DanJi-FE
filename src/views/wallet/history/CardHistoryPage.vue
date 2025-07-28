@@ -177,7 +177,11 @@ onBeforeUnmount(() => {
           </div>
           <div class="flex justify-between text-Gray-7">
             <span>충전 가능 금액:</span>
-            <span>{{ (cardInfo!.maximum - cardInfo!.chargedThisMonth).toLocaleString() }}원</span>
+            <span
+              >{{
+                cardInfo ? (cardInfo.maximum - cardInfo.chargedThisMonth).toLocaleString() : '0'
+              }}원</span
+            >
           </div>
         </div>
       </div>
