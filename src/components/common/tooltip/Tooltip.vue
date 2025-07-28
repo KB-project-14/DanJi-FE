@@ -71,11 +71,18 @@ const tooltipPositionClass = computed(() => {
     <HelpCircle
       ref="iconRef"
       class="w-[1.6rem] h-[1.6rem] text-Gray-5 cursor-pointer"
+      role="button"
+      :aria-label="`도움말: ${message}`"
+      :aria-expanded="showTooltip"
+      tabindex="0"
       @click.stop="showTooltip = !showTooltip"
+      @keydown.enter.space.stop="showTooltip = !showTooltip"
     />
     <div
       v-if="showTooltip"
       ref="tooltipRef"
+      role="tooltip"
+      :aria-hidden="!showTooltip"
       :class="`absolute z-50 p-[0.8rem] rounded-md shadow bg-Black-2 text-White-0 Body04 whitespace-nowrap ${tooltipPositionClass}`"
     >
       {{ message }}
