@@ -76,13 +76,13 @@ const cards = ref<Card[]>([
     <template #content>
       <div class="min-h-full bg-Background">
         <!-- 통합지갑 section -->
-        <div class="flex justify-center pt-10" @click="goWalletPage">
+        <div class="flex justify-center pt-10">
           <div class="w-[270px]">
             <TotalWallet :wallet-amount="82000" :total-asset="582000" />
           </div>
         </div>
         <!-- 나의 지역화폐카드 -->
-        <div class="pl-20 pt-20 pb-10 px-4">
+        <div class="pl-20 pt-20 pb-10 px-4" @click="goWalletPage">
           <HasCardSection v-if="hasCard" :cards="cards" />
           <NoCardSection v-else />
         </div>
