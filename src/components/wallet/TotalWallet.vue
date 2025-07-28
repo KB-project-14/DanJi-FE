@@ -28,7 +28,7 @@ const goWalletPage = () => {
       @click="goWalletPage"
     >
       <span class="Body02 text-Gray-6"> 지역화폐 잔액 보기 </span>
-      <ChevronRight class="text-Gray-6 w-5 h-5" />
+      <ChevronRight class="w-5 h-5 text-Gray-6" />
     </div>
   </div>
 </template>

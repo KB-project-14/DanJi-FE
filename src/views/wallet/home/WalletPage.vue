@@ -68,7 +68,9 @@ const cards: WalletCard[] = [
     <template #content>
       <div class="flex flex-col h-full px-[1rem] py-[2.4rem] bg-Background gap-4">
         <!-- 상단 총 잔액 영역 -->
-        <div class="bg-white rounded-lg shadow-sm p-[2rem] flex items-center justify-between">
+        <div
+          class="flex items-center justify-between p-[2rem] rounded-lg shadow-sm bg-White-1 rounded-lg shadow-sm p-[2rem]"
+        >
           <!-- 왼쪽 텍스트 -->
           <p class="Body00 text-Gray-4">
             사용자의 지역화폐 총 잔액은
