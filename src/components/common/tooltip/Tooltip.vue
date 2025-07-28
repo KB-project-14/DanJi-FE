@@ -33,12 +33,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
       class="w-[1.6rem] h-[1.6rem] text-Gray-5 cursor-pointer"
       @click.stop="showTooltip = !showTooltip"
     />
-
-    <!-- 툴팁 -->
     <div
       v-if="showTooltip"
       ref="tooltipRef"
-      class="absolute top-full right-0 mt-[0.5rem] p-[1rem] w-max rounded-md shadow z-50 top-full right-0 mt-[0.5rem] p-[1rem] w-max bg-Black-2 text-White-0 Body04"
+      class="absolute z-50 top-full left-1/2 p-[0.8rem] mt-[0.4rem] -translate-x-1/2 rounded-md shadow bg-Black-2 text-White-0 Body04 whitespace-nowrap"
     >
       {{ message }}
     </div>

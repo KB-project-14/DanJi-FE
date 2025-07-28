@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 
 import Layout from '@/components/layout/Layout.vue'
 import CardHistoryItemList from '@/components/common/history/CardHistoryItemList.vue'
-import { HelpCircle } from 'lucide-vue-next'
+import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 
 // 카드 ID
 const route = useRoute()
@@ -138,23 +138,10 @@ onBeforeUnmount(() => {
               <p class="Body01 text-Black-2">이번 달 혜택 :</p>
               <p class="Body01 text-Blue-0">{{ cardInfo?.benefit.toLocaleString() }}원</p>
 
-              <!-- 툴팁 아이콘 -->
-              <HelpCircle
-                ref="iconRef"
-                class="w-[1.2rem] h-[1.2rem] text-Gray-5 cursor-pointer"
-                @click.stop="showTooltip = !showTooltip"
+              <!-- 툴팁  -->
+              <tooltip
+                :message="`이번달 ${cardInfo?.name}의 ${cardInfo?.benefit_type}은 ${cardInfo?.percentage}% 입니다.`"
               />
-
-              <!-- 툴팁 -->
-              <div
-                v-if="showTooltip"
-                ref="tooltipRef"
-                @click.stop
-                class="absolute rounded-md shadow z-50 top-full left-0 mt-[0.5rem] p-[1rem] w-max bg-Black-2 text-White-0 Body04"
-              >
-                이번달 {{ cardInfo?.name }}의 {{ cardInfo?.benefit_type }}은
-                {{ cardInfo?.percentage }} %입니다.
-              </div>
             </div>
           </div>
 
