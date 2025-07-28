@@ -92,7 +92,7 @@ const cards: WalletCard[] = [
               v-if="showTooltip"
               ref="tooltipRef"
               @click.stop
-              class="absolute rounded-md shadow z-50 top-full right-0 mt-[0.5rem] p-[1rem] w-max bg-Black-2 text-White-0 Body04"
+              class="absolute mt-[0.5rem] p-[1rem] w-max rounded-md shadow z-50 top-full right-0 bg-Black-2 text-White-0 Body04"
             >
               통합지갑을 제외한 나의 각 지역화폐카드 잔액을 한 눈에 볼 수 있습니다.
             </div>
@@ -100,7 +100,7 @@ const cards: WalletCard[] = [
         </div>
 
         <!-- 카드 리스트 -->
-        <div class="bg-white rounded-lg shadow-sm p-4 flex flex-col gap-4 flex-1">
+        <div class="flex flex-col gap-4 flex-1 p-4 rounded-lg shadow-sm bg-White-1">
           <wallet-item
             v-for="card in cards"
             :key="card.id"
