@@ -6,6 +6,7 @@ import Layout from '@/components/layout/Layout.vue'
 import ExchangeTabs from '@/components/wallet/exchange/ExchangeTab.vue'
 import ExchageCard from '@/components/wallet/exchange/ExchageCard.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
+import ExchangeCash from '@/components/wallet/exchange/ExchangeCash.vue'
 
 // 탭
 const activeTab = ref(0)
@@ -51,7 +52,12 @@ const exchangeInput = ref<number | null>(null)
               />
             </div>
             <div v-else>
-              <p>추후에 컴포넌트 붙힐 예정</p>
+              <exchange-cash
+                :balance="balance"
+                :chargedAmount="chargedAmount"
+                :incentiveAmount="incentiveAmount"
+                cardName="동백전"
+              />
             </div>
           </div>
 
