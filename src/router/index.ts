@@ -6,12 +6,16 @@ import PayModal from '@/components/common/modal/LocalPayFailModal.vue'
 import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import MypagePage from '@/views/mypage/MypagePage.vue'
 import HomePage from '@/views/wallet/home/HomePage.vue'
-import OrderChange from '@/views/wallet/change/OrderChange.vue'
-import WalletView from '@/views/wallet/home/WalletView.vue'
+import OrderChangePage from '@/views/wallet/change/OrderChangePage.vue'
+import WalletPage from '@/views/wallet/home/WalletPage.vue'
 import LocalCardCreatePage from '@/views/wallet/create/LocalCardCreatePage.vue'
-import CardHistoryView from '@/views/wallet/history/CardHistoryView.vue'
+import CardHistoryPage from '@/views/wallet/history/CardHistoryPage.vue'
+import CardSettingPage from '@/views/wallet/history/CardSettingPage.vue'
+import CardChargePage from '@/views/wallet/charge/CardChargePage.vue'
+import ChargeCompletePage from '@/views/wallet/charge/ChargeCompletePage.vue'
 import { Component } from 'lucide-vue-next'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
+import MapPage from '@/views/map/MapPage.vue'
 
 const routes = [
   {
@@ -36,7 +40,7 @@ const routes = [
   },
   {
     path: '/order',
-    component: OrderChange,
+    component: OrderChangePage,
   },
   {
     path: '/qr',
@@ -44,20 +48,39 @@ const routes = [
   },
   {
     path: '/wallet/view',
-    component: WalletView,
+    component: WalletPage,
   },
   {
     path: '/wallet/card/create',
     component: LocalCardCreatePage,
   },
   {
-    path: '/card/history',
-    component: CardHistoryView,
+    path: '/card/history/:id',
+    name: 'CardHistory',
+    component: CardHistoryPage,
+    props: true,
+  },
+  {
+    path: '/card/charge',
+    component: CardChargePage,
+  },
+  {
+    path: '/card/charge-complete',
+    name: 'ChargeCompletePage',
+    component: ChargeCompletePage,
+  },
+  {
+    path: '/card/setting',
+    component: CardSettingPage,
   },
   {
     path: '/wallet/card/create/:region/:city',
     name: 'LocalCardCreateDetail',
     component: LocalCardCreateDetailPage,
+  },
+  {
+    path: '/map',
+    component: MapPage,
   },
 ]
 

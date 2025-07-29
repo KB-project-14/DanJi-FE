@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { useKakao } from 'vue3-kakao-maps/@utils'
 
 import './assets/styles/reset.css'
 import './assets/styles/tailwind.css'
@@ -13,6 +14,7 @@ if (import.meta.env.DEV) {
   await worker.start({ onUnhandledRequest: 'bypass' })
 }
 
+useKakao(import.meta.env.VITE_KAKAO_APP_API_KEY)
 const app = createApp(App)
 
 app.use(createPinia())

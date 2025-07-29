@@ -61,11 +61,12 @@ const onClickPay = () => {
 // }
 </script>
 <template>
-  <Layout
+  <layout
     :header-type="'basic'"
     :header-title="'결제하기'"
     :show-right-icon="true"
     :is-bottom-nav="false"
+    @right-click="router.push('/home')"
   >
     <template #content>
       <div class="relative flex flex-col items-center h-full px-[1.6rem] pt-[1.1rem] bg-Gray-0">
@@ -153,6 +154,6 @@ const onClickPay = () => {
       <LocalPayFailModal v-if="showLocalFailModal" @close="showLocalFailModal = false" />
       <CashPayFailModal v-if="showCashFailModal" @close="showCashFailModal = false" />
     </template>
-  </Layout>
+  </layout>
 </template>
 <style scoped></style>
