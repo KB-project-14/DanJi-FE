@@ -35,6 +35,7 @@
     "vue-datepicker-next": "^1.0.3",
     "vue-router": "^4.5.1",
     "vue3-datepicker": "^0.4.0",
+    "vue3-kakao-maps": "^2.3.10",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
