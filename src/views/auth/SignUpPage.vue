@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+import Layout from '@/components/layout/Layout.vue'
+import DanjiInput from '@/components/common/form/DanjiInput.vue'
+
+const router = useRouter()
+const name = ref('')
+const username = ref('')
+const password = ref('')
+
+const isValid = computed(() => !!name.value && !!username.value && !!password.value)
+
+function onSignUp() {
+  if (!isValid.value) return
+  console.log({ name: name.value, username: username.value, password: password.value })
+  router.push('/login')
+}
+</script>
+
 <template>
   <Layout
     :header-type="'basic'"
@@ -47,24 +68,3 @@
     </template>
   </Layout>
 </template>
-
-<script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-
-import Layout from '@/components/layout/Layout.vue'
-import DanjiInput from '@/components/common/form/DanjiInput.vue'
-
-const router = useRouter()
-const name = ref('')
-const username = ref('')
-const password = ref('')
-
-const isValid = computed(() => !!name.value && !!username.value && !!password.value)
-
-function onSignUp() {
-  if (!isValid.value) return
-  console.log({ name: name.value, username: username.value, password: password.value })
-  router.push('/login')
-}
-</script>

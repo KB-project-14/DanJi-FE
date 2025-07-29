@@ -1,3 +1,16 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import Layout from '@/components/layout/Layout.vue'
+import DanjiInput from '@/components/common/form/DanjiInput.vue'
+import { Lock, User, ChevronRight } from 'lucide-vue-next'
+
+const username = ref('')
+const password = ref('')
+
+function onLogin() {
+  console.log('로그인 시도:', username.value, password.value)
+}
+</script>
 <template>
   <Layout header-type="basic" :is-bottom-nav="false" :show-left-icon="false">
     <template #content>
@@ -71,20 +84,6 @@
     </template>
   </Layout>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import Layout from '@/components/layout/Layout.vue'
-import DanjiInput from '@/components/common/form/DanjiInput.vue'
-import { Lock, User, ChevronRight } from 'lucide-vue-next'
-
-const username = ref('')
-const password = ref('')
-
-function onLogin() {
-  console.log('로그인 시도:', username.value, password.value)
-}
-</script>
 
 <style scoped lang="postcss">
 :deep(input) {
