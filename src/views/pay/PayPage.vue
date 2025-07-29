@@ -14,9 +14,9 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 // 결제 방식 타입 (최대 하나만 선택)
-type PaymentType = 'local' | 'cash' | null
+type PaymentType = 'local' | 'cash'
 
-const selectedPayment = ref<PaymentType>(null)
+const selectedPayment = ref<PaymentType>('local')
 const showLocalFailModal = ref(false)
 const showCashFailModal = ref(false)
 
@@ -26,7 +26,9 @@ const localPaymentAmount = ref(paymentAmount) // 지역화폐로 결제할 금�
 
 // 결제 방식 선택 함수 (라디오 버튼처럼 동작)
 const selectPayment = (type: PaymentType) => {
-  selectedPayment.value = selectedPayment.value === type ? null : type
+  if (type !== null) {
+    selectedPayment.value = type
+  }
 }
 
 // 결제 버튼 클릭 함수
@@ -99,7 +101,7 @@ const isPayDisabled = computed(() => {
     @right-click="router.push('/home')"
   >
     <template #content>
-      <div class="relative flex flex-col items-center h-full px-[1.6rem] pt-[1.1rem] bg-Gray-0">
+      <div class="flex flex-col items-center px-[1.6rem] pt-[1.1rem] bg-Gray-0">
         <!-- 결제 금액 섹션 -->
         <section
           class="relative flex flex-col w-full h-[10rem] px-[2.4rem] py-[2rem] mb-[1.4rem] bg-White-0 rounded-[1.6rem]"
@@ -178,7 +180,7 @@ const isPayDisabled = computed(() => {
         <!-- 결제할 금액 나타내는 섹션 -->
         <section
           v-if="selectedPayment === 'local'"
-          class="relative flex flex-col w-full px-[2.4rem] py-[2rem] mb-[1.4rem] bg-White-0 rounded-[1.6rem]"
+          class="relative flex flex-col w-full px-[2.4rem] py-[2rem] mb-[2.1rem] bg-White-0 rounded-[1.6rem]"
         >
           <span class="text-Black-2 Head03">지역화폐로 결제할 금액</span>
 
@@ -205,7 +207,7 @@ const isPayDisabled = computed(() => {
           </p>
         </section>
         <DanjiButton
-          class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]"
+          class="w-[34.3rem] h-[5.8rem] mb-[3rem]"
           @click="onClickPay"
           :disabled="isPayDisabled"
           >결제하기</DanjiButton
