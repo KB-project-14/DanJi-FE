@@ -1,32 +1,40 @@
 <template>
   <Layout header-type="basic" :is-bottom-nav="false" :show-left-icon="false">
     <template #content>
-      <div class="login-page">
+      <div class="flex flex-col items-center bg-white box-border p-[24px]">
         <!-- 1) 로고 + 설명 -->
-        <div class="logo-box">
-          <!-- src/assets/images/logo.png 에 로고 파일 넣어두세요 -->
-          <img src="@/assets/images/danji-logo-main.png" alt="단지 로고" class="logo" />
-          <p class="tagline">
+        <div class="text-center mt-[24px] mb-[32px]">
+          <img
+            src="@/assets/images/danji-logo-main.png"
+            alt="단지 로고"
+            class="h-[60px] mb-[12px] ml-[50px]"
+          />
+          <p class="text-[14px] leading-[1.6] text-[#666666] mt-[30px]">
             단 하나의 지갑이면 충분해요<br />
             모든 지갑을 하나로, 단지에서 시작하세요 😊
           </p>
         </div>
 
         <!-- 2) 흰 카드 : 입력창 2개 + 링크 -->
-        <div class="form-card">
-          <!-- 감싸는 div 하나 추가 -->
-          <div class="input-wrapper">
+        <div class="w-[365px] bg-white rounded-[12px] p-[24px] flex flex-col gap-[3px] mt-[25px]">
+          <!-- 아이디 입력 -->
+          <div class="h-[64px] flex items-center relative">
             <danji-input
               v-model="username"
               placeholder="아이디를 입력해주세요."
               aria-label="아이디"
               autocomplete="username"
             >
-              <template #icon> <User class="fake-input-icon" /> </template>
+              <template #icon>
+                <User
+                  class="absolute left-[25px] top-1/2 -translate-y-1/2 w-[20px] h-[20px] pointer-events-none text-[#d9d9d9]"
+                />
+              </template>
             </danji-input>
           </div>
 
-          <div class="input-wrapper">
+          <!-- 비밀번호 입력 -->
+          <div class="h-[64px] flex items-center relative">
             <danji-input
               v-model="password"
               type="password"
@@ -35,19 +43,32 @@
               autocomplete="current-password"
             >
               <template #icon>
-                <Lock class="fake-input-icon" />
+                <Lock
+                  class="absolute left-[25px] top-1/2 -translate-y-1/2 w-[20px] h-[20px] pointer-events-none text-[#d9d9d9]"
+                />
               </template>
             </danji-input>
           </div>
 
-          <router-link to="/signup" class="signup-link">
-            단지의 첫 지갑을 만들어볼까요? <strong>회원가입</strong>
-            <img src="@/assets/icons/right-arrow.svg" alt="화살표" class="arrow-icon" />
+          <!-- 회원가입 링크 -->
+          <router-link
+            to="/signup"
+            class="flex items-center justify-end gap-[-10px] text-[13px] text-[#c7c7c7] mt-[4px] mb-[-20px] mr-[10px] ml-[-10px]"
+          >
+            단지의 첫 지갑을 만들어볼까요?
+            <span class="w-[6px] inline-block"></span>
+            <strong class="font-normal">회원가입</strong>
+            <ChevronRight class="w-[14px] h-[14px] stroke-[2.5] text-[#c7c7c7] translate-x-[8px]" />
           </router-link>
         </div>
 
         <!-- 3) 로그인 버튼 -->
-        <button class="login-btn" @click="onLogin">로그인</button>
+        <button
+          class="w-full max-w-[360px] mt-[20px] py-[16px] text-[16px] font-medium text-white bg-[#60584c] rounded-[12px] cursor-pointer"
+          @click="onLogin"
+        >
+          로그인
+        </button>
       </div>
     </template>
   </Layout>
@@ -57,7 +78,7 @@
 import { ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
-import { Lock, User } from 'lucide-vue-next'
+import { Lock, User, ChevronRight } from 'lucide-vue-next'
 
 const username = ref('')
 const password = ref('')
@@ -67,106 +88,9 @@ function onLogin() {
 }
 </script>
 
-<style scoped>
-.login-page {
-  padding: 24px;
-  background: #ffffff;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.logo-box {
-  text-align: center;
-  margin-top: 24px;
-  margin-bottom: 32px;
-}
-.logo {
-  height: 60px;
-  margin-bottom: 12px;
-  margin-left: 50px;
-}
-.tagline {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #666666;
-  margin-top: 30px;
-}
-
-.form-card {
-  width: 365px;
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.signup-link {
-  font-size: 13px;
-  color: #c7c7c7;
-  text-align: right;
-  margin-top: 4px;
-  margin-bottom: -20px;
-  margin-right: 15px;
-  margin-left: -10px;
-}
-.signup-link strong {
-  color: #c7c7c7;
-  font-weight: normal;
-}
-
-/* 로그인 버튼 */
-.login-btn {
-  width: 100%;
-  max-width: 360px;
-  margin: 20px 0 0;
-  padding: 16px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #ffffff;
-  background-color: #60584c;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-}
-
-.input-wrapper {
-  height: 64px;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.fake-input-icon {
-  position: absolute;
-  left: 25px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  pointer-events: none;
-  z-index: 1;
-  color: #d9d9d9;
-}
-
-.form-card ::v-deep(input) {
-  height: 56px;
-  padding-left: 48px;
-  font-size: 15px;
-  line-height: 44px;
-}
-
-.form-card {
-  margin-top: 25px;
-}
-
-.arrow-icon {
-  height: 12px;
-  margin-top: -16px;
-  margin-left: 310px;
-  color: #c7c7c7;
+<style scoped lang="postcss">
+/* DanjiInput 내부 input padding 조정 */
+:deep(input) {
+  @apply h-[56px] pl-[48px] text-[15px] leading-[44px];
 }
 </style>

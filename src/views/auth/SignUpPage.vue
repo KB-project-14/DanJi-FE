@@ -6,19 +6,44 @@
     :show-left-icon="true"
   >
     <template #content>
-      <div class="signup-page">
-        <!-- 흰 배경 카드 안에 danji-input 3개 -->
-        <div class="form-card">
-          <label for="name">이름</label>
+      <div class="p-6 h-[595px] bg-[#f5f6f8] box-border flex flex-col items-center">
+        <!-- 흰 배경 카드 -->
+        <div
+          class="w-full max-w-[360px] h-[400px] mt-[30px] mb-[20px] mx-auto bg-white rounded-xl p-6 pt-[-10px] shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex flex-col gap-[35px]"
+        >
+          <label
+            for="name"
+            class="text-[16px] font-semibold text-black mb-[-30px] mt-[10px] ml-[5px]"
+          >
+            이름
+          </label>
           <danji-input v-model="name" placeholder="이름을 입력해주세요." />
-          <label for="ID">아이디</label>
+
+          <label
+            for="ID"
+            class="text-[16px] font-semibold text-black mb-[-30px] mt-[10px] ml-[5px]"
+          >
+            아이디
+          </label>
           <danji-input v-model="username" placeholder="아이디를 입력해주세요." />
-          <label for="password">비밀번호</label>
+
+          <label
+            for="password"
+            class="text-[16px] font-semibold text-black mb-[-30px] mt-[10px] ml-[5px]"
+          >
+            비밀번호
+          </label>
           <danji-input v-model="password" type="password" placeholder="비밀번호를 입력해주세요." />
         </div>
 
         <!-- 버튼 -->
-        <button class="submit-btn" :disabled="!isValid" @click="onSignUp">회원가입 하기</button>
+        <button
+          class="w-full max-w-[360px] mt-6 py-7 text-[16px] text-white bg-[#4e3d31] rounded-xl cursor-pointer disabled:bg-[#cccccc] disabled:text-white disabled:cursor-not-allowed"
+          :disabled="!isValid"
+          @click="onSignUp"
+        >
+          회원가입 하기
+        </button>
       </div>
     </template>
   </Layout>
@@ -28,7 +53,6 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
-// Layout 컴포넌트 import 경로는 실제 위치에 맞게 조정해주세요
 import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
 
@@ -41,64 +65,7 @@ const isValid = computed(() => !!name.value && !!username.value && !!password.va
 
 function onSignUp() {
   if (!isValid.value) return
-  // TODO: 회원가입 API 호출
   console.log({ name: name.value, username: username.value, password: password.value })
   router.push('/login')
 }
 </script>
-
-<style scoped>
-.signup-page {
-  padding: 24px;
-  height: 595px;
-  background: #f5f6f8;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.form-card {
-  width: 100%;
-  max-width: 360px;
-  height: 400px;
-  margin: 30px auto 20px; /* 위쪽 40px, 좌우 auto, 아래 0 */
-
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 24px;
-  padding-top: -10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  gap: 35px;
-}
-
-.submit-btn {
-  width: 100%;
-  max-width: 360px;
-  margin-top: 24px;
-  padding: 16px;
-  font-size: 16px;
-  color: #ffffff;
-  background-color: #4e3d31;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-}
-.submit-btn:disabled {
-  background-color: #cccccc;
-  color: #ffffff;
-  cursor: not-allowed;
-  margin-top: 24px;
-}
-
-.form-card label {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000000;
-  margin-bottom: -30px;
-  margin-top: 10px;
-  margin-left: 5px;
-}
-</style>
