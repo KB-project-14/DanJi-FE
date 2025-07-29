@@ -54,6 +54,14 @@ const cards = [
   },
 ]
 
+// 더미 거래 데이터
+const transactions = [
+  { type: 'charge', amount: 10000, date: '2025-07-01' },
+  { type: 'charge', amount: 5000, date: '2025-07-10' },
+  { type: 'payment', amount: 2000, date: '2025-07-15' },
+  { type: 'refund', amount: 1000, date: '2025-07-20' },
+]
+
 // 선택된 from 카드 정보
 const selectedCard = computed(() => cards.find((c) => c.id === cardId))
 const chargedAmount = computed(() => selectedCard.value?.balance || 0)
@@ -67,6 +75,18 @@ const incentiveAmount = computed(() =>
 const activeTab = ref(0)
 const tabs = ['지역 → 지역', '지역 → 현금']
 const handleTabChange = (index: number) => (activeTab.value = index)
+
+// 환전 가능 금액 = balance
+const exchangeableBalance = computed(() => selectedCard.value?.balance || 0)
+
+// 이번 달 충전 금액
+const chargedAmountThisMonth = computed(() => {
+  const now = new Date()
+  const currentMonth = now.getMonth() + 1
+  return transactions
+    .filter((t) => t.type === 'charge' && new Date(t.date).getMonth() + 1 === currentMonth)
+    .reduce((sum, t) => sum + t.amount, 0)
+})
 
 // 환전 금액 입력값
 const exchangeInput = ref<number | null>(null)
@@ -132,6 +152,8 @@ const confirmExchange = () => {
               v-model="exchangeInput"
               @select-card="(value) => (selectedToCard = value)"
               :balance="selectedCard.balance"
+              :percentage="selectedCard.percentage"
+              :transactions="transactions"
               :chargedAmount="chargedAmount"
               :incentiveAmount="incentiveAmount"
               :cardName="selectedCard.name"
@@ -165,12 +187,12 @@ const confirmExchange = () => {
             v-if="showModal"
             :from-card="{
               name: selectedCard?.name || '',
-              chargedAmount: chargedAmount,
+              chargedAmount: chargedAmountThisMonth,
               incentiveAmount: incentiveAmount,
             }"
             :to-card="{
               name: selectedToCard,
-              chargedAmount: chargedAmount,
+              chargedAmount: chargedAmountThisMonth,
               incentiveAmount: incentiveAmount,
             }"
             :total-amount="exchangeInput || 0"
