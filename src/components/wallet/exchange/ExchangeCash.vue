@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { HandCoins } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -7,9 +6,17 @@ const props = defineProps<{
   chargedAmount: number
   incentiveAmount: number
   cardName?: string
+  modelValue: number | null
 }>()
 
-const exchangeInput = ref<number | null>(null)
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: number | null): void
+}>()
+
+const handleInput = (e: Event) => {
+  const value = Number((e.target as HTMLInputElement).value)
+  emit('update:modelValue', value)
+}
 </script>
 
 <template>
@@ -39,7 +46,8 @@ const exchangeInput = ref<number | null>(null)
       </div>
 
       <input
-        v-model="exchangeInput"
+        :value="props.modelValue"
+        @input="handleInput"
         type="number"
         placeholder="환전할 금액을 입력해주세요"
         class="p-[1.6rem] border rounded text-Gray-6 text-right Body02"
@@ -48,11 +56,11 @@ const exchangeInput = ref<number | null>(null)
       <div class="flex items-center justify-between p-[1.6rem] border rounded">
         <div class="pl-[0.4rem] text-Gray-6 Body04">통합지갑</div>
         <div class="Head04 text-Black-2">
-          {{ exchangeInput ? exchangeInput.toLocaleString() + '원' : '0원' }}
+          {{ props.modelValue ? props.modelValue.toLocaleString() + '원' : '0원' }}
         </div>
       </div>
 
-      <p class="mt-1 text-Yellow-1 Body03" :class="{ invisible: !exchangeInput }">
+      <p class="mt-1 text-Yellow-1 Body03" :class="{ invisible: !props.modelValue }">
         <span class="line-through">예상 수수료(1%): 3,000원</span>
         <span class="text-Red-0"> 수수료 면제 대상입니다!</span>
       </p>

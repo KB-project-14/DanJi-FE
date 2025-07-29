@@ -35,7 +35,7 @@ const selectedCard = ref('')
     <!-- 입력 UI -->
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
-        <div class="Head04 text-Black-2">{{ props.cardName || '동백전' }}</div>
+        <div class="Head04 text-Black-2">{{ props.cardName }}</div>
         <div class="Body04 text-Gray-5">최소 10,000원 이상 / 100원 단위 충전 가능</div>
       </div>
 

@@ -8,7 +8,7 @@ import ExchangeTabs from '@/components/wallet/exchange/ExchangeTab.vue'
 import ExchangeCash from '@/components/wallet/exchange/ExchangeCash.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 
-// URL param으로 id 가져오기
+// id 가져오기
 const route = useRoute()
 const cardId = Number(route.params.id)
 
@@ -68,7 +68,24 @@ const activeTab = ref(0)
 const tabs = ['지역 → 지역', '지역 → 현금']
 const handleTabChange = (index: number) => (activeTab.value = index)
 
+// 환전 금액 입력값
 const exchangeInput = ref<number | null>(null)
+
+const isButtonEnabled = computed(() => {
+  // 값 없으면 비활성화
+  if (!exchangeInput.value || exchangeInput.value <= 0) return false
+
+  // 환전 금액이 balance보다 크면 비활성화
+  if (exchangeInput.value > (selectedCard.value?.balance || 0)) return false
+
+  // 최소 10,000원
+  if (exchangeInput.value < 10000) return false
+
+  // 100원 단위
+  if (exchangeInput.value % 100 !== 0) return false
+
+  return true
+})
 </script>
 
 <template>
@@ -89,7 +106,7 @@ const exchangeInput = ref<number | null>(null)
           <div
             class="flex items-center justify-end pt-[1rem] pr-[2rem] pb-[1rem] gap-1 text-right text-Gray-7"
           >
-            <CircleAlert class="w-4 h-4" />
+            <CircleAlert class="w-[1.2rem] h-[1.2rem]" />
             <span>환전 시 수수료 1%가 부과됩니다.</span>
           </div>
 
@@ -97,6 +114,7 @@ const exchangeInput = ref<number | null>(null)
           <div class="flex-1 overflow-y-auto px-[1.8rem]">
             <exchange-cash
               v-if="selectedCard"
+              v-model="exchangeInput"
               :balance="selectedCard.balance"
               :chargedAmount="chargedAmount"
               :incentiveAmount="incentiveAmount"
@@ -109,7 +127,7 @@ const exchangeInput = ref<number | null>(null)
             <danji-button
               variant="large"
               class="w-full whitespace-nowrap text-center"
-              :disabled="!exchangeInput"
+              :disabled="!isButtonEnabled"
             >
               환전하기
             </danji-button>
