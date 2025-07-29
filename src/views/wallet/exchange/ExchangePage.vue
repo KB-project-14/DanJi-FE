@@ -8,7 +8,8 @@ import ExchangeTabs from '@/components/wallet/exchange/ExchangeTab.vue'
 import ExchangeCard from '@/components/wallet/exchange/ExchageCard.vue'
 import ExchangeCash from '@/components/wallet/exchange/ExchangeCash.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
-import ExchangeConfirmModal from '@/components/wallet/modal/ExchangeConfirmModal.vue'
+import ExchangeCardConfirmModal from '@/components/wallet/modal/ExchangeCardConfirmModal.vue'
+import ExchangCashConfirmModal from '@/components/wallet/modal/ExchangCashConfirmModal.vue'
 import { calculateExchange } from '@/utils/exchange'
 
 // id 가져오기
@@ -183,11 +184,11 @@ const confirmExchange = () => {
             <exchange-cash
               v-else-if="activeTab === 1 && selectedCard"
               v-model="exchangeInput"
-              @select-card="selectedToCard = $event"
-              :balance="selectedCard?.balance || 0"
+              :balance="selectedCard.balance"
               :chargedAmount="chargedAmountThisMonth"
               :incentiveAmount="incentiveAmount"
-              :cardName="selectedCard?.name || ''"
+              :cardName="selectedCard.name"
+              :percentage="selectedCard.percentage"
             />
           </div>
 
@@ -204,18 +205,20 @@ const confirmExchange = () => {
           </div>
 
           <!-- 확인 모달 -->
-          <exchange-confirm-modal
-            v-if="showModal && selectedCard && exchangeResult"
-            :from-card="{
-              name: selectedCard.name,
-              percentage: selectedCard.percentage,
-            }"
-            :to-card="{
-              name: selectedToCardData.name,
-              percentage: selectedToCardData.percentage,
-            }"
+          <exchange-card-confirm-modal
+            v-if="showModal && activeTab === 0 && selectedCard && exchangeResult"
+            :from-card="{ name: selectedCard.name, percentage: selectedCard.percentage }"
+            :to-card="{ name: selectedToCardData.name, percentage: selectedToCardData.percentage }"
             :total-amount="exchangeInput || 0"
             :result="exchangeResult"
+            @close="closeModal"
+            @confirm="confirmExchange"
+          />
+
+          <ExchangCashConfirmModal
+            v-if="showModal && selectedCard && activeTab === 1"
+            :from-card="{ name: selectedCard.name, percentage: selectedCard.percentage }"
+            :total-amount="exchangeInput || 0"
             @close="closeModal"
             @confirm="confirmExchange"
           />

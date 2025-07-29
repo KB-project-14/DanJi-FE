@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { HandCoins } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -7,6 +8,7 @@ const props = defineProps<{
   incentiveAmount: number
   cardName?: string
   modelValue: number | null
+  percentage?: number
 }>()
 
 const emit = defineEmits<{
@@ -17,6 +19,11 @@ const handleInput = (e: Event) => {
   const value = Number((e.target as HTMLInputElement).value)
   emit('update:modelValue', value)
 }
+// 인센티브 제외하고 환전될 금액
+const excludedIncentive = computed(() => {
+  if (!props.modelValue || !props.percentage) return 0
+  return Math.floor(props.modelValue / (1 + props.percentage / 100))
+})
 </script>
 
 <template>
@@ -42,7 +49,7 @@ const handleInput = (e: Event) => {
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
-        <div class="Body04 text-Gray-5">최소 10,000원 이상 / 100원 단위 환전 가능</div>
+        <div class="Body04 text-Gray-5">인센티브 비율만큼 차감된 금액으로 환전됩니다</div>
       </div>
 
       <input
@@ -55,9 +62,7 @@ const handleInput = (e: Event) => {
 
       <div class="flex items-center justify-between p-[1.6rem] border rounded">
         <div class="pl-[0.4rem] text-Gray-6 Body04">통합지갑</div>
-        <div class="Head04 text-Black-2">
-          {{ props.modelValue ? props.modelValue.toLocaleString() + '원' : '0원' }}
-        </div>
+        <div class="Head04 text-Black-2">{{ excludedIncentive.toLocaleString() }}원</div>
       </div>
 
       <p class="mt-1 text-Yellow-1 Body03" :class="{ invisible: !props.modelValue }">
