@@ -5,8 +5,10 @@ import { CircleAlert } from 'lucide-vue-next'
 
 import Layout from '@/components/layout/Layout.vue'
 import ExchangeTabs from '@/components/wallet/exchange/ExchangeTab.vue'
+import ExchangeCard from '@/components/wallet/exchange/ExchageCard.vue'
 import ExchangeCash from '@/components/wallet/exchange/ExchangeCash.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
+import ExchangeConfirmModal from '@/components/wallet/modal/ExchangeConfirmModal.vue'
 
 // id 가져오기
 const route = useRoute()
@@ -52,10 +54,8 @@ const cards = [
   },
 ]
 
-// id로 해당 카드 찾기
+// 선택된 from 카드 정보
 const selectedCard = computed(() => cards.find((c) => c.id === cardId))
-
-// 환전 시 표시할 값
 const chargedAmount = computed(() => selectedCard.value?.balance || 0)
 const incentiveAmount = computed(() =>
   selectedCard.value
@@ -70,22 +70,37 @@ const handleTabChange = (index: number) => (activeTab.value = index)
 
 // 환전 금액 입력값
 const exchangeInput = ref<number | null>(null)
+// ExchageCard에서 선택된 card
+const selectedToCard = ref('')
 
+// 버튼 활성화 여부 계산
 const isButtonEnabled = computed(() => {
-  // 값 없으면 비활성화
   if (!exchangeInput.value || exchangeInput.value <= 0) return false
-
-  // 환전 금액이 balance보다 크면 비활성화
   if (exchangeInput.value > (selectedCard.value?.balance || 0)) return false
-
-  // 최소 10,000원
   if (exchangeInput.value < 10000) return false
-
-  // 100원 단위
   if (exchangeInput.value % 100 !== 0) return false
-
   return true
 })
+
+// 모달 상태
+const showModal = ref(false)
+const openModal = () => {
+  if (isButtonEnabled.value) {
+    showModal.value = true
+  }
+}
+const closeModal = () => {
+  showModal.value = false
+}
+
+const confirmExchange = () => {
+  console.log('환전 확정!', {
+    amount: exchangeInput.value,
+    from: selectedCard.value?.name,
+    to: selectedToCard.value,
+  })
+  showModal.value = false
+}
 </script>
 
 <template>
@@ -110,11 +125,23 @@ const isButtonEnabled = computed(() => {
             <span>환전 시 수수료 1%가 부과됩니다.</span>
           </div>
 
-          <!-- 환전 카드 -->
           <div class="flex-1 overflow-y-auto px-[1.8rem]">
-            <exchange-cash
-              v-if="selectedCard"
+            <!-- 지역 → 지역 -->
+            <exchange-card
+              v-if="activeTab === 0 && selectedCard"
               v-model="exchangeInput"
+              @select-card="(value) => (selectedToCard = value)"
+              :balance="selectedCard.balance"
+              :chargedAmount="chargedAmount"
+              :incentiveAmount="incentiveAmount"
+              :cardName="selectedCard.name"
+            />
+
+            <!-- 지역 → 현금 -->
+            <exchange-cash
+              v-else-if="activeTab === 1 && selectedCard"
+              v-model="exchangeInput"
+              @select-card="selectedToCard = $event"
               :balance="selectedCard.balance"
               :chargedAmount="chargedAmount"
               :incentiveAmount="incentiveAmount"
@@ -128,10 +155,28 @@ const isButtonEnabled = computed(() => {
               variant="large"
               class="w-full whitespace-nowrap text-center"
               :disabled="!isButtonEnabled"
+              @click="openModal"
             >
               환전하기
             </danji-button>
           </div>
+
+          <exchange-confirm-modal
+            v-if="showModal"
+            :from-card="{
+              name: selectedCard?.name || '',
+              chargedAmount: chargedAmount,
+              incentiveAmount: incentiveAmount,
+            }"
+            :to-card="{
+              name: selectedToCard,
+              chargedAmount: chargedAmount,
+              incentiveAmount: incentiveAmount,
+            }"
+            :total-amount="exchangeInput || 0"
+            @close="closeModal"
+            @confirm="confirmExchange"
+          />
         </div>
       </div>
     </template>

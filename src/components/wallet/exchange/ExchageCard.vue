@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { HandCoins } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -7,10 +7,33 @@ const props = defineProps<{
   chargedAmount: number
   incentiveAmount: number
   cardName?: string
+  modelValue: number | null
 }>()
 
-const exchangeInput = ref<number | null>(null)
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: number | null): void
+  (e: 'select-card', value: string): void
+}>()
+
+// 더미 카드 데이터
+const cards = [
+  { id: 1, name: '동백전', order: 3 },
+  { id: 2, name: '서울Pay', order: 1 },
+  { id: 3, name: '강원상품권', order: 2 },
+  { id: 4, name: '부산Pay', order: 4 },
+]
+
+const sortedCards = computed(() => [...cards].sort((a, b) => a.order - b.order))
 const selectedCard = ref('')
+
+const handleInput = (e: Event) => {
+  const value = Number((e.target as HTMLInputElement).value)
+  emit('update:modelValue', value)
+}
+
+const handleSelect = () => {
+  emit('select-card', selectedCard.value)
+}
 </script>
 
 <template>
@@ -36,30 +59,35 @@ const selectedCard = ref('')
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
-        <div class="Body04 text-Gray-5">최소 10,000원 이상 / 100원 단위 충전 가능</div>
+        <div class="Body04 text-Gray-5">인센티브는 제외하고 환전됩니다</div>
       </div>
 
       <input
-        v-model="exchangeInput"
+        :value="props.modelValue"
+        @input="handleInput"
         type="number"
         placeholder="환전할 금액을 입력해주세요"
         class="p-[1.6rem] border rounded text-Gray-6 text-right Body02"
       />
 
       <div class="flex items-center justify-between border rounded p-[1.6rem]">
-        <select v-model="selectedCard" class="bg-transparent outline-none text-Gray-6 Body04">
+        <select
+          v-model="selectedCard"
+          @change="handleSelect"
+          class="bg-transparent outline-none text-Gray-6 Body04"
+        >
           <option value="">카드 선택</option>
-          <option value="양산사랑카드">양산사랑카드</option>
-          <option value="서울Pay">서울Pay</option>
-          <option value="서울Pay">서울Pay</option>
+          <option v-for="card in sortedCards" :key="card.id" :value="card.name">
+            {{ card.name }}
+          </option>
         </select>
 
         <div class="Head04 text-Black-2">
-          {{ exchangeInput ? exchangeInput.toLocaleString() + '원' : '0원' }}
+          {{ props.modelValue ? props.modelValue.toLocaleString() + '원' : '0원' }}
         </div>
       </div>
 
-      <p class="mt-1 text-Yellow-1 Body03" :class="{ invisible: !exchangeInput }">
+      <p class="mt-1 text-Yellow-1 Body03" :class="{ invisible: !props.modelValue }">
         <span class="line-through">예상 수수료(1%): 3,000원</span>
         <span class="text-Red-0"> 수수료 면제 대상입니다!</span>
       </p>
