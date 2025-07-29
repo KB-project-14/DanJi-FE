@@ -14,7 +14,7 @@ import { ChevronDown } from 'lucide-vue-next'
  *
  * @example 아이콘 포함
  * ```vue
- * <danji-chip :isIcon="true">더보기</danji-chip>
+ * <danji-chip :is-icon="true">더보기</danji-chip>
  * ```
  *
  * @prop isIcon - ChevronDown 아이콘 표시 여부
