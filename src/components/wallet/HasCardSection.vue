@@ -68,6 +68,7 @@ onMounted(() => {
           class="!w-[275px] shrink-0"
         >
           <UserCard
+            :id="card.id"
             :balance="card.balance"
             :backgroundImageUrl="card.backgroundImageUrl"
             class="w-full"

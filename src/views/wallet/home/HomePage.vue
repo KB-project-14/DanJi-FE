@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import TotalWallet from '@/components/wallet/TotalWallet.vue'
@@ -19,14 +20,12 @@ interface Card {
 
 const router = useRouter()
 
-// 통합 지갑 선택시 총자산보기 페이지 이동
-const goWalletPage = () => {
-  router.push('/wallet/view')
-}
-
-// 충전 버튼 선택시 충전하기 페이지 이동
 const goChangePage = () => {
   router.push('/card/charge')
+}
+
+const goCardHistory = (id: number) => {
+  router.push(`/card/history/${id}`)
 }
 
 const hasCard = true
@@ -76,16 +75,18 @@ const cards = ref<Card[]>([
     <template #content>
       <div class="min-h-full bg-Background">
         <!-- 통합지갑 section -->
-        <div class="flex justify-center pt-10" @click="goWalletPage">
+        <div class="flex justify-center pt-[3rem]">
           <div class="w-[270px]">
             <TotalWallet :wallet-amount="82000" :total-asset="582000" />
           </div>
         </div>
+
         <!-- 나의 지역화폐카드 -->
-        <div class="pl-20 pt-20 pb-10 px-4">
-          <HasCardSection v-if="hasCard" :cards="cards" />
+        <div class="pl-20 pt-[4rem] pb-[3rem] px-[1rem]">
+          <HasCardSection v-if="hasCard" :cards="cards" @click-card="goCardHistory" />
           <NoCardSection v-else />
         </div>
+
         <!-- 버튼 -->
         <div class="flex justify-center gap-10">
           <danji-button variant="small" @click="goChangePage">충전</danji-button>
