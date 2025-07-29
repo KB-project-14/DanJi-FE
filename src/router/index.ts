@@ -16,6 +16,8 @@ import ChargeCompletePage from '@/views/wallet/charge/ChargeCompletePage.vue'
 import { Component } from 'lucide-vue-next'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 import MapPage from '@/views/map/MapPage.vue'
+import LoginPage from '@/views/auth/LoginPage.vue'
+import SignUpPage from '@/views/auth/SignUpPage.vue'
 
 const routes = [
   {
@@ -81,6 +83,16 @@ const routes = [
   {
     path: '/map',
     component: MapPage,
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginPage,
+  },
+  {
+    path: '/signup',
+    name: 'SignUp',
+    component: SignUpPage,
   },
 ]
 

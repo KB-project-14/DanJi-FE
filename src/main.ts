@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { useKakao } from 'vue3-kakao-maps/@utils'
+import { useKakao } from 'vue3-kakao-maps'
 
 import './assets/styles/reset.css'
 import './assets/styles/tailwind.css'
