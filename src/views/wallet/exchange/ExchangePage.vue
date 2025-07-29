@@ -9,6 +9,7 @@ import ExchangeCard from '@/components/wallet/exchange/ExchageCard.vue'
 import ExchangeCash from '@/components/wallet/exchange/ExchangeCash.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import ExchangeConfirmModal from '@/components/wallet/modal/ExchangeConfirmModal.vue'
+import { calculateExchange } from '@/utils/exchange'
 
 // id 가져오기
 const route = useRoute()
@@ -23,7 +24,7 @@ const cards = [
     backgroundImageUrl: '/',
     order: 3,
     benefit_type: '캐시백',
-    percentage: 10,
+    percentage: 7,
   },
   {
     id: 2,
@@ -32,16 +33,16 @@ const cards = [
     backgroundImageUrl: '/',
     order: 1,
     benefit_type: '캐시백',
-    percentage: 5,
+    percentage: 10,
   },
   {
     id: 3,
     name: '강원상품권',
-    balance: 25000,
+    balance: 110000,
     backgroundImageUrl: '/',
     order: 2,
     benefit_type: '인센티브',
-    percentage: 7,
+    percentage: 10,
   },
   {
     id: 4,
@@ -50,36 +51,22 @@ const cards = [
     backgroundImageUrl: '/',
     order: 4,
     benefit_type: '인센티브',
-    percentage: 8,
+    percentage: 10,
   },
 ]
 
 // 더미 거래 데이터
 const transactions = [
-  { type: 'charge', amount: 10000, date: '2025-07-01' },
-  { type: 'charge', amount: 5000, date: '2025-07-10' },
+  { type: 'charge', amount: 100000, date: '2025-07-01' },
+  { type: 'charge', amount: 10000, date: '2025-07-10' },
   { type: 'payment', amount: 2000, date: '2025-07-15' },
   { type: 'refund', amount: 1000, date: '2025-07-20' },
 ]
 
-// 선택된 from 카드 정보
-const selectedCard = computed(() => cards.find((c) => c.id === cardId))
-const chargedAmount = computed(() => selectedCard.value?.balance || 0)
-const incentiveAmount = computed(() =>
-  selectedCard.value
-    ? Math.floor(selectedCard.value.balance * (selectedCard.value.percentage / 100))
-    : 0,
-)
+// 선택된 from 카드 정보 (null fallback)
+const selectedCard = computed(() => cards.find((c) => c.id === cardId) || null)
 
-// 탭
-const activeTab = ref(0)
-const tabs = ['지역 → 지역', '지역 → 현금']
-const handleTabChange = (index: number) => (activeTab.value = index)
-
-// 환전 가능 금액 = balance
-const exchangeableBalance = computed(() => selectedCard.value?.balance || 0)
-
-// 이번 달 충전 금액
+// 이번 달 충전 금액 계산
 const chargedAmountThisMonth = computed(() => {
   const now = new Date()
   const currentMonth = now.getMonth() + 1
@@ -88,17 +75,51 @@ const chargedAmountThisMonth = computed(() => {
     .reduce((sum, t) => sum + t.amount, 0)
 })
 
+// 인센티브 계산 (이번 달 충전 금액 * percentage)
+const incentiveAmount = computed(() => {
+  if (!selectedCard.value) return 0
+  return Math.floor(chargedAmountThisMonth.value * (selectedCard.value.percentage / 100))
+})
+
+// 탭
+const activeTab = ref(0)
+const tabs = ['지역 → 지역', '지역 → 현금']
+const handleTabChange = (index: number) => (activeTab.value = index)
+
 // 환전 금액 입력값
 const exchangeInput = ref<number | null>(null)
-// ExchageCard에서 선택된 card
+
+// 선택된 To 카드
 const selectedToCard = ref('')
+
+const selectedToCardData = computed(() => {
+  return (
+    cards.find((c) => c.name === selectedToCard.value) || {
+      name: '',
+      balance: 0,
+      percentage: 0,
+      chargedAmount: 0,
+      incentiveAmount: 0,
+      transactions: [],
+    }
+  )
+})
+
+const exchangeResult = computed(() => {
+  if (!selectedCard.value || !selectedToCardData.value || !exchangeInput.value) return null
+
+  return calculateExchange(
+    selectedCard.value.percentage,
+    selectedToCardData.value.percentage,
+    exchangeInput.value,
+  )
+})
 
 // 버튼 활성화 여부 계산
 const isButtonEnabled = computed(() => {
   if (!exchangeInput.value || exchangeInput.value <= 0) return false
   if (exchangeInput.value > (selectedCard.value?.balance || 0)) return false
-  if (exchangeInput.value < 10000) return false
-  if (exchangeInput.value % 100 !== 0) return false
+  if (!selectedToCard.value) return false
   return true
 })
 
@@ -153,8 +174,7 @@ const confirmExchange = () => {
               @select-card="(value) => (selectedToCard = value)"
               :balance="selectedCard.balance"
               :percentage="selectedCard.percentage"
-              :transactions="transactions"
-              :chargedAmount="chargedAmount"
+              :chargedAmount="chargedAmountThisMonth"
               :incentiveAmount="incentiveAmount"
               :cardName="selectedCard.name"
             />
@@ -164,10 +184,10 @@ const confirmExchange = () => {
               v-else-if="activeTab === 1 && selectedCard"
               v-model="exchangeInput"
               @select-card="selectedToCard = $event"
-              :balance="selectedCard.balance"
-              :chargedAmount="chargedAmount"
+              :balance="selectedCard?.balance || 0"
+              :chargedAmount="chargedAmountThisMonth"
               :incentiveAmount="incentiveAmount"
-              :cardName="selectedCard.name"
+              :cardName="selectedCard?.name || ''"
             />
           </div>
 
@@ -183,19 +203,19 @@ const confirmExchange = () => {
             </danji-button>
           </div>
 
+          <!-- 확인 모달 -->
           <exchange-confirm-modal
-            v-if="showModal"
+            v-if="showModal && selectedCard && exchangeResult"
             :from-card="{
-              name: selectedCard?.name || '',
-              chargedAmount: chargedAmountThisMonth,
-              incentiveAmount: incentiveAmount,
+              name: selectedCard.name,
+              percentage: selectedCard.percentage,
             }"
             :to-card="{
-              name: selectedToCard,
-              chargedAmount: chargedAmountThisMonth,
-              incentiveAmount: incentiveAmount,
+              name: selectedToCardData.name,
+              percentage: selectedToCardData.percentage,
             }"
             :total-amount="exchangeInput || 0"
+            :result="exchangeResult"
             @close="closeModal"
             @confirm="confirmExchange"
           />
