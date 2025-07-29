@@ -93,6 +93,11 @@ const isPayDisabled = computed(() => {
   // 그 외엔 활성화
   return false
 })
+
+const handleInfoConfirm = () => {
+  showInfoModal.value = false
+  router.push('/pay-complete')
+}
 </script>
 <template>
   <layout
@@ -203,7 +208,7 @@ const isPayDisabled = computed(() => {
           </p>
           <p
             v-if="selectedPayment === 'local' && localPaymentAmount > localBalance"
-            class="text-red-500 text-sm mt-[0.7rem]"
+            class="text-Red-0 Body03 mt-[0.7rem]"
           >
             지역화폐 잔액({{ localBalance.toLocaleString() }}원)을 초과했습니다.
           </p>
@@ -220,10 +225,7 @@ const isPayDisabled = computed(() => {
       <PayInfoModal
         :is-open="showInfoModal"
         @cancel="showInfoModal = false"
-        @confirm="
-          showInfoModal = false;
-          router.push('/pay-complete')
-        "
+        @confirm="handleInfoConfirm"
       />
     </template>
   </layout>
