@@ -10,8 +10,7 @@ import ExchangeCash from '@/components/wallet/exchange/ExchangeCash.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import ExchangeCardConfirmModal from '@/components/wallet/modal/ExchangeCardConfirmModal.vue'
 import ExchangCashConfirmModal from '@/components/wallet/modal/ExchangCashConfirmModal.vue'
-import { calculateExchange } from '@/utils/exchange'
-
+import { calculateExchangeRegionToRegion, calculateExchangeRegionToCash } from '@/utils/exchange'
 // id 가져오기
 const route = useRoute()
 const cardId = Number(route.params.id)
@@ -30,7 +29,7 @@ const cards = [
   {
     id: 2,
     name: '서울Pay',
-    balance: 15000,
+    balance: 200000,
     backgroundImageUrl: '/',
     order: 1,
     benefit_type: '캐시백',
@@ -64,10 +63,10 @@ const transactions = [
   { type: 'refund', amount: 1000, date: '2025-07-20' },
 ]
 
-// 선택된 from 카드 정보 (null fallback)
+// 선택된 from 카드
 const selectedCard = computed(() => cards.find((c) => c.id === cardId) || null)
 
-// 이번 달 충전 금액 계산
+// 이번 달 충전 금액
 const chargedAmountThisMonth = computed(() => {
   const now = new Date()
   const currentMonth = now.getMonth() + 1
@@ -76,7 +75,7 @@ const chargedAmountThisMonth = computed(() => {
     .reduce((sum, t) => sum + t.amount, 0)
 })
 
-// 인센티브 계산 (이번 달 충전 금액 * percentage)
+// 인센티브 금액
 const incentiveAmount = computed(() => {
   if (!selectedCard.value) return 0
   return Math.floor(chargedAmountThisMonth.value * (selectedCard.value.percentage / 100))
@@ -93,6 +92,7 @@ const exchangeInput = ref<number | null>(null)
 // 선택된 To 카드
 const selectedToCard = ref('')
 
+// To 카드 데이터
 const selectedToCardData = computed(() => {
   return (
     cards.find((c) => c.name === selectedToCard.value) || {
@@ -107,29 +107,31 @@ const selectedToCardData = computed(() => {
 })
 
 const exchangeResult = computed(() => {
-  if (!selectedCard.value || !selectedToCardData.value || !exchangeInput.value) return null
+  if (!selectedCard.value || !exchangeInput.value) return null
 
-  return calculateExchange(
-    selectedCard.value.percentage,
-    selectedToCardData.value.percentage,
-    exchangeInput.value,
-  )
+  if (activeTab.value === 0) {
+    return calculateExchangeRegionToRegion(
+      selectedCard.value.percentage,
+      selectedToCardData.value.percentage,
+      exchangeInput.value,
+    )
+  } else {
+    return calculateExchangeRegionToCash(selectedCard.value.percentage, exchangeInput.value)
+  }
 })
 
-// 버튼 활성화 여부 계산
+// 버튼 활성화 여부
 const isButtonEnabled = computed(() => {
   if (!exchangeInput.value || exchangeInput.value <= 0) return false
   if (exchangeInput.value > (selectedCard.value?.balance || 0)) return false
-  if (!selectedToCard.value) return false
+  if (activeTab.value === 0 && !selectedToCard.value) return false
   return true
 })
 
 // 모달 상태
 const showModal = ref(false)
 const openModal = () => {
-  if (isButtonEnabled.value) {
-    showModal.value = true
-  }
+  if (isButtonEnabled.value) showModal.value = true
 }
 const closeModal = () => {
   showModal.value = false
@@ -172,6 +174,7 @@ const confirmExchange = () => {
             <exchange-card
               v-if="activeTab === 0 && selectedCard"
               v-model="exchangeInput"
+              mode="region"
               @select-card="(value) => (selectedToCard = value)"
               :balance="selectedCard.balance"
               :percentage="selectedCard.percentage"
@@ -184,6 +187,7 @@ const confirmExchange = () => {
             <exchange-cash
               v-else-if="activeTab === 1 && selectedCard"
               v-model="exchangeInput"
+              mode="cash"
               :balance="selectedCard.balance"
               :chargedAmount="chargedAmountThisMonth"
               :incentiveAmount="incentiveAmount"
@@ -204,7 +208,7 @@ const confirmExchange = () => {
             </danji-button>
           </div>
 
-          <!-- 확인 모달 -->
+          <!-- 지역 → 지역 모달 -->
           <exchange-card-confirm-modal
             v-if="showModal && activeTab === 0 && selectedCard && exchangeResult"
             :from-card="{ name: selectedCard.name, percentage: selectedCard.percentage }"
@@ -215,10 +219,12 @@ const confirmExchange = () => {
             @confirm="confirmExchange"
           />
 
+          <!-- 지역 → 현금 모달 -->
           <ExchangCashConfirmModal
-            v-if="showModal && selectedCard && activeTab === 1"
+            v-if="showModal && selectedCard && activeTab === 1 && exchangeResult"
             :from-card="{ name: selectedCard.name, percentage: selectedCard.percentage }"
             :total-amount="exchangeInput || 0"
+            :result="exchangeResult"
             @close="closeModal"
             @confirm="confirmExchange"
           />

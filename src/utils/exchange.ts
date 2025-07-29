@@ -1,26 +1,25 @@
-export function calculateExchange(
+export function calculateExchangeRegionToRegion(
   fromPercentage: number,
   toPercentage: number,
   totalAmount: number,
 ) {
-  // 1. From 카드 → 현금 (인센티브 제외)
-  const fromRate = 1 + fromPercentage / 100
-  const cashValue = totalAmount / fromRate
+  // 1. From 카드 현금화 (인센티브 제거)
+  const cashValue = totalAmount / (1 + fromPercentage / 100) // 현금 가치
+  const excludedIncentive = totalAmount - cashValue // 제외된 인센티브 금액
 
-  // 제외된 인센티브 (From 카드 인센티브 부분)
-  const excludedIncentive = totalAmount - cashValue
+  // 2. To 카드 충전 금액
+  const baseAmount = Math.floor(cashValue) // 소수점 버림
+  const incentive = Math.round(baseAmount * (toPercentage / 100)) // To 카드 인센티브
+  const finalAmount = Math.round(baseAmount + incentive) // 최종 환전 금액
 
-  // 2. 현금 → To 카드 변환
-  const baseAmount = Math.round(cashValue) // 소수점 버림
-  const incentive = Math.round(baseAmount * (toPercentage / 100)) //소수점 올림
+  return { baseAmount, incentive, finalAmount, excludedIncentive }
+}
 
-  // 3. 최종 충전 금액 (반올림)
-  const finalAmount = Math.round(baseAmount + incentive)
+// 지역 → 현금
+export function calculateExchangeRegionToCash(fromPercentage: number, totalAmount: number) {
+  // 인센티브 제외
+  const excludedIncentive = Math.floor(totalAmount * (fromPercentage / 100))
+  const finalAmount = totalAmount - excludedIncentive
 
-  return {
-    baseAmount, // 충전 금액
-    incentive, // To 카드 인센티브
-    finalAmount, // 최종 충전 금액
-    excludedIncentive, // From 카드에서 제외된 인센티브
-  }
+  return { finalAmount, excludedIncentive }
 }

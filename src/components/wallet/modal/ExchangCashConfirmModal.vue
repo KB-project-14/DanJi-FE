@@ -1,28 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { ArrowRight } from 'lucide-vue-next'
-
-// 단일 카드 → 현금 변환
 const props = defineProps<{
   fromCard: { name: string; percentage: number }
   totalAmount: number
+  result: { finalAmount: number; excludedIncentive: number }
 }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
   (e: 'confirm'): void
 }>()
-
-// 1. 인센티브 제외 후 현금 변환
-const cashValue = computed(() => {
-  const rate = 1 + props.fromCard.percentage / 100
-  return Math.round(props.totalAmount / rate)
-})
-
-// 제외된 인센티브 금액
-const excludedIncentive = computed(() => {
-  return props.totalAmount - cashValue.value
-})
 </script>
 
 <template>
@@ -40,27 +26,27 @@ const excludedIncentive = computed(() => {
           </p>
           <p class="Body03 text-Gray-6">
             제외된 인센티브:
-            <span class="text-Red-0">{{ excludedIncentive.toLocaleString() }}원</span>
+            <span class="text-Red-0">
+              {{ props.result.excludedIncentive.toLocaleString() }}원
+            </span>
           </p>
         </div>
 
-        <div class="flex items-center justify-center text-Gray-4 w-[1.6rem] h-[1.6rem]">
-          <ArrowRight />
-        </div>
+        <div class="mx-2 flex items-center justify-center text-Gray-4">➡️</div>
 
-        <!-- To (통합지갑 고정) -->
+        <!-- To (통합지갑) -->
         <div class="flex-1 bg-Gray-1 rounded-xl py-[1.6rem] px-[1rem] ml-2 text-center">
           <p class="pb-[0.6rem] Body02">통합지갑</p>
           <p class="Body03 text-Gray-6 mb-[0.2rem]">
             최종 충전 금액:
-            <span class="text-Yellow-1">{{ cashValue.toLocaleString() }}원</span>
+            <span class="text-Yellow-1">{{ props.result.finalAmount.toLocaleString() }}원</span>
           </p>
         </div>
       </div>
 
       <div class="mb-[2rem] text-center Head02">
         최종 환전 금액:
-        <span class="text-Black-2">{{ cashValue.toLocaleString() }}원</span>
+        <span class="text-Black-2">{{ props.result.finalAmount.toLocaleString() }}원</span>
       </div>
 
       <div class="flex gap-4">

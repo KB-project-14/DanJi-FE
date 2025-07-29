@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { calculateExchange } from '@/utils/exchange'
+import { calculateExchangeRegionToRegion } from '@/utils/exchange'
 
 import { ArrowRight } from 'lucide-vue-next'
 
@@ -17,7 +17,11 @@ const emit = defineEmits<{
 
 // 계산 결과 가져오기
 const exchangeResult = computed(() =>
-  calculateExchange(props.fromCard.percentage, props.toCard.percentage, props.totalAmount),
+  calculateExchangeRegionToRegion(
+    props.fromCard.percentage,
+    props.toCard.percentage,
+    props.totalAmount,
+  ),
 )
 </script>
 
@@ -57,6 +61,10 @@ const exchangeResult = computed(() =>
       <div class="mb-[2rem] text-center Head02">
         최종 환전 금액:
         <span class="text-Black-2">{{ exchangeResult.finalAmount.toLocaleString() }}원</span>
+      </div>
+      <div class="mb-[1rem] text-center text-Gray-5 Body03">
+        ※ 환전 시 전 카드의 인센티브( {{ props.fromCard.percentage }}% )는 제외되고, 환전할 카드의
+        인센티브( {{ props.toCard.percentage }}% )만 새로 적용됩니다.
       </div>
 
       <div class="flex gap-4">

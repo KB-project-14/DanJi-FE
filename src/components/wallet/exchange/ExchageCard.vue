@@ -6,9 +6,10 @@ const props = defineProps<{
   balance: number
   chargedAmount: number
   incentiveAmount: number
-  percentage: number
+  percentage: number // from 카드 퍼센트
   cardName?: string
   modelValue: number | null
+  mode?: 'region' | 'cash' // 지역→지역인지, 지역→현금인지 구분
 }>()
 
 const emit = defineEmits<{
@@ -18,12 +19,13 @@ const emit = defineEmits<{
 
 // 카드 목록
 const sortedCards = [
-  { id: 1, name: '동백전' },
-  { id: 2, name: '서울Pay' },
-  { id: 3, name: '강원상품권' },
-  { id: 4, name: '부산Pay' },
+  { id: 1, name: '동백전', percentage: 7 },
+  { id: 2, name: '서울Pay', percentage: 10 },
+  { id: 3, name: '강원상품권', percentage: 10 },
+  { id: 4, name: '부산Pay', percentage: 10 },
 ]
 
+// To 카드 선택 (지역→지역 모드일 때만 사용)
 const selectedCard = ref('')
 
 // 금액 입력 처리
@@ -37,10 +39,11 @@ const handleSelect = () => {
   emit('select-card', selectedCard.value)
 }
 
-// 혜택 문구
-const selectedCardBenefit = computed(() =>
-  selectedCard.value ? `${selectedCard.value} 혜택 : 인센티브 ${props.percentage}%` : '',
-)
+// 혜택 문구 (지역→지역에서만 사용)
+const selectedCardBenefit = computed(() => {
+  const card = sortedCards.find((c) => c.name === selectedCard.value)
+  return card ? `${card.name} 혜택 : 인센티브 ${card.percentage}%` : ''
+})
 </script>
 
 <template>
@@ -77,7 +80,11 @@ const selectedCardBenefit = computed(() =>
         class="p-[1.6rem] border rounded text-Gray-6 text-right Body02"
       />
 
-      <div class="flex items-center justify-between border rounded p-[1.6rem]">
+      <!-- 지역→지역 모드일 때만 카드 선택 -->
+      <div
+        v-if="props.mode === 'region'"
+        class="flex items-center justify-between border rounded p-[1.6rem]"
+      >
         <select
           v-model="selectedCard"
           @change="handleSelect"
@@ -95,7 +102,7 @@ const selectedCardBenefit = computed(() =>
       </div>
 
       <!-- 혜택 문구 -->
-      <p v-if="selectedCard" class="text-Gray-6">
+      <p v-if="props.mode === 'region' && selectedCard" class="text-Gray-6">
         {{ selectedCardBenefit }}
       </p>
 
