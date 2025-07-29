@@ -6,10 +6,11 @@ const props = defineProps<{
   balance: number
   chargedAmount: number
   incentiveAmount: number
-  percentage: number // from 카드 퍼센트
+  percentage: number
   cardName?: string
   modelValue: number | null
   mode?: 'region' | 'cash' // 지역→지역인지, 지역→현금인지 구분
+  fromCardName: string
 }>()
 
 const emit = defineEmits<{
@@ -91,7 +92,11 @@ const selectedCardBenefit = computed(() => {
           class="bg-transparent outline-none text-Gray-6 Body04"
         >
           <option value="">카드 선택</option>
-          <option v-for="card in sortedCards" :key="card.id" :value="card.name">
+          <option
+            v-for="card in sortedCards.filter((c) => c.name !== props.fromCardName)"
+            :key="card.id"
+            :value="card.name"
+          >
             {{ card.name }}
           </option>
         </select>

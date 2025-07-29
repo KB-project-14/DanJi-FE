@@ -11,7 +11,6 @@ import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import ExchangeCardConfirmModal from '@/components/wallet/modal/ExchangeCardConfirmModal.vue'
 import ExchangCashConfirmModal from '@/components/wallet/modal/ExchangCashConfirmModal.vue'
 import { calculateExchangeRegionToRegion, calculateExchangeRegionToCash } from '@/utils/exchange'
-// id 가져오기
 const route = useRoute()
 const cardId = Number(route.params.id)
 
@@ -29,7 +28,7 @@ const cards = [
   {
     id: 2,
     name: '서울Pay',
-    balance: 200000,
+    balance: 50000000,
     backgroundImageUrl: '/',
     order: 1,
     benefit_type: '캐시백',
@@ -181,6 +180,7 @@ const confirmExchange = () => {
               :chargedAmount="chargedAmountThisMonth"
               :incentiveAmount="incentiveAmount"
               :cardName="selectedCard.name"
+              :fromCardName="selectedCard.name"
             />
 
             <!-- 지역 → 현금 -->
