@@ -7,7 +7,6 @@
   >
     <template #content>
       <div class="p-6 h-[595px] bg-[#f5f6f8] box-border flex flex-col items-center">
-        <!-- 흰 배경 카드 -->
         <div
           class="w-full max-w-[360px] h-[400px] mt-[30px] mb-[20px] mx-auto bg-white rounded-xl p-6 pt-[-10px] shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex flex-col gap-[35px]"
         >

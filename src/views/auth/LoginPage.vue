@@ -2,7 +2,6 @@
   <Layout header-type="basic" :is-bottom-nav="false" :show-left-icon="false">
     <template #content>
       <div class="flex flex-col items-center bg-white box-border p-[24px]">
-        <!-- 1) 로고 + 설명 -->
         <div class="text-center mt-[24px] mb-[32px]">
           <img
             src="@/assets/images/danji-logo-main.png"
@@ -15,7 +14,6 @@
           </p>
         </div>
 
-        <!-- 2) 흰 카드 : 입력창 2개 + 링크 -->
         <div class="w-[365px] bg-white rounded-[12px] p-[24px] flex flex-col gap-[3px] mt-[25px]">
           <!-- 아이디 입력 -->
           <div class="h-[64px] flex items-center relative">
@@ -62,7 +60,7 @@
           </router-link>
         </div>
 
-        <!-- 3) 로그인 버튼 -->
+        <!-- 로그인 버튼 -->
         <button
           class="w-full max-w-[360px] mt-[20px] py-[16px] text-[16px] font-medium text-white bg-[#60584c] rounded-[12px] cursor-pointer"
           @click="onLogin"
@@ -89,7 +87,6 @@ function onLogin() {
 </script>
 
 <style scoped lang="postcss">
-/* DanjiInput 내부 input padding 조정 */
 :deep(input) {
   @apply h-[56px] pl-[48px] text-[15px] leading-[44px];
 }
