@@ -18,6 +18,7 @@ import CardChargePage from '@/views/wallet/charge/CardChargePage.vue'
 import ChargeCompletePage from '@/views/wallet/charge/ChargeCompletePage.vue'
 import ExchangePage from '@/views/wallet/exchange/ExchangePage.vue'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
+import MapPage from '@/views/map/MapPage.vue'
 
 const routes = [
   {
@@ -89,6 +90,10 @@ const routes = [
     path: '/wallet/card/create/:region/:city',
     name: 'LocalCardCreateDetail',
     component: LocalCardCreateDetailPage,
+  },
+  {
+    path: '/map',
+    component: MapPage,
   },
 ]
 
