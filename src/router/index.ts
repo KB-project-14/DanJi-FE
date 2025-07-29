@@ -79,7 +79,7 @@ const routes = [
     component: CardSettingPage,
   },
   {
-    path: '/exchange/:id',
+    path: '/card/exchange/:id',
     name: 'ExchangePage',
     component: ExchangePage,
     props: true,

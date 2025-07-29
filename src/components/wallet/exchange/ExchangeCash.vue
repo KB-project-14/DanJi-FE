@@ -10,7 +10,6 @@ const props = defineProps<{
 }>()
 
 const exchangeInput = ref<number | null>(null)
-const selectedCard = ref('')
 </script>
 
 <template>
@@ -28,15 +27,15 @@ const selectedCard = ref('')
     <div class="Body03 text-Gray-6">
       내가 충전한 금액:
       <span class="text-Yellow-1">{{ props.chargedAmount.toLocaleString() }}원</span><br />
-      내가 받은 인센티브(10%):
+      내가 받은 인센티브:
       <span class="text-Yellow-1">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 
     <!-- 입력 UI -->
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
-        <div class="Head04 text-Black-2">{{ props.cardName || '동백전' }}</div>
-        <div class="Body04 text-Gray-5">최소 10,000원 이상 / 100원 단위 충전 가능</div>
+        <div class="Head04 text-Black-2">{{ props.cardName }}</div>
+        <div class="Body04 text-Gray-5">최소 10,000원 이상 / 100원 단위 환전 가능</div>
       </div>
 
       <input
@@ -46,10 +45,8 @@ const selectedCard = ref('')
         class="p-[1.6rem] border rounded text-Gray-6 text-right Body02"
       />
 
-      <div class="flex items-center justify-between border rounded p-[1.6rem]">
-        <!-- 통합지갑 고정 텍스트 -->
+      <div class="flex items-center justify-between p-[1.6rem] border rounded">
         <div class="pl-[0.4rem] text-Gray-6 Body04">통합지갑</div>
-
         <div class="Head04 text-Black-2">
           {{ exchangeInput ? exchangeInput.toLocaleString() + '원' : '0원' }}
         </div>
