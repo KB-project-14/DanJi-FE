@@ -10,6 +10,7 @@ import LocalPayFailModal from '@/components/common/modal/LocalPayFailModal.vue'
 import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 
 import { useRouter } from 'vue-router'
+import PayInfoModal from '@/components/common/modal/PayInfoModal.vue'
 
 const router = useRouter()
 
@@ -19,6 +20,7 @@ type PaymentType = 'local' | 'cash'
 const selectedPayment = ref<PaymentType>('local')
 const showLocalFailModal = ref(false)
 const showCashFailModal = ref(false)
+const showInfoModal = ref(false)
 
 const localBalance = ref(50000) // 실제로는 API에서 가져온 지역화폐 잔액
 const paymentAmount = ref(600000) // 전체 결제요금 임시 설정 (6만원)
@@ -55,7 +57,7 @@ const onClickPay = () => {
     return
   }
 
-  router.push('/pay-complete')
+  showInfoModal.value = true
 }
 
 const displayAmount = computed(() => localPaymentAmount.value.toLocaleString())
@@ -215,6 +217,14 @@ const isPayDisabled = computed(() => {
       </div>
       <LocalPayFailModal v-if="showLocalFailModal" @close="showLocalFailModal = false" />
       <CashPayFailModal v-if="showCashFailModal" @close="showCashFailModal = false" />
+      <PayInfoModal
+        :is-open="showInfoModal"
+        @cancel="showInfoModal = false"
+        @confirm="
+          showInfoModal = false;
+          router.push('/pay-complete')
+        "
+      />
     </template>
   </layout>
 </template>
