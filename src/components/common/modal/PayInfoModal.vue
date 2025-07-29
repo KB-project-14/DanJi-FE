@@ -12,7 +12,6 @@ const emit = defineEmits<{
 
 const handleConfirm = () => {
   emit('confirm')
-  emit('cancel')
 }
 
 const handleCancel = () => {

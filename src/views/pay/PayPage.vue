@@ -28,9 +28,7 @@ const localPaymentAmount = ref(paymentAmount) // 지역화폐로 결제할 금�
 
 // 결제 방식 선택 함수 (라디오 버튼처럼 동작)
 const selectPayment = (type: PaymentType) => {
-  if (type !== null) {
-    selectedPayment.value = type
-  }
+  selectedPayment.value = type
 }
 
 // 결제 버튼 클릭 함수
@@ -213,16 +211,16 @@ const handleInfoConfirm = () => {
             지역화폐 잔액({{ localBalance.toLocaleString() }}원)을 초과했습니다.
           </p>
         </section>
-        <DanjiButton
+        <danji-button
           class="w-[34.3rem] h-[5.8rem] mb-[3rem]"
           @click="onClickPay"
           :disabled="isPayDisabled"
-          >결제하기</DanjiButton
+          >결제하기</danji-button
         >
       </div>
-      <LocalPayFailModal v-if="showLocalFailModal" @close="showLocalFailModal = false" />
-      <CashPayFailModal v-if="showCashFailModal" @close="showCashFailModal = false" />
-      <PayInfoModal
+      <local-pay-fail-modal v-if="showLocalFailModal" @close="showLocalFailModal = false" />
+      <cash-pay-fail-modal v-if="showCashFailModal" @close="showCashFailModal = false" />
+      <pay-info-modal
         :is-open="showInfoModal"
         @cancel="showInfoModal = false"
         @confirm="handleInfoConfirm"
