@@ -16,13 +16,24 @@
         <div class="form-card">
           <!-- 감싸는 div 하나 추가 -->
           <div class="input-wrapper">
-            <danji-input v-model="username" placeholder="아이디를 입력해주세요.">
+            <danji-input
+              v-model="username"
+              placeholder="아이디를 입력해주세요."
+              aria-label="아이디"
+              autocomplete="username"
+            >
               <template #icon> <User class="fake-input-icon" /> </template>
             </danji-input>
           </div>
 
           <div class="input-wrapper">
-            <danji-input v-model="password" type="password" placeholder="비밀번호를 입력해주세요.">
+            <danji-input
+              v-model="password"
+              type="password"
+              placeholder="비밀번호를 입력해주세요."
+              aria-label="비밀번호"
+              autocomplete="current-password"
+            >
               <template #icon>
                 <Lock class="fake-input-icon" />
               </template>
