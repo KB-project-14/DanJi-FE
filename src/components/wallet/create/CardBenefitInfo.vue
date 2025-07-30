@@ -6,6 +6,11 @@ const props = defineProps<{
   title: string
 
   /**
+   * 카드 소개 서브 타이틀
+   */
+  subTitle: string
+
+  /**
    * 인센티브 혜택 텍스트
    */
   incentiveText: string
@@ -26,6 +31,9 @@ const props = defineProps<{
   <div class="flex flex-col mt-[3rem] mx-[2.7rem]">
     <!-- 카드 소개 타이틀 -->
     <span class="Head03 text-Black-1">{{ title }}</span>
+
+    <!-- 카드 소개 서브 타이틀 -->
+    <span class="Head03 text-Black-1">{{ subTitle }}</span>
 
     <!-- 혜택 섹션 -->
     <span class="mt-[2rem] Head01 text-Black-1">Benefits</span>

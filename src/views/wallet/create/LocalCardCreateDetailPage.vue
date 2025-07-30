@@ -18,7 +18,8 @@ const selectedCity = ref<string>('')
 const cardData = ref({
   name: '부산 동백전',
   image: '', // 현재는 빈 문자열로 임시 div 사용
-  title: '지역경제 활성화로 100(백)가지 행복과 즐거움을 주는 "동백전"',
+  title: '지역경제 활성화로',
+  subTitle: '100(백)가지 행복과 즐거움을 주는 "동백전"',
   incentiveText: '동백전 인센티브 10%',
   maxChargeAmount: '600,000원',
   description:
@@ -85,6 +86,7 @@ onMounted(async () => {
       <!-- 카드 혜택 정보 컴포넌트 -->
       <card-benefit-info
         :title="cardData.title"
+        :sub-title="cardData.subTitle"
         :incentive-text="cardData.incentiveText"
         :max-charge-amount="cardData.maxChargeAmount"
         :description="cardData.description"
