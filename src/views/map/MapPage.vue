@@ -186,8 +186,8 @@ onMounted(async () => {
           <local-filter-modal
             class="z-[400]"
             :is-visible="isFilterModalVisible"
-            :inital-region="selectedRegion"
-            :initial-city="selectedCity"
+            v-model:initial-region="selectedRegion"
+            v-model:initial-city="selectedCity"
             @close="handleFilterChipClick"
             @confirm="handleFilterModalConfirm"
           />
