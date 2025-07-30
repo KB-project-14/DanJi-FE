@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { subMonths } from 'date-fns'
-import { ChevronDown } from 'lucide-vue-next'
+import { startOfMonth, endOfMonth, subMonths, addMonths, format, isWithinInterval } from 'date-fns'
+import { ChevronRight, ChevronLeft, ChevronDown } from 'lucide-vue-next'
+
 import CardHistoryItem from './CardHistoryItem.vue'
 import TransactionFilterModal from '../modal/TransactionFilterModal.vue'
 
@@ -17,10 +18,19 @@ const props = defineProps<{
   }[]
 }>()
 
-// 날짜 계산
-const today = new Date()
-const oneMonthAgo = subMonths(today, 1)
-const threeMonthsAgo = subMonths(today, 3)
+// 월 이동 상태 (초기값 = 현재 달)
+const currentMonthDate = ref(new Date())
+
+// 월 이동 함수
+const prevMonth = () => {
+  currentMonthDate.value = subMonths(currentMonthDate.value, 1)
+}
+const nextMonth = () => {
+  currentMonthDate.value = addMonths(currentMonthDate.value, 1)
+}
+
+// 표시용 월
+const displayMonth = computed(() => format(currentMonthDate.value, 'M월'))
 
 // 초기값 (추후 API 연동 예정)
 const appliedFilter = ref<{
@@ -33,36 +43,27 @@ const appliedFilter = ref<{
   period: '1개월',
   type: '전체',
   order: '최신순',
-  startDate: oneMonthAgo,
-  endDate: today,
+  startDate: null,
+  endDate: null,
 })
 
 const isFilterOpen = ref(false)
 const openFilter = () => (isFilterOpen.value = true)
 const closeFilter = () => (isFilterOpen.value = false)
-
-const applyFilter = (filter: {
-  period: string
-  type: string
-  order: string
-  startDate: Date | null
-  endDate: Date | null
-}) => {
+const applyFilter = (filter: typeof appliedFilter.value) => {
   appliedFilter.value = filter
 }
 
 const filteredHistories = computed(() => {
   let list = [...props.histories]
 
-  // 날짜 필터링
-  if (appliedFilter.value.startDate && appliedFilter.value.endDate) {
-    const start = appliedFilter.value.startDate.getTime()
-    const end = appliedFilter.value.endDate.getTime()
-    list = list.filter((h) => {
-      const historyDate = new Date(h.createdAt).getTime()
-      return historyDate >= start && historyDate <= end
-    })
-  }
+  // 날짜 범위: 현재 달 1일 ~ 말일
+  const start = startOfMonth(currentMonthDate.value).getTime()
+  const end = endOfMonth(currentMonthDate.value).getTime()
+  list = list.filter((h) => {
+    const historyDate = new Date(h.createdAt).getTime()
+    return historyDate >= start && historyDate <= end
+  })
 
   // 거래 유형
   if (appliedFilter.value.type === '입금만') {
@@ -83,19 +84,30 @@ const filteredHistories = computed(() => {
 </script>
 <template>
   <div class="flex flex-col">
-    <div class="flex items-center p-[1rem] pr-[1.4rem] pl-[1.4rem] bg-Gray-1">
-      <button class="flex items-center ml-auto gap-1 Body02 text-Gray-5" @click="openFilter">
+    <div class="flex items-center justify-between bg-Gray-1 p-[1rem] pr-[1.4rem] pl-[1.4rem]">
+      <!-- 월 이동 -->
+      <div class="flex items-center gap-2">
+        <button class="px-[0.2rem] text-Gray-5" @click="prevMonth"><ChevronLeft /></button>
+        <span class="Body00">{{ displayMonth }}</span>
+        <button class="px-[0.2rem] text-Gray-5" @click="nextMonth"><ChevronRight /></button>
+      </div>
+
+      <!-- 필터 버튼 -->
+      <button class="flex items-center gap-1 Body02 text-Gray-5" @click="openFilter">
         {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
         <ChevronDown class="w-[1.6rem] h-[1.6rem]" />
       </button>
-      <transaction-filter-modal
-        v-if="isFilterOpen"
-        :initialFilter="appliedFilter"
-        @close="closeFilter"
-        @confirm="applyFilter"
-      />
     </div>
 
+    <!-- 필터 모달 -->
+    <transaction-filter-modal
+      v-if="isFilterOpen"
+      :initialFilter="appliedFilter"
+      @close="closeFilter"
+      @confirm="applyFilter"
+    />
+
+    <!-- 거래 내역 리스트 -->
     <div class="p-[1rem] pr-[1.4rem] pl-[1.4rem]">
       <card-history-item
         v-for="(history, index) in filteredHistories"
