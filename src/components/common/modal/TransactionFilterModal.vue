@@ -60,6 +60,11 @@ const selectPeriod = (label: '이번달' | '지난달' | '직접 설정') => {
 onMounted(() => {
   if (props.initialFilter.period === '지난달') {
     selectPeriod('지난달')
+  } else if (props.initialFilter.period === '직접 설정') {
+    // 직접 설정인 경우, 전달된 시작/종료 날짜도 함께 초기화
+    selectPeriod('직접 설정')
+    startDate.value = props.initialFilter.startDate
+    endDate.value = props.initialFilter.endDate
   } else {
     selectPeriod('이번달')
   }
