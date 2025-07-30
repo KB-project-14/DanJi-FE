@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { calculateExchangeRegionToCash } from '@/utils/exchange'
 import { HandCoins } from 'lucide-vue-next'
 
 const props = defineProps<{
@@ -19,10 +20,11 @@ const handleInput = (e: Event) => {
   const value = Number((e.target as HTMLInputElement).value)
   emit('update:modelValue', value)
 }
-// 인센티브 제외하고 환전될 금액
+// 현금 환전 금액 계산
 const excludedIncentive = computed(() => {
   if (!props.modelValue || !props.percentage) return 0
-  return Math.floor(props.modelValue / (1 + props.percentage / 100))
+  const { finalAmount } = calculateExchangeRegionToCash(props.percentage, props.modelValue)
+  return finalAmount
 })
 </script>
 
