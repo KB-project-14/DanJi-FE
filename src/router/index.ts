@@ -11,7 +11,6 @@ import MypagePage from '@/views/mypage/MypagePage.vue'
 import HomePage from '@/views/wallet/home/HomePage.vue'
 import OrderChangePage from '@/views/wallet/change/OrderChangePage.vue'
 import WalletPage from '@/views/wallet/home/WalletPage.vue'
-import LocalCardCreatePage from '@/views/wallet/create/LocalCardCreatePage.vue'
 import CardHistoryPage from '@/views/wallet/history/CardHistoryPage.vue'
 import CardSettingPage from '@/views/wallet/history/CardSettingPage.vue'
 import CardChargePage from '@/views/wallet/charge/CardChargePage.vue'
@@ -22,6 +21,7 @@ import MapPage from '@/views/map/MapPage.vue'
 import ExchangeCompletePage from '@/views/wallet/exchange/ExchangeCompletePage.vue'
 import LoginPage from '@/views/auth/LoginPage.vue'
 import SignUpPage from '@/views/auth/SignUpPage.vue'
+import LocalCardCreateSelectLocalPage from '@/views/wallet/create/LocalCardCreateSelectLocalPage.vue'
 
 const routes = [
   {
@@ -58,7 +58,7 @@ const routes = [
   },
   {
     path: '/wallet/card/create',
-    component: LocalCardCreatePage,
+    component: LocalCardCreateSelectLocalPage,
   },
   {
     path: '/card/history/:id',
