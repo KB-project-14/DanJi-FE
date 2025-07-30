@@ -3,7 +3,9 @@ import Layout from '@/components/layout/Layout.vue'
 import DanjiChip from '@/components/common/chip/DanjiChip.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
-import { onMounted, ref } from 'vue'
+import CardInfo from '@/components/wallet/create/CardInfo.vue'
+import CardBenefitInfo from '@/components/wallet/create/CardBenefitInfo.vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -11,6 +13,17 @@ const route = useRoute()
 const isModalVisible = ref<boolean>(false)
 const selectedRegion = ref<string>('')
 const selectedCity = ref<string>('')
+
+// mock 데이터
+const cardData = ref({
+  name: '부산 동백전',
+  image: '', // 현재는 빈 문자열로 임시 div 사용
+  title: '지역경제 활성화로 100(백)가지 행복과 즐거움을 주는 "동백전"',
+  incentiveText: '동백전 인센티브 10%',
+  maxChargeAmount: '600,000원',
+  description:
+    '연말정산 시, 현금과 같은 30% 소득공제가 됩니다! ~~~~ 어쩌구 ~~~ ㅓㅈ쩌구 연말정산 시, 현금과 같은 30% 소득공제가 됩니다! ~~~~ 어쩌구 ~~~ ㅓㅈ쩌구',
+})
 
 const handleClickModal = (): void => {
   isModalVisible.value = !isModalVisible.value
@@ -66,36 +79,16 @@ onMounted(async () => {
         @confirm="handleModalConfirm"
       />
 
-      <!-- 카드 이미지 임시 div -->
-      <div
-        class="mx-auto mt-[1.8rem] h-[19.8rem] w-[13.3rem] rounded-[0.8rem] border border-Gray-2 border-solid"
+      <!-- 카드 이미지 & 이름 컴포넌트 -->
+      <card-info :card-name="cardData.name" :card-image="cardData.image" />
+
+      <!-- 카드 혜택 정보 컴포넌트 -->
+      <card-benefit-info
+        :title="cardData.title"
+        :incentive-text="cardData.incentiveText"
+        :max-charge-amount="cardData.maxChargeAmount"
+        :description="cardData.description"
       />
-
-      <!-- 카드 이름 -->
-      <div class="text-center mt-[0.4rem]">
-        <div class="text-Brown-4 Body01">부산 동백전</div>
-      </div>
-
-      <!-- 카드 혜택 정보 -->
-      <div class="flex flex-col mt-[3rem] mx-[2.7rem]">
-        <span class="Head03 text-Black-1"
-          >지역경제 활성화로 <br />
-          100(백)가지 행복과 즐거움을 주는 “동백전”</span
-        >
-
-        <span class="mt-[2rem] Head01 text-Black-1">Benefits</span>
-        <span class="mt-[0.3rem] Head04 text-Brown-2">동백전 인센티브 10%</span>
-
-        <div>
-          <span class="Body02 text-Gray-5">최대 충전 가능 금액</span>
-          <span class="ms-[0.5rem] Head04 text-Yellow-1">600,000원</span>
-        </div>
-
-        <span class="mt-[1.2rem] Body02 text-Black-1">
-          연말정산 시, 현금과 같은 30% 소득공제가 됩니다! ~~~~ 어쩌구 ~~~ ㅓㅈ쩌구 연말정산 시,
-          현금과 같은 30% 소득공제가 됩니다! ~~~~ 어쩌구 ~~~ ㅓㅈ쩌구
-        </span>
-      </div>
 
       <!-- 하단 버튼 -->
       <div class="flex justify-center mt-[3.4rem] mb-[4rem]">
