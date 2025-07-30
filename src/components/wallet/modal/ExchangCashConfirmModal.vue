@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { ArrowRight } from 'lucide-vue-next'
+import DanjiButton from '@/components/common/button/DanjiButton.vue'
+
+const router = useRouter()
+
 const props = defineProps<{
   fromCard: { name: string; percentage: number }
   totalAmount: number
@@ -10,6 +15,12 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'confirm'): void
 }>()
+
+const handleConfirm = () => {
+  console.log('환전 API 연동 예정')
+  emit('confirm')
+  router.push('/home')
+}
 </script>
 
 <template>
@@ -19,7 +30,7 @@ const emit = defineEmits<{
 
       <div class="flex items-center justify-between mb-[2rem]">
         <!-- From -->
-        <div class="flex-1 rounded-xl py-[1.6rem] px-[1rem] bg-Gray-1 text-center">
+        <div class="flex-1 rounded-xl py-[1.6rem] px-[1rem] h-[9rem] bg-Gray-1 text-center">
           <p class="pb-[0.6rem] Body02">{{ props.fromCard.name }}</p>
           <p class="Body03 text-Gray-6 mb-[0.2rem]">
             환전 예정 금액:
@@ -38,9 +49,9 @@ const emit = defineEmits<{
         </div>
 
         <!-- To (통합지갑) -->
-        <div class="flex-1 bg-Gray-1 rounded-xl py-[1.6rem] px-[1rem] ml-2 text-center">
+        <div class="flex-1 ml-2 py-[1.6rem] px-[1rem] h-[9rem] bg-Gray-1 rounded-xl text-center">
           <p class="pb-[0.6rem] Body02">통합지갑</p>
-          <p class="Body03 text-Gray-6 mb-[0.2rem]">
+          <p class="Body03 text-Gray-6 mt-[0.8rem]">
             최종 충전 금액:
             <span class="text-Yellow-1">{{ props.result.finalAmount.toLocaleString() }}원</span>
           </p>
@@ -52,13 +63,22 @@ const emit = defineEmits<{
         <span class="text-Black-2">{{ props.result.finalAmount.toLocaleString() }}원</span>
       </div>
 
-      <div class="flex gap-4">
-        <button class="flex-1 py-3 border rounded-lg text-Gray-6" @click="emit('close')">
+      <div class="w-full max-w-[34.3rem] flex gap-3">
+        <danji-button
+          class="px-[0.5rem] !py-[0.4rem] flex-1 h-[5rem] whitespace-nowrap text-center"
+          variant="smallOutline"
+          @click="emit('close')"
+        >
           취소
-        </button>
-        <button class="flex-1 py-3 rounded-lg bg-Brown-4 text-white" @click="emit('confirm')">
-          환전
-        </button>
+        </danji-button>
+
+        <danji-button
+          class="!px-[0.5rem] !py-[0.5rem] flex-1 h-[5rem] whitespace-nowrap text-center"
+          variant="small"
+          @click="handleConfirm"
+        >
+          환전하기
+        </danji-button>
       </div>
     </div>
   </div>
