@@ -55,7 +55,7 @@ const exchangeResult = computed(() =>
         </div>
 
         <!-- To -->
-        <div class="flex-1 bg-Gray-1 rounded-xl py-[1.6rem] px-[1rem] ml-2 text-center">
+        <div class="flex-1 bg-Gray-1 rounded-xl ml-2 py-[1.6rem] px-[1rem] h-[10rem] text-center">
           <p class="pb-[0.6rem] Body02">{{ props.toCard.name }}</p>
           <p class="Body03 text-Gray-6 mb-[0.2rem]">
             충전 금액:
