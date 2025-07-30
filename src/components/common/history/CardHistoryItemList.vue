@@ -115,7 +115,7 @@ const filteredHistories = computed(() => {
       </div>
 
       <!-- 필터 버튼 -->
-      <button class="flex items-center gap-1 Body02 text-Gray-5" @click="openFilter">
+      <button class="flex items-center gap-1 Body02 text-Gray-5 ml-auto" @click="openFilter">
         <template
           v-if="
             appliedFilter.period === '직접 설정' && appliedFilter.startDate && appliedFilter.endDate
