@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ArrowRight } from 'lucide-vue-next'
 const props = defineProps<{
   fromCard: { name: string; percentage: number }
   totalAmount: number
@@ -32,7 +33,9 @@ const emit = defineEmits<{
           </p>
         </div>
 
-        <div class="mx-2 flex items-center justify-center text-Gray-4">➡️</div>
+        <div class="flex items-center justify-center text-Gray-4 w-[1.6rem] h-[1.6rem]">
+          <ArrowRight />
+        </div>
 
         <!-- To (통합지갑) -->
         <div class="flex-1 bg-Gray-1 rounded-xl py-[1.6rem] px-[1rem] ml-2 text-center">
