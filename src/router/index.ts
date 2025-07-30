@@ -1,11 +1,9 @@
 import type { RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
-import { Component } from 'lucide-vue-next'
 
 import PayPage from '@/views/pay/PayPage.vue'
 import QRPage from '@/views/qr/QRPage.vue'
 import PayCompletePage from '@/views/pay/PayCompletePage.vue'
-import PayModal from '@/components/common/modal/LocalPayFailModal.vue'
 import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import MypagePage from '@/views/mypage/MypagePage.vue'
 import HomePage from '@/views/wallet/home/HomePage.vue'
@@ -16,12 +14,12 @@ import CardSettingPage from '@/views/wallet/history/CardSettingPage.vue'
 import CardChargePage from '@/views/wallet/charge/CardChargePage.vue'
 import ChargeCompletePage from '@/views/wallet/charge/ChargeCompletePage.vue'
 import ExchangePage from '@/views/wallet/exchange/ExchangePage.vue'
-import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 import MapPage from '@/views/map/MapPage.vue'
 import ExchangeCompletePage from '@/views/wallet/exchange/ExchangeCompletePage.vue'
 import LoginPage from '@/views/auth/LoginPage.vue'
 import SignUpPage from '@/views/auth/SignUpPage.vue'
 import LocalCardCreateSelectLocalPage from '@/views/wallet/create/LocalCardCreateSelectLocalPage.vue'
+import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 
 const routes = [
   {
