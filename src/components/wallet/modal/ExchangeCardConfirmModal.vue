@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import { calculateExchangeRegionToRegion } from '@/utils/exchange'
 
-import { ArrowRight } from 'lucide-vue-next'
+import { ArrowDown } from 'lucide-vue-next'
 
 const router = useRouter()
 
@@ -36,13 +36,13 @@ const exchangeResult = computed(() =>
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-Black-0 bg-opacity-50 flex items-center justify-center z-50">
+  <div class="fixed flex items-center justify-center inset-0 bg-Black-0 bg-opacity-50 z-50">
     <div class="p-[2rem] w-[85%] max-w-[350px] shadow-lg bg-White-1 rounded-2xl">
       <h2 class="pb-[2.4rem] Head02 text-center">최종 환전 금액 확인</h2>
 
-      <div class="flex items-center justify-between mb-[2rem]">
+      <div class="flex flex-col items-center mb-[2rem]">
         <!-- From -->
-        <div class="flex-1 rounded-xl py-[1.6rem] px-[1rem] h-[10rem] bg-Gray-1 text-center">
+        <div class="w-full rounded-xl py-[1.6rem] px-[1rem] bg-Gray-1 text-center mb-[1rem]">
           <p class="pb-[0.6rem] Body02">{{ props.fromCard.name }}</p>
           <p class="Body03 text-Gray-6 mt-[1rem]">
             환전 예정 금액:
@@ -50,12 +50,12 @@ const exchangeResult = computed(() =>
           </p>
         </div>
 
-        <div class="flex items-center justify-center text-Gray-4 w-[1.6rem] h-[1.6rem]">
-          <ArrowRight />
+        <div class="flex items-center justify-center text-Gray-4 w-[1.6rem] h-[1.6rem] mb-[1rem]">
+          <ArrowDown />
         </div>
 
         <!-- To -->
-        <div class="flex-1 bg-Gray-1 rounded-xl ml-2 py-[1.6rem] px-[1rem] h-[10rem] text-center">
+        <div class="w-full bg-Gray-1 rounded-xl py-[1.6rem] px-[1rem] text-center">
           <p class="pb-[0.6rem] Body02">{{ props.toCard.name }}</p>
           <p class="Body03 text-Gray-6 mb-[0.2rem]">
             충전 금액:
@@ -79,7 +79,7 @@ const exchangeResult = computed(() =>
 
       <div class="w-full max-w-[34.3rem] flex gap-3">
         <danji-button
-          class="px-[0.5rem] !py-[0.4rem] flex-1 h-[5rem] whitespace-nowrap text-center"
+          class="!px-[0.5rem] !py-[0.4rem] flex-1 h-[5rem] whitespace-nowrap text-center"
           variant="smallOutline"
           @click="emit('close')"
         >
