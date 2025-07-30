@@ -68,12 +68,20 @@ const selectedCard = computed(() => cards.find((c) => c.id === cardId) || null)
 // 이번 달 충전 금액
 const chargedAmountThisMonth = computed(() => {
   const now = new Date()
+  const currentYear = now.getFullYear()
   const currentMonth = now.getMonth() + 1
+
   return transactions
-    .filter((t) => t.type === 'charge' && new Date(t.date).getMonth() + 1 === currentMonth)
+    .filter((t) => {
+      const transactionDate = new Date(t.date)
+      return (
+        t.type === 'charge' &&
+        transactionDate.getFullYear() === currentYear &&
+        transactionDate.getMonth() + 1 === currentMonth
+      )
+    })
     .reduce((sum, t) => sum + t.amount, 0)
 })
-
 // 인센티브 금액
 const incentiveAmount = computed(() => {
   if (!selectedCard.value) return 0

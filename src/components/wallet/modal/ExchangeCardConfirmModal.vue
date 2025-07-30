@@ -22,7 +22,7 @@ const emit = defineEmits<{
 const handleConfirm = () => {
   console.log('환전 API 연동 예정')
   emit('confirm')
-  router.push('/home')
+  router.push('/exchange/complete')
 }
 
 // 계산 결과 가져오기

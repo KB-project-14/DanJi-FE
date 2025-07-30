@@ -4,8 +4,8 @@ import { computed } from 'vue'
 
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
-import ExchangeSuccess from '@/components/wallet/modal/ChargeSuccess.vue'
-import ExchangeFail from '@/components/wallet/modal/ChargeFail.vue'
+import ExchangeSuccess from '@/components/wallet/exchange/modal/ExchangeSucceess.vue'
+import ExchangeFail from '@/components/wallet/exchange/modal/ExchangeFail.vue'
 
 const route = useRoute()
 const router = useRouter()
