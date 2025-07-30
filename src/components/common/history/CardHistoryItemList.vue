@@ -53,49 +53,32 @@ const closeFilter = () => (isFilterOpen.value = false)
 const applyFilter = (filter: typeof appliedFilter.value) => {
   appliedFilter.value = filter
 
+  // 이번달 → 오늘 기준
   if (filter.period === '이번달') {
-    currentMonthDate.value = new Date() // 이번달 = 오늘
-  } else if (filter.period === '지난달') {
-    currentMonthDate.value = subMonths(new Date(), 1) // 지난달
+    currentMonthDate.value = new Date()
+  }
+  // 지난달 → 오늘에서 한 달 전
+  else if (filter.period === '지난달') {
+    currentMonthDate.value = subMonths(new Date(), 1)
   }
 }
-
 const filteredHistories = computed(() => {
   let list = [...props.histories]
 
-  // ===== 날짜 필터링 =====
   if (
     appliedFilter.value.period === '직접 설정' &&
     appliedFilter.value.startDate &&
     appliedFilter.value.endDate
   ) {
-    // 직접 설정 날짜 범위
+    // 직접 설정일 때: startDate ~ endDate
     const start = appliedFilter.value.startDate.getTime()
     const end = appliedFilter.value.endDate.getTime()
     list = list.filter((h) => {
       const historyDate = new Date(h.createdAt).getTime()
       return historyDate >= start && historyDate <= end
     })
-  } else if (appliedFilter.value.period === '이번달') {
-    // 이번달: 이번달 1일 ~ 오늘
-    const now = new Date()
-    const start = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
-    const end = now.getTime()
-    list = list.filter((h) => {
-      const historyDate = new Date(h.createdAt).getTime()
-      return historyDate >= start && historyDate <= end
-    })
-  } else if (appliedFilter.value.period === '지난달') {
-    // 지난달: 지난달 1일 ~ 지난달 말일
-    const now = new Date()
-    const start = new Date(now.getFullYear(), now.getMonth() - 1, 1).getTime()
-    const end = new Date(now.getFullYear(), now.getMonth(), 0).getTime() // 지난달 말일
-    list = list.filter((h) => {
-      const historyDate = new Date(h.createdAt).getTime()
-      return historyDate >= start && historyDate <= end
-    })
   } else {
-    // 월 이동(currentMonthDate) 기준 (혹시 남길 경우)
+    // 나머지(이번달/지난달 포함): currentMonthDate 기준
     const start = startOfMonth(currentMonthDate.value).getTime()
     const end = endOfMonth(currentMonthDate.value).getTime()
     list = list.filter((h) => {
@@ -104,14 +87,14 @@ const filteredHistories = computed(() => {
     })
   }
 
-  // ===== 거래 유형 필터 =====
+  // 거래 유형 필터
   if (appliedFilter.value.type === '입금만') {
     list = list.filter((h) => h.direction === 'INCOME')
   } else if (appliedFilter.value.type === '출금만') {
     list = list.filter((h) => h.direction === 'EXPENSE')
   }
 
-  // ===== 정렬 =====
+  // 정렬
   list.sort((a, b) => {
     const dateA = new Date(a.createdAt).getTime()
     const dateB = new Date(b.createdAt).getTime()
