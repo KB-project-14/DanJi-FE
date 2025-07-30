@@ -55,7 +55,7 @@ const getCategoryColor = (category: string): string => {
   const colorIndex = Math.abs(hash) % colorCombinations.length
   const colors = colorCombinations[colorIndex]
 
-  return `${colors.bg} ${colors.text} ${colors.border}`
+  return `${colors.bg} ${colors.text}`
 }
 
 // 칩 스타일 클래스 계산
