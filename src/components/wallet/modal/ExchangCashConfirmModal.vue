@@ -88,7 +88,7 @@ const handleConfirm = async () => {
           variant="small"
           @click="handleConfirm"
         >
-          환전하기
+          환전
         </danji-button>
       </div>
     </div>
