@@ -138,6 +138,7 @@ const handleMonthChange = (payload: {
   selectedEndDate.value = payload.endDate
 }
 
+// 금액 안내 박스 문구 설정
 const boxLabel = computed(() => {
   if (selectedPeriod.value === '직접 설정' && selectedStartDate.value && selectedEndDate.value) {
     return '설정기간에'
@@ -159,7 +160,7 @@ const boxLabel = computed(() => {
         <div class="flex justify-between items-center mb-[2rem]">
           <div>
             <!-- 카드명 + 툴팁 -->
-            <div class="flex items-center gap-2 relative overflow-visible">
+            <div class="flex items-center gap-2 relative">
               <p class="Body00 text-Black-2">{{ cardInfo?.name }}</p>
               <tooltip
                 position="top"
@@ -183,11 +184,11 @@ const boxLabel = computed(() => {
 
         <!-- 박스 -->
         <div class="bg-Gray-1 rounded-xl p-[1.4rem] Body00 text-Black-2">
-          <div class="flex justify-between mb-[1rem] text-Gray-7">
+          <div class="flex justify-between mb-[1.2rem] text-Gray-7">
             <span>{{ boxLabel }} 충전한 금액:</span>
             <span>{{ chargedAmount.toLocaleString() }}원</span>
           </div>
-          <div class="flex justify-between mb-[1rem] text-Gray-7">
+          <div class="flex justify-between mb-[1.2rem] text-Gray-7">
             <span>{{ boxLabel }} 받은 혜택:</span>
             <span class="text-Blue-0">{{ cardInfo?.benefit.toLocaleString() }}원</span>
           </div>

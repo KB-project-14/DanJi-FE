@@ -55,6 +55,7 @@ watch(
   },
 )
 
+// 달 이동 함수
 const prevMonth = () => {
   currentMonthDate.value = subMonths(currentMonthDate.value, 1)
 }
@@ -130,7 +131,7 @@ const filteredHistories = computed(() => {
         <template v-else>
           {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
         </template>
-        <ChevronDown class="w-[1.6rem] h-[1.6rem]" />
+        <ChevronDown class="w-[1.4rem] h-[1.4rem]" />
       </button>
     </div>
 
