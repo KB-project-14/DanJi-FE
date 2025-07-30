@@ -122,7 +122,8 @@ const filteredHistories = computed(() => {
           "
         >
           {{ appliedFilter.startDate.toLocaleDateString() }} ~
-          {{ appliedFilter.endDate.toLocaleDateString() }}
+          {{ appliedFilter.endDate.toLocaleDateString() }} {{ appliedFilter.type }} ·
+          {{ appliedFilter.order }}
         </template>
         <template v-else>
           {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
