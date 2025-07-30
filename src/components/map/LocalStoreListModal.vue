@@ -16,7 +16,7 @@ const initialSheetY = ref(0)
 // 시트 위치 범위 (화면 높이 기준)
 const MIN_POSITION_WITH_NAV = 0.35
 const MIN_POSITION_WITHOUT_NAV = 0.2
-const MAX_POSITION = 0.9 // 거의 닫힘 (95vh)
+const MAX_POSITION = 0.9
 
 const getYPosition = (percent: number) => window.innerHeight * percent
 
