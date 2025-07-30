@@ -26,3 +26,13 @@ export type LayoutProps =
   | ({ headerType: 'basic' | 'setting' } & HeaderWithTitle & BaseLayoutProps)
   | ({ headerType: 'main' } & BaseLayoutProps)
   | ({ headerType: 'pay' } & PayHeaderProps & BaseLayoutProps)
+
+//가맹점 정보 타입
+export interface LocalStore {
+  id: number
+  name: string
+  address: string
+  latitude: string
+  longitude: string
+  category: string
+}
