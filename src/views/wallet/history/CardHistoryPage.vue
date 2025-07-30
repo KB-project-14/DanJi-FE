@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { format } from 'date-fns'
+
 import { useRoute } from 'vue-router'
 import { startOfMonth, endOfMonth } from 'date-fns'
 
@@ -20,8 +22,8 @@ const allCards = [
     id: 1,
     name: '동백전',
     balance: 32000,
-    benefit: 10000,
-    maximum: 500000,
+    benefit: 10000, // 혜택 금액
+    maximum: 500000, // 최대 한도
     benefit_type: '캐시백',
     percentage: 10,
   },
@@ -91,6 +93,14 @@ const transaction: HistoryItem[] = [
     type: 'CHARGE',
     createdAt: '2025-07-30T10:20:40',
   },
+  {
+    comment: '충전',
+    amount: 10000,
+    afterBalance: 100000,
+    direction: 'INCOME',
+    type: 'CHARGE',
+    createdAt: '2025-04-30T10:20:40',
+  },
 ]
 
 // 박스 데이터 계산
@@ -112,10 +122,28 @@ const availableAmount = computed(() =>
   cardInfo.value ? cardInfo.value.maximum - chargedAmount.value : 0,
 )
 
-// 자식에서 현재 월 받는 핸들러
-const handleMonthChange = (newDate: Date) => {
-  currentMonthDate.value = newDate
+const selectedPeriod = ref('이번달')
+const selectedStartDate = ref<Date | null>(null)
+const selectedEndDate = ref<Date | null>(null)
+
+const handleMonthChange = (payload: {
+  date: Date
+  period: string
+  startDate: Date | null
+  endDate: Date | null
+}) => {
+  currentMonthDate.value = payload.date
+  selectedPeriod.value = payload.period
+  selectedStartDate.value = payload.startDate
+  selectedEndDate.value = payload.endDate
 }
+
+const boxLabel = computed(() => {
+  if (selectedPeriod.value === '직접 설정' && selectedStartDate.value && selectedEndDate.value) {
+    return `${format(selectedStartDate.value, 'M.d')} ~ ${format(selectedEndDate.value, 'M.d')}`
+  }
+  return `${currentMonthDate.value.getMonth() + 1}월`
+})
 </script>
 
 <template>
@@ -130,15 +158,20 @@ const handleMonthChange = (newDate: Date) => {
       <div class="p-[3rem]">
         <div class="flex justify-between items-center mb-[2rem]">
           <div>
-            <p class="Body04 text-Black-2">{{ cardInfo?.name }}</p>
-            <p class="Head0 text-Black-2">{{ cardInfo?.balance.toLocaleString() }} 원</p>
-            <div class="flex items-center gap-2 relative">
-              <p class="Body01 text-Black-2">이번 달 혜택 :</p>
-              <p class="Body01 text-Blue-0">{{ cardInfo?.benefit.toLocaleString() }}원</p>
-              <Tooltip
-                position="bottom"
+            <!-- 카드명 + 툴팁 -->
+            <div class="flex items-center gap-2 relative overflow-visible">
+              <p class="Body04 text-Black-2">{{ cardInfo?.name }}</p>
+              <tooltip
+                position="top"
+                align="start"
                 :message="`이번달 ${cardInfo?.name}의 ${cardInfo?.benefit_type}은 ${cardInfo?.percentage}% 입니다.`"
               />
+            </div>
+            <!-- 잔액 -->
+            <p class="Head0 text-Black-2">{{ cardInfo?.balance.toLocaleString() }} 원</p>
+            <div class="flex items-center gap-2 relative">
+              <p class="Body04 text-Gray-5">충전 최대 한도 :</p>
+              <p class="Body01">{{ cardInfo?.maximum.toLocaleString() }}원</p>
             </div>
           </div>
 
@@ -151,15 +184,15 @@ const handleMonthChange = (newDate: Date) => {
         <!-- 박스 -->
         <div class="bg-Gray-1 rounded-xl p-[1.4rem] Body00 text-Black-2">
           <div class="flex justify-between mb-[1rem] text-Gray-7">
-            <span>{{ currentMonthDate.getMonth() + 1 }}월 충전한 금액:</span>
+            <span>{{ boxLabel }} 충전한 금액:</span>
             <span>{{ chargedAmount.toLocaleString() }}원</span>
           </div>
           <div class="flex justify-between mb-[1rem] text-Gray-7">
-            <span>{{ currentMonthDate.getMonth() + 1 }}월 충전 최대 한도:</span>
-            <span>{{ cardInfo?.maximum.toLocaleString() }}원</span>
+            <span>{{ boxLabel }} 받은 혜택:</span>
+            <span class="text-Blue-0">{{ cardInfo?.benefit.toLocaleString() }}원</span>
           </div>
           <div class="flex justify-between text-Gray-7">
-            <span>{{ currentMonthDate.getMonth() + 1 }}월 충전 가능 금액:</span>
+            <span>{{ boxLabel }} 충전 가능 금액:</span>
             <span>{{ availableAmount.toLocaleString() }}원</span>
           </div>
         </div>

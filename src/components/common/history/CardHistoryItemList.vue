@@ -19,24 +19,6 @@ const props = defineProps<{
   }[]
 }>()
 
-// 월 이동
-const currentMonthDate = ref(new Date())
-
-const prevMonth = () => {
-  currentMonthDate.value = subMonths(currentMonthDate.value, 1)
-}
-const nextMonth = () => {
-  currentMonthDate.value = addMonths(currentMonthDate.value, 1)
-}
-
-// 부모에 월 전달
-watch(currentMonthDate, (newDate) => {
-  emit('month-change', newDate)
-})
-
-// 월 표기
-const displayMonth = computed(() => format(currentMonthDate.value, 'M월'))
-
 // 초기 필터 상태
 const appliedFilter = ref<{
   period: string
@@ -51,6 +33,37 @@ const appliedFilter = ref<{
   startDate: null,
   endDate: null,
 })
+
+// 월 이동
+const currentMonthDate = ref(new Date())
+
+// 부모에 월 전달
+watch(
+  [
+    currentMonthDate,
+    () => appliedFilter.value.period,
+    () => appliedFilter.value.startDate,
+    () => appliedFilter.value.endDate,
+  ],
+  () => {
+    emit('month-change', {
+      date: currentMonthDate.value,
+      period: appliedFilter.value.period,
+      startDate: appliedFilter.value.startDate,
+      endDate: appliedFilter.value.endDate,
+    })
+  },
+)
+
+const prevMonth = () => {
+  currentMonthDate.value = subMonths(currentMonthDate.value, 1)
+}
+const nextMonth = () => {
+  currentMonthDate.value = addMonths(currentMonthDate.value, 1)
+}
+
+// 월 표기
+const displayMonth = computed(() => format(currentMonthDate.value, 'M월'))
 
 const isFilterOpen = ref(false)
 const openFilter = () => (isFilterOpen.value = true)
