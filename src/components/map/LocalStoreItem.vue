@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MapPin } from 'lucide-vue-next'
-import LocalStoreFilterChip from './LocalStoreCategoryChip.vue'
+import LocalStoreCategoryChip from './LocalStoreCategoryChip.vue'
 import type { LocalStore } from '@/types/types'
 
 const props = defineProps<{
@@ -13,7 +13,7 @@ const props = defineProps<{
     <!-- 가맹점 이름과 카테고리 -->
     <div class="flex justify-between items-center">
       <span class="Head04 text-Black-1">{{ localStore.name }}</span>
-      <local-store-filter-chip :category="localStore.category" />
+      <local-store-category-chip :category="localStore.category" />
     </div>
 
     <!-- 주소 정보 -->

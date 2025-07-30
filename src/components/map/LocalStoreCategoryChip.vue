@@ -29,7 +29,7 @@ const getCategoryColor = (category: string): string => {
   for (let i = 0; i < category.length; i++) {
     const char = category.charCodeAt(i)
     hash = (hash << 5) - hash + char
-    hash = hash & hash // 32bit 정수로 변환
+    hash = hash >>> 0
   }
 
   // 칩 색상 조합 배열

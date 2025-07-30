@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import type { LocalStore } from '@/types/types'
 import LocalStoreItem from './LocalStoreItem.vue'
 
@@ -96,8 +96,10 @@ onMounted(() => {
   document.addEventListener('touchend', handleEnd)
 
   // 초기 위치 설정
-  const initialY = props.isModalFold ? getYPosition(MAX_POSITION) : getYPosition(0.7)
-  setSheetPosition(initialY)
+  nextTick(() => {
+    const initialY = props.isModalFold ? getYPosition(MAX_POSITION) : getYPosition(0.7)
+    setSheetPosition(initialY)
+  })
 })
 
 onUnmounted(() => {

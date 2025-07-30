@@ -26,12 +26,15 @@ const currentLocationMarkerImage: KakaoMapMarkerImage = {
   imageHeight: 80,
 }
 
+const MIN_ZOOM_LEVEL = 1
+const MAX_ZOOM_LEVEL = 14
+
 const zoomIn = () => {
-  mapLevel.value = Math.max(1, mapLevel.value - 1)
+  mapLevel.value = Math.max(MIN_ZOOM_LEVEL, mapLevel.value - 1)
 }
 
 const zoomOut = () => {
-  mapLevel.value = Math.min(14, mapLevel.value + 1)
+  mapLevel.value = Math.min(MAX_ZOOM_LEVEL, mapLevel.value + 1)
 }
 </script>
 
