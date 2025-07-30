@@ -143,7 +143,7 @@ const filteredHistories = computed(() => {
     />
 
     <!-- 거래 내역 리스트 -->
-    <div class="p-[1rem]">
+    <div class="p-[1rem] pl-[2rem] pr-[2rem]">
       <template v-if="filteredHistories.length > 0">
         <card-history-item
           v-for="(history, index) in filteredHistories"

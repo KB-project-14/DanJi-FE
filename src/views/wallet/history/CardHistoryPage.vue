@@ -140,7 +140,7 @@ const handleMonthChange = (payload: {
 
 const boxLabel = computed(() => {
   if (selectedPeriod.value === '직접 설정' && selectedStartDate.value && selectedEndDate.value) {
-    return `${format(selectedStartDate.value, 'M.d')} ~ ${format(selectedEndDate.value, 'M.d')}`
+    return '설정기간에'
   }
   return `${currentMonthDate.value.getMonth() + 1}월`
 })
@@ -160,7 +160,7 @@ const boxLabel = computed(() => {
           <div>
             <!-- 카드명 + 툴팁 -->
             <div class="flex items-center gap-2 relative overflow-visible">
-              <p class="Body04 text-Black-2">{{ cardInfo?.name }}</p>
+              <p class="Body00 text-Black-2">{{ cardInfo?.name }}</p>
               <tooltip
                 position="top"
                 align="start"
