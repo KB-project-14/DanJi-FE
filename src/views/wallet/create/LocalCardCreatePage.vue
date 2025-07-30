@@ -3,12 +3,14 @@ import Layout from '@/components/layout/Layout.vue'
 import DanjiChip from '@/components/common/chip/DanjiChip.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
-import { ref } from 'vue'
-import router from '@/router'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const isModalVisible = ref<boolean>(false)
-const selectedRegion = ref<string>('경상북도')
-const selectedCity = ref<string>('포항')
+const selectedRegion = ref<string>('')
+const selectedCity = ref<string>('')
 
 const handleClickModal = (): void => {
   isModalVisible.value = !isModalVisible.value
@@ -20,15 +22,24 @@ const handleModalConfirm = (region: string, city: string): void => {
   isModalVisible.value = false
 }
 
-const handleCardCreateConfirm = (): void => {
-  router.push({
-    name: 'LocalCardCreateDetail',
-    params: {
-      region: selectedRegion.value,
-      city: selectedCity.value,
-    },
-  })
+// 라우터에서 전달받은 데이터 처리
+const initializeFromRoute = () => {
+  const routeRegion = route.params.region
+  const routeCity = route.params.city
+
+  if (routeRegion && typeof routeRegion === 'string') {
+    selectedRegion.value = routeRegion
+  }
+
+  if (routeCity && typeof routeCity === 'string') {
+    selectedCity.value = routeCity
+  }
 }
+
+onMounted(async () => {
+  initializeFromRoute()
+  console.log(selectedCity, selectedRegion)
+})
 </script>
 
 <template>
@@ -50,15 +61,15 @@ const handleCardCreateConfirm = (): void => {
       <!-- 지역 필터 모달 -->
       <local-filter-modal
         :is-visible="isModalVisible"
-        :inital-region="selectedRegion"
-        :initial-city="selectedCity"
+        v-model:initial-region="selectedRegion"
+        v-model:initial-city="selectedCity"
         @close="handleClickModal"
         @confirm="handleModalConfirm"
       />
 
       <!-- 카드 이미지 임시 div -->
       <div
-        class="mx-auto mt-[0.6rem] h-[19.8rem] w-[13.3rem] rounded-[0.8rem] border border-Gray-2 border-solid"
+        class="mx-auto mt-[1.8rem] h-[19.8rem] w-[13.3rem] rounded-[0.8rem] border border-Gray-2 border-solid"
       />
 
       <!-- 카드 이름 -->
@@ -66,24 +77,30 @@ const handleCardCreateConfirm = (): void => {
         <div class="text-Brown-4 Body01">부산 동백전</div>
       </div>
 
-      <!-- 중간 구분선 -->
-      <div class="w-full h-[0.5rem] mt-[0.6rem] bg-Gray-0" />
+      <!-- 카드 혜택 정보 -->
+      <div class="flex flex-col mt-[3rem] mx-[2.7rem]">
+        <span class="Head03 text-Black-1"
+          >지역경제 활성화로 <br />
+          100(백)가지 행복과 즐거움을 주는 “동백전”</span
+        >
 
-      <!-- 혜택 안내 박스 -->
-      <div
-        class="mx-auto w-fit max-w-[33.5rem] mt-[1.6rem] px-[1.9rem] py-[1.2rem] rounded-[1.6rem] border border-Gray-1 border-solid"
-      >
-        <div class="text-Black-1 Head04">동백전 혜택</div>
-        <ol class="list-decimal list-inside text-Black-1 Body02 text-left">
-          <li>동백전 지역화폐로 결제 시, 캐시백과 상생 가맹점 현장 할인 제공</li>
-          <li>연말정산 시, 현금과 같은 30% 소득공제</li>
-          <li>수시로 지원하는 프로모션</li>
-        </ol>
+        <span class="mt-[2rem] Head01 text-Black-1">Benefits</span>
+        <span class="mt-[0.3rem] Head04 text-Brown-2">동백전 인센티브 10%</span>
+
+        <div>
+          <span class="Body02 text-Gray-5">최대 충전 가능 금액</span>
+          <span class="ms-[0.5rem] Head04 text-Yellow-1">600,000원</span>
+        </div>
+
+        <span class="mt-[1.2rem] Body02 text-Black-1">
+          연말정산 시, 현금과 같은 30% 소득공제가 됩니다! ~~~~ 어쩌구 ~~~ ㅓㅈ쩌구 연말정산 시,
+          현금과 같은 30% 소득공제가 됩니다! ~~~~ 어쩌구 ~~~ ㅓㅈ쩌구
+        </span>
       </div>
 
       <!-- 하단 버튼 -->
-      <div class="flex justify-center mt-[1.6rem]">
-        <danji-button variant="large" @click="handleCardCreateConfirm">발급하기</danji-button>
+      <div class="flex justify-center mt-[3.4rem] mb-[4rem]">
+        <danji-button variant="large">발급하기</danji-button>
       </div>
     </template>
   </layout>
