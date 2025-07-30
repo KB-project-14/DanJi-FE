@@ -56,7 +56,7 @@ const selectPeriod = (label: '이번달' | '지난달' | '직접 설정') => {
   }
 }
 
-// **모달 열릴 때 자동 초기화 → 항상 오늘 기준**
+// 모달 열릴 때 자동 초기화 → 항상 오늘 기준
 onMounted(() => {
   if (props.initialFilter.period === '지난달') {
     selectPeriod('지난달')
