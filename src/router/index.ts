@@ -1,7 +1,10 @@
+import type { RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import { Component } from 'lucide-vue-next'
+
 import PayPage from '@/views/pay/PayPage.vue'
 import QRPage from '@/views/qr/QRPage.vue'
 import PayCompletePage from '@/views/pay/PayCompletePage.vue'
-import { createRouter, createWebHistory } from 'vue-router'
 import PayModal from '@/components/common/modal/LocalPayFailModal.vue'
 import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import MypagePage from '@/views/mypage/MypagePage.vue'
@@ -13,9 +16,10 @@ import CardHistoryPage from '@/views/wallet/history/CardHistoryPage.vue'
 import CardSettingPage from '@/views/wallet/history/CardSettingPage.vue'
 import CardChargePage from '@/views/wallet/charge/CardChargePage.vue'
 import ChargeCompletePage from '@/views/wallet/charge/ChargeCompletePage.vue'
-import { Component } from 'lucide-vue-next'
+import ExchangePage from '@/views/wallet/exchange/ExchangePage.vue'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 import MapPage from '@/views/map/MapPage.vue'
+import ExchangeCompletePage from '@/views/wallet/exchange/ExchangeCompletePage.vue'
 import LoginPage from '@/views/auth/LoginPage.vue'
 import SignUpPage from '@/views/auth/SignUpPage.vue'
 
@@ -60,10 +64,13 @@ const routes = [
     path: '/card/history/:id',
     name: 'CardHistory',
     component: CardHistoryPage,
-    props: true,
+    props: (route: RouteLocationNormalized) => ({
+      id: Number(route.params.id),
+      balance: Number(route.query.balance),
+    }),
   },
   {
-    path: '/card/charge',
+    path: '/card/charge/:id',
     component: CardChargePage,
   },
   {
@@ -74,6 +81,17 @@ const routes = [
   {
     path: '/card/setting',
     component: CardSettingPage,
+  },
+  {
+    path: '/card/exchange/:id',
+    name: 'ExchangePage',
+    component: ExchangePage,
+    props: true,
+  },
+  {
+    path: '/exchange/complete',
+    name: 'ExchangeCompletePage',
+    component: ExchangeCompletePage,
   },
   {
     path: '/wallet/card/create/:region/:city',
