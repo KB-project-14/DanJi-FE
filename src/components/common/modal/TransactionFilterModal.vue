@@ -30,7 +30,7 @@ const emit = defineEmits<{
 }>()
 
 // 상태
-const period = ref<'1개월' | '3개월' | '직접 입력'>('1개월')
+const period = ref<'이번달' | '지난달' | '직접 설정'>('이번달')
 const type = ref(props.initialFilter.type)
 const order = ref(props.initialFilter.order)
 const startDate = ref<Date | null>(null)
@@ -41,43 +41,34 @@ const getButtonClass = (isActive: boolean) =>
   isActive ? 'text-Black-1 bg-Gray-3' : 'text-Gray-7 bg-Gray-1'
 
 // 기간 선택 함수
-const selectPeriod = (label: '1개월' | '3개월' | '직접 입력', months?: number) => {
+const selectPeriod = (label: '이번달' | '지난달' | '직접 설정') => {
   period.value = label
-  if (months) {
-    const today = new Date()
-    startDate.value = subMonths(today, months)
+
+  const today = new Date()
+  if (label === '이번달') {
+    startDate.value = new Date(today.getFullYear(), today.getMonth(), 1)
     endDate.value = today
+  } else if (label === '지난달') {
+    const firstDayLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+    const lastDayLastMonth = new Date(today.getFullYear(), today.getMonth(), 0)
+    startDate.value = firstDayLastMonth
+    endDate.value = lastDayLastMonth
   }
 }
 
 // **모달 열릴 때 자동 초기화 → 항상 오늘 기준**
 onMounted(() => {
-  if (props.initialFilter.period === '3개월') {
-    selectPeriod('3개월', 3)
+  if (props.initialFilter.period === '지난달') {
+    selectPeriod('지난달')
   } else {
-    selectPeriod('1개월', 1)
+    selectPeriod('이번달')
   }
 })
 
 // 확인 버튼
 const confirmFilter = () => {
-  let periodText = ''
-  const today = new Date()
-
-  if (period.value === '1개월') {
-    startDate.value = subMonths(today, 1)
-    endDate.value = today
-    periodText = '1개월'
-  } else if (period.value === '3개월') {
-    startDate.value = subMonths(today, 3)
-    endDate.value = today
-    periodText = '3개월'
-  } else {
-    periodText = `${startDate.value?.toLocaleDateString()} ~ ${endDate.value?.toLocaleDateString()}`
-  }
-
   emit('confirm', {
-    period: periodText,
+    period: period.value,
     type: type.value,
     order: order.value,
     startDate: startDate.value,
@@ -98,29 +89,29 @@ const confirmFilter = () => {
     <div class="flex gap-2 mb-4">
       <button
         class="flex-1 py-[1rem] rounded Body04"
-        :class="getButtonClass(period === '1개월')"
-        @click="selectPeriod('1개월', 1)"
+        :class="getButtonClass(period === '이번달')"
+        @click="selectPeriod('이번달')"
       >
-        1개월
+        이번달
       </button>
       <button
         class="flex-1 py-[1rem] rounded Body04"
-        :class="getButtonClass(period === '3개월')"
-        @click="selectPeriod('3개월', 3)"
+        :class="getButtonClass(period === '지난달')"
+        @click="selectPeriod('지난달')"
       >
-        3개월
+        지난달
       </button>
       <button
         class="flex-1 py-[1rem] rounded Body04"
-        :class="getButtonClass(period === '직접 입력')"
-        @click="selectPeriod('직접 입력')"
+        :class="getButtonClass(period === '직접 설정')"
+        @click="selectPeriod('직접 설정')"
       >
         직접 설정
       </button>
     </div>
 
     <!-- 직접 설정일 때만 DatePicker 표시 -->
-    <div v-if="period === '직접 입력'" class="flex items-center gap-2 mb-[0.8rem]">
+    <div v-if="period === '직접 설정'" class="flex items-center gap-2 mb-[0.8rem]">
       <DatePicker v-model:value="startDate" type="date" format="YYYY-MM-DD">
         <template #input>
           <div class="border rounded-md w-full text-center py-[0.8rem] cursor-pointer">
