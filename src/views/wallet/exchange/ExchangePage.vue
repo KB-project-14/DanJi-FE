@@ -228,7 +228,7 @@ const confirmExchange = () => {
           />
 
           <!-- 지역 → 현금 모달 -->
-          <ExchangCashConfirmModal
+          <exchang-cash-confirm-modal
             v-if="showModal && selectedCard && activeTab === 1 && exchangeResult"
             :from-card="{ name: selectedCard.name, percentage: selectedCard.percentage }"
             :total-amount="exchangeInput || 0"
