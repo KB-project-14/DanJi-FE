@@ -38,7 +38,6 @@ const initializeFromRoute = () => {
 
 onMounted(async () => {
   initializeFromRoute()
-  console.log(selectedCity, selectedRegion)
 })
 </script>
 
