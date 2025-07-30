@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { startOfMonth, endOfMonth, subMonths, addMonths, format } from 'date-fns'
+import { startOfMonth, endOfMonth, subMonths, addMonths, format, isWithinInterval } from 'date-fns'
 import { ChevronRight, ChevronLeft, ChevronDown } from 'lucide-vue-next'
 
 import CardHistoryItem from './CardHistoryItem.vue'
@@ -18,7 +18,7 @@ const props = defineProps<{
   }[]
 }>()
 
-// 월 이동 (초기값 = 현재 달)
+// 월 이동  (초기값 = 현재 달)
 const currentMonthDate = ref(new Date())
 
 // 월 이동 함수
@@ -50,16 +50,13 @@ const appliedFilter = ref<{
 const isFilterOpen = ref(false)
 const openFilter = () => (isFilterOpen.value = true)
 const closeFilter = () => (isFilterOpen.value = false)
-
-// 필터 적용
 const applyFilter = (filter: typeof appliedFilter.value) => {
   appliedFilter.value = filter
 
-  // '이번달', '지난달' 선택 시 currentMonthDate 동기화
   if (filter.period === '이번달') {
-    currentMonthDate.value = new Date()
+    currentMonthDate.value = new Date() // 이번달 = 오늘
   } else if (filter.period === '지난달') {
-    currentMonthDate.value = subMonths(new Date(), 1)
+    currentMonthDate.value = subMonths(new Date(), 1) // 지난달
   }
 }
 
@@ -72,15 +69,33 @@ const filteredHistories = computed(() => {
     appliedFilter.value.startDate &&
     appliedFilter.value.endDate
   ) {
-    // 직접 설정일 때: startDate ~ endDate 범위
+    // 직접 설정 날짜 범위
     const start = appliedFilter.value.startDate.getTime()
     const end = appliedFilter.value.endDate.getTime()
     list = list.filter((h) => {
       const historyDate = new Date(h.createdAt).getTime()
       return historyDate >= start && historyDate <= end
     })
+  } else if (appliedFilter.value.period === '이번달') {
+    // 이번달: 이번달 1일 ~ 오늘
+    const now = new Date()
+    const start = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+    const end = now.getTime()
+    list = list.filter((h) => {
+      const historyDate = new Date(h.createdAt).getTime()
+      return historyDate >= start && historyDate <= end
+    })
+  } else if (appliedFilter.value.period === '지난달') {
+    // 지난달: 지난달 1일 ~ 지난달 말일
+    const now = new Date()
+    const start = new Date(now.getFullYear(), now.getMonth() - 1, 1).getTime()
+    const end = new Date(now.getFullYear(), now.getMonth(), 0).getTime() // 지난달 말일
+    list = list.filter((h) => {
+      const historyDate = new Date(h.createdAt).getTime()
+      return historyDate >= start && historyDate <= end
+    })
   } else {
-    // 이번달 / 지난달 / 기본: currentMonthDate 기준
+    // 월 이동(currentMonthDate) 기준 (혹시 남길 경우)
     const start = startOfMonth(currentMonthDate.value).getTime()
     const end = endOfMonth(currentMonthDate.value).getTime()
     list = list.filter((h) => {
@@ -106,7 +121,6 @@ const filteredHistories = computed(() => {
   return list
 })
 </script>
-
 <template>
   <div class="flex flex-col">
     <div class="flex items-center justify-between bg-Gray-1 p-[1rem] pr-[1.4rem] pl-[1.4rem]">
@@ -119,7 +133,17 @@ const filteredHistories = computed(() => {
 
       <!-- 필터 버튼 -->
       <button class="flex items-center gap-1 Body02 text-Gray-5" @click="openFilter">
-        {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
+        <template
+          v-if="
+            appliedFilter.period === '직접 설정' && appliedFilter.startDate && appliedFilter.endDate
+          "
+        >
+          {{ appliedFilter.startDate.toLocaleDateString() }} ~
+          {{ appliedFilter.endDate.toLocaleDateString() }}
+        </template>
+        <template v-else>
+          {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
+        </template>
         <ChevronDown class="w-[1.6rem] h-[1.6rem]" />
       </button>
     </div>
@@ -134,16 +158,23 @@ const filteredHistories = computed(() => {
 
     <!-- 거래 내역 리스트 -->
     <div class="p-[1rem] pr-[1.4rem] pl-[1.4rem]">
-      <card-history-item
-        v-for="(history, index) in filteredHistories"
-        :key="index"
-        :comment="history.comment"
-        :amount="history.amount"
-        :afterBalance="history.afterBalance"
-        :direction="history.direction"
-        :type="history.type"
-        :createdAt="history.createdAt"
-      />
+      <template v-if="filteredHistories.length > 0">
+        <card-history-item
+          v-for="(history, index) in filteredHistories"
+          :key="index"
+          :comment="history.comment"
+          :amount="history.amount"
+          :afterBalance="history.afterBalance"
+          :direction="history.direction"
+          :type="history.type"
+          :createdAt="history.createdAt"
+        />
+      </template>
+      <template v-else>
+        <div class="flex flex-col items-center justify-center py-8 text-Gray-5 Body02">
+          <p>이용 내역이 없습니다.</p>
+        </div>
+      </template>
     </div>
   </div>
 </template>
