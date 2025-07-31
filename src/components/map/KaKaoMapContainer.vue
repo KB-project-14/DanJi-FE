@@ -11,14 +11,20 @@ interface Props {
   filteredStores: LocalStore[]
 }
 
-interface Emits {
-  (e: 'current-location-click'): void
-}
-
 defineProps<Props>()
-defineEmits<Emits>()
 
 const mapLevel = ref(3)
+const map = ref<kakao.maps.Map>()
+
+const onLoadKakaoMap = (mapRef: kakao.maps.Map) => {
+  map.value = mapRef
+}
+
+const panTo = (lat: number, lon: number) => {
+  if (map.value) {
+    map.value.panTo(new kakao.maps.LatLng(lat, lon))
+  }
+}
 
 const currentLocationMarkerImage: KakaoMapMarkerImage = {
   imageSrc: currentLocationIcon,
@@ -48,6 +54,7 @@ const zoomOut = () => {
       :draggable="true"
       width="100%"
       height="100%"
+      @onLoadKakaoMap="onLoadKakaoMap"
     >
       <!-- Current Location Marker -->
       <kakao-map-marker
@@ -90,7 +97,7 @@ const zoomOut = () => {
 
     <!-- Current Location Button -->
     <button
-      @click="$emit('current-location-click')"
+      @click="panTo(userLatitude, userLongitude)"
       class="absolute bottom-[9rem] right-[1.6rem] z-[200] p-[1.5rem] bg-White-0 rounded-full shadow-lg"
       aria-label="현재 위치로 이동"
     >

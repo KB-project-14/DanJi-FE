@@ -75,8 +75,6 @@ const fetchLocalData = async (): Promise<LocalStore[]> => {
   try {
     const response = await axios.get('/api/local/store')
     localStores.value = response.data.data.localStores
-
-    console.log(`가맹점 데이터 로드 완료: ${localStores.value.length}개`)
     return localStores.value
   } catch (err) {
     const errorMessage = '가맹점 데이터를 불러오는데 실패했습니다.'
@@ -119,29 +117,6 @@ const handleFilterModalConfirm = (region: string, city: string): void => {
   // TODO: 지역별 가맹점 필터링 로직 추가
 }
 
-const handleCurrentLocationBtnClick = (): void => {
-  foldLocalStoreModal.value = true
-
-  // 이미 위치 정보가 있으면 현재 위치로 이동 로직 실행
-  if (userCurrentLatitude.value !== 37.5665 || userCurrentLongitude.value !== 126.978) {
-    console.log('현재 위치로 이동:', {
-      lat: userCurrentLatitude.value,
-      lng: userCurrentLongitude.value,
-    })
-    // TODO: 지도 이동 로직 추가
-  } else {
-    // 위치 정보가 없으면 새로 가져오기
-    getUserLocation()
-      .then(() => {
-        console.log('위치 가져오기 완료, 지도 이동 실행')
-        // TODO: 지도 이동 로직 추가
-      })
-      .catch((error) => {
-        console.error('위치 가져오기 실패:', error)
-      })
-  }
-}
-
 onMounted(async () => {
   try {
     await Promise.all([fetchLocalData(), getUserLocation()])
@@ -173,7 +148,6 @@ onMounted(async () => {
             :user-latitude="userCurrentLatitude"
             :user-longitude="userCurrentLongitude"
             :filtered-stores="filteredStores"
-            @current-location-click="handleCurrentLocationBtnClick"
           />
 
           <!-- Modals -->
