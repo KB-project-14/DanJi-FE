@@ -23,6 +23,7 @@
     "deploy:prod": "vercel --prod"
   },
   "dependencies": {
+    "@vueuse/core": "^13.6.0",
     "@zxing/library": "^0.21.3",
     "axios": "^1.10.0",
     "date-fns": "^4.1.0",
