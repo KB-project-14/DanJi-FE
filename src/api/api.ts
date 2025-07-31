@@ -1,37 +1,43 @@
+import axios, { type AxiosInstance } from 'axios'
+
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
-const getInstance = async <T>(url: string): Promise<T> => {
-  const response = await fetch(`${BASE_URL}${url}`, {
-    method: 'GET',
-  })
-
-  if (!response.ok) {
-    throw new Error('서버에서 데이터를 받아오는 중 문제가 생겼습니다.')
+// API Response 공통 타입
+export interface ApiResponse<T> {
+  data?: T
+  error?: {
+    code: string
+    message: string
+    details?: Array<{ field: string; message: string }>
   }
-
-  return response.json()
+  success: boolean
 }
 
-const postInstance = async <T, U>(url: string, data: U): Promise<T> => {
-  const response = await fetch(`${BASE_URL}${url}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
+export const instance: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_APP_BASE_URL,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    //  Authorization: `${getAccessTokenLocalStorage()}`
+  },
+})
 
-  if (!response.ok) {
-    throw new Error('서버에 데이터를 전송하는 중 문제가 생겼습니다.')
-  }
-
-  return response.json()
+export function get<T>(...args: Parameters<typeof instance.get>) {
+  return instance.get<T, T>(...args)
 }
 
-export function get<T>(...args: Parameters<typeof getInstance>) {
-  return getInstance<T>(args[0])
+export function post<T>(...args: Parameters<typeof instance.post>) {
+  return instance.post<T>(...args)
 }
 
-export function post<T, U>(url: string, data: U) {
-  return postInstance<T, U>(url, data)
+export function put<T>(...args: Parameters<typeof instance.put>) {
+  return instance.put<T>(...args)
+}
+
+export function patch<T>(...args: Parameters<typeof instance.patch>) {
+  return instance.patch<T, T>(...args)
+}
+
+export function del<T>(...args: Parameters<typeof instance.delete>) {
+  return instance.delete<T>(...args)
 }
