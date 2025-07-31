@@ -18,6 +18,7 @@ import MapPage from '@/views/map/MapPage.vue'
 import ExchangeCompletePage from '@/views/wallet/exchange/ExchangeCompletePage.vue'
 import LoginPage from '@/views/auth/LoginPage.vue'
 import SignUpPage from '@/views/auth/SignUpPage.vue'
+import PaymentPin from '@/views/auth/PaymentPinPage.vue'
 import LocalCardCreateSelectLocalPage from '@/views/wallet/create/LocalCardCreateSelectLocalPage.vue'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 
@@ -110,6 +111,7 @@ const routes = [
     name: 'SignUp',
     component: SignUpPage,
   },
+  { path: '/payment-pin', name: 'PaymentPin', component: PaymentPin },
 ]
 
 const router = createRouter({

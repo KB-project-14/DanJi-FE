@@ -15,7 +15,7 @@ const isValid = computed(() => !!name.value && !!username.value && !!password.va
 function onSignUp() {
   if (!isValid.value) return
   console.log({ name: name.value, username: username.value, password: password.value })
-  router.push('/login')
+  router.push('/payment-pin')
 }
 </script>
 
@@ -62,7 +62,7 @@ function onSignUp() {
           :disabled="!isValid"
           @click="onSignUp"
         >
-          회원가입 하기
+          다음으로
         </button>
       </div>
     </template>
