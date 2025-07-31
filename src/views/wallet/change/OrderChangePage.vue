@@ -50,24 +50,17 @@ const saveOrder = () => {
 </script>
 
 <template>
-  <layout
-    :header-type="'basic'"
-    :header-title="'순서변경'"
+  <Layout
+    :header-type="'setting'"
+    :header-title="'설정'"
+    :show-left-icon="true"
+    :show-right-icon="true"
     :is-bottom-nav="false"
-    :showLeftIcon="true"
   >
     <template #content>
-      <div class="flex flex-col h-full px-[1.5rem] py-[2rem] bg-background">
+      <div class="flex flex-col h-full px-[1.5rem] py-[2rem] bg-Background">
         <div class="flex-1 overflow-y-auto">
           <div class="mb-[1rem] Body04 text-Black2">지갑 순서를 바꿔보세요</div>
-
-          <!-- 통합지갑 고정 -->
-          <wallet-item
-            :name="cards[0].name"
-            :balance="cards[0].balance"
-            :bgColorClass="cards[0].bgColorClass"
-            :showMenu="false"
-          />
 
           <draggable
             v-model="otherCards"
@@ -93,7 +86,7 @@ const saveOrder = () => {
         </div>
       </div>
     </template>
-  </layout>
+  </Layout>
 </template>
 
 <style scoped>

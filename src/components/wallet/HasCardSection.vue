@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
-import { ref, computed, onMounted, nextTick, defineProps } from 'vue'
+import { ref, computed, onMounted, nextTick, defineProps, defineEmits } from 'vue'
 import UserCard from '@/components/common/card/UserCard.vue'
 
 interface Card {
@@ -14,10 +15,18 @@ interface Card {
   percentage: number
 }
 
-// ✅ props로 cards 받기
+const router = useRouter()
+
+const orderCardPage = () => {
+  router.push('/order')
+}
+
+// props로 cards 받기
 const props = defineProps<{
   cards: Card[]
 }>()
+// emit으로 부모에게 index값 보내기
+const emit = defineEmits<{ (e: 'slide-change', index: number): void }>()
 
 const sortedCards = computed(() => [...props.cards].sort((a, b) => a.order - b.order))
 const swiperEl = ref<any>(null)
@@ -25,6 +34,8 @@ const currentSlideIndex = ref(1)
 
 const onSlideChange = (swiper: any) => {
   currentSlideIndex.value = swiper.activeIndex + 1
+  // 부모에게 현재 index값 전달
+  emit('slide-change', swiper.activeIndex)
 }
 
 onMounted(() => {
@@ -42,7 +53,7 @@ onMounted(() => {
       <div class="Body02 text-Black-2">
         나의 카드 {{ currentSlideIndex }} / {{ sortedCards.length }}개
       </div>
-      <button class="pr-20 Body04 text-Gray-4 underline">순서 바꾸기</button>
+      <button class="pr-20 Body04 text-Gray-4 underline" @click="orderCardPage">순서 바꾸기</button>
     </div>
     <!-- 카드 사진 -->
     <div class="overflow-hidden">
@@ -61,6 +72,7 @@ onMounted(() => {
           class="!w-[275px] shrink-0"
         >
           <UserCard
+            :id="card.id"
             :balance="card.balance"
             :backgroundImageUrl="card.backgroundImageUrl"
             class="w-full"
