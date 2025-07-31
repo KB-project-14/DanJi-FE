@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { format } from 'date-fns'
+
 defineProps<{
   comment: string // 가맹점명
   amount: number // 거래 금액
@@ -19,6 +21,12 @@ const getDisplayText = (direction: string, type: string) => {
 const getAmountColor = (direction: string) => {
   return direction === 'INCOME' ? 'text-Blue-0' : 'text-Red-0'
 }
+
+// 날짜 표기법 통일
+const formatDateTime = (dateString: string) => {
+  const date = new Date(dateString)
+  return format(date, 'yyyy.MM.dd HH:mm:ss')
+}
 </script>
 <template>
   <div class="flex flex-col py-[1.6rem] border-b border-Gray-1">
@@ -31,8 +39,8 @@ const getAmountColor = (direction: string) => {
     </div>
 
     <!-- 결제 시간 + 결제 후 잔액 -->
-    <div class="flex justify-between mt-[0.4rem] Body02 text-Gray-5">
-      <span>{{ new Date(createdAt).toLocaleString() }}</span>
+    <div class="flex justify-between mt-[0.4rem] Body04 text-Gray-5">
+      <span>{{ formatDateTime(createdAt) }}</span>
       <span>잔액 {{ (afterBalance ?? 0).toLocaleString() }} 원</span>
     </div>
   </div>
