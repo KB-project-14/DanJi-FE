@@ -49,7 +49,7 @@ import DanjiChipGroup from '../chip/DanjiChipGroup.vue'
 
 const props = defineProps<{
   isVisible: boolean
-  initalRegion: string
+  initialRegion: string
   initialCity: string
 }>()
 
@@ -75,7 +75,7 @@ interface LocalData {
 }
 
 const localData = ref<LocalData>({ regions: [], cities: {} })
-const selectedRegion = ref<string>(props.initalRegion)
+const selectedRegion = ref<string>(props.initialRegion)
 const selectedCity = ref<string>(props.initialCity)
 
 const selectedRegionId = computed<number | null>(() => {
@@ -101,13 +101,27 @@ function getFirstCityOfRegion(regionName: string) {
 }
 
 watch(
-  selectedRegion,
-  (newRegion) => {
-    const firstCity = getFirstCityOfRegion(newRegion)
-    selectedCity.value = firstCity
+  () => props.initialRegion,
+  (newVal) => {
+    selectedRegion.value = newVal
   },
-  { immediate: false },
+  { immediate: true },
 )
+
+watch(
+  () => props.initialCity,
+  (newVal) => {
+    selectedCity.value = newVal
+  },
+  { immediate: true },
+)
+
+watch(selectedRegion, (newRegion) => {
+  const firstCity = getFirstCityOfRegion(newRegion)
+  if (firstCity && selectedCity.value !== firstCity) {
+    selectedCity.value = firstCity
+  }
+})
 
 //mock api
 const fetchLocalData = async (): Promise<void> => {
