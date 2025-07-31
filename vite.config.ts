@@ -15,14 +15,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  server: {
-    host: true,
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8080', // 백엔드 주소
-        changeOrigin: true,
-      },
-    },
-  },
 })
