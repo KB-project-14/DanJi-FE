@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { ChevronLeft } from 'lucide-vue-next'
+
 import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
 
@@ -15,7 +17,7 @@ const isValid = computed(() => !!name.value && !!username.value && !!password.va
 function onSignUp() {
   if (!isValid.value) return
   console.log({ name: name.value, username: username.value, password: password.value })
-  router.push('/login')
+  router.push('/payment-pin')
 }
 </script>
 
@@ -24,10 +26,14 @@ function onSignUp() {
     :header-type="'basic'"
     :header-title="'회원가입'"
     :is-bottom-nav="false"
-    :show-left-icon="true"
+    :show-left-icon="false"
   >
     <template #content>
       <div class="p-6 h-[595px] bg-[#f5f6f8] box-border flex flex-col items-center">
+        <button class="absolute top-11 left-10" @click="router.push('/login')">
+          <ChevronLeft class="w-10 h-10 text-gray-500 hover:text-gray-800" />
+        </button>
+
         <div
           class="w-full max-w-[360px] h-[400px] mt-[30px] mb-[20px] mx-auto bg-white rounded-xl p-6 pt-[-10px] shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex flex-col gap-[35px]"
         >
@@ -62,7 +68,7 @@ function onSignUp() {
           :disabled="!isValid"
           @click="onSignUp"
         >
-          회원가입 하기
+          다음으로
         </button>
       </div>
     </template>
