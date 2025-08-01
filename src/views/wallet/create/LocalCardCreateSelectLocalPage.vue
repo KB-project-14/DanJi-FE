@@ -6,6 +6,7 @@ import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import { computed, onMounted, ref } from 'vue'
 import axios from 'axios'
 import router from '@/router'
+import useGetLocals from '@/composables/queries/local/useGetLocals'
 
 // 임시 타입
 interface Region {
@@ -55,17 +56,7 @@ const handleCardCreateConfirm = (): void => {
   })
 }
 
-//mock api
-const fetchLocalData = async (): Promise<void> => {
-  try {
-    const response = await axios.get('/api/local/list')
-    localData.value = response.data.data
-  } catch {}
-}
-
-onMounted(() => {
-  fetchLocalData()
-})
+const data = useGetLocals()
 </script>
 
 <template>
@@ -73,7 +64,7 @@ onMounted(() => {
     <template #content>
       <div class="mt-[2.5rem] mx-[2.9rem]">
         <div class="flex flex-col">
-          <span class="Head03 text-Black-1">카드를 발급받을 지역을 선택해주세요.</span>
+          <span class="Head03 text-Black-1">카드를 발급받을 지역을 선택해주세요.{{ data }}</span>
           <span class="Body03 text-Gray-5">선택한 지역의 가맹점에서 혜택을 받을 수 있습니다.</span>
         </div>
 
