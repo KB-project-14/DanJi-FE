@@ -1,3 +1,22 @@
+// api 연결 관련 공용 타입 정의
+
+// 추후 백엔드 수정사항에 맞게 변경 예정
+export interface ApiError {
+  code: string
+  message: string
+  method: string
+  errors: Array<{
+    field: string
+    reason: string
+  }>
+}
+
+export interface ApiResponse<T = Record<string, object>> {
+  data: T
+  error: ApiError | null
+  status: string
+}
+
 // 바텀네비 아이템 타입
 export type BottomNaviType = 'wallet' | 'map' | 'qr' | 'badge' | 'my'
 
