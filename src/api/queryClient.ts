@@ -1,7 +1,7 @@
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/vue-query'
 import type { ApiResponse } from '@/types/types'
 
-// 커스텀 에러 클래스 (API 클라이언트와 동일)
+// 커스텀 에러 클래스 (추후 백엔드 수정사항에 맞게 변경 예정)
 export class ApiError extends Error {
   constructor(
     public code: string,
