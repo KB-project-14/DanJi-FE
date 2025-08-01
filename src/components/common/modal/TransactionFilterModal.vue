@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, defineProps, onMounted } from 'vue'
 import DatePicker from 'vue-datepicker-next'
+import { format } from 'date-fns'
 import 'vue-datepicker-next/index.css'
-import { subMonths } from 'date-fns'
 import DanjiButton from '../button/DanjiButton.vue'
 
 const props = defineProps<{
@@ -81,6 +81,11 @@ const confirmFilter = () => {
   })
   emit('close')
 }
+
+// 날짜 표기법 통일
+const formatDate = (date: Date | null) => {
+  return date ? format(date, 'yyyy.MM.dd') : '날짜 선택'
+}
 </script>
 
 <template>
@@ -120,7 +125,7 @@ const confirmFilter = () => {
       <DatePicker v-model:value="startDate" type="date" format="YYYY-MM-DD">
         <template #input>
           <div class="border rounded-md w-full text-center py-[0.8rem] cursor-pointer">
-            {{ startDate ? startDate.toLocaleDateString() : '시작일 선택' }}
+            {{ formatDate(startDate) }}
           </div>
         </template>
       </DatePicker>
@@ -128,7 +133,7 @@ const confirmFilter = () => {
       <DatePicker v-model:value="endDate" type="date" format="YYYY-MM-DD">
         <template #input>
           <div class="border rounded-md w-full text-center py-[0.8rem] cursor-pointer">
-            {{ endDate ? endDate.toLocaleDateString() : '종료일 선택' }}
+            {{ formatDate(endDate) }}
           </div>
         </template>
       </DatePicker>

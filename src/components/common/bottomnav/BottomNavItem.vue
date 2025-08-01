@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { Wallet, Map, QrCode, Shield, UserRound } from 'lucide-vue-next'
 import { computed, defineProps } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const BottomNavProps = defineProps<{
   text: string
@@ -23,12 +26,33 @@ const iconComponent = computed(() => {
       return Wallet
   }
 })
+
+const handleClick = () => {
+  switch (BottomNavProps.text) {
+    case '지갑':
+      router.push('/home')
+      break
+    case '지도':
+      router.push('/map')
+      break
+    case 'QR':
+      router.push('/qr')
+      break
+    case '뱃지':
+      alert('뱃지 페이지 준비 중')
+      break
+    case '마이':
+      router.push('/mypage')
+      break
+  }
+}
 </script>
 
 <template>
   <div
     class="flex flex-col items-center justify-center h-[7.3rem] w-[6rem] rounded-[1.2rem] cursor-pointer"
     :class="{ 'bg-Yellow-0/10': isActive }"
+    @click="handleClick"
   >
     <slot :text="text">
       <div

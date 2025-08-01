@@ -105,6 +105,9 @@ const filteredHistories = computed(() => {
 
   return list
 })
+
+// 날짜 표기법 통일
+const formatDate = (date: Date) => format(date, 'yyyy.MM.dd')
 </script>
 
 <template>
@@ -124,8 +127,8 @@ const filteredHistories = computed(() => {
             appliedFilter.period === '직접 설정' && appliedFilter.startDate && appliedFilter.endDate
           "
         >
-          {{ appliedFilter.startDate.toLocaleDateString() }} ~
-          {{ appliedFilter.endDate.toLocaleDateString() }} {{ appliedFilter.type }} ·
+          {{ formatDate(appliedFilter.startDate) }} ~ {{ formatDate(appliedFilter.endDate) }}
+          {{ appliedFilter.type }} ·
           {{ appliedFilter.order }}
         </template>
         <template v-else>
