@@ -5,20 +5,11 @@ export interface ApiError {
   code: string
   message: string
   method: string
-  requestURI: string
-  timestamp: string
   errors: Array<{
     field: string
     reason: string
   }>
 }
-
-// export interface ResponseType<T = Record<string, object>> {
-//   isSuccess: boolean
-//   code: string
-//   message: string
-//   result: T
-// }
 
 export interface ApiResponse<T = Record<string, object>> {
   data: T
