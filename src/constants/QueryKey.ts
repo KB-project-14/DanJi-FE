@@ -19,3 +19,8 @@ export const MYPAGE_KEYS = {
 export const PAY_KEYS = {
   all: ['pay'] as const,
 }
+
+//지역, 지역화폐 관련 쿼리 키
+export const LOCAL_KEYS = {
+  all: ['locals'] as const,
+}
