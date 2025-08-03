@@ -20,6 +20,7 @@ import LoginPage from '@/views/auth/LoginPage.vue'
 import SignUpPage from '@/views/auth/SignUpPage.vue'
 import LocalCardCreateSelectLocalPage from '@/views/wallet/create/LocalCardCreateSelectLocalPage.vue'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
+import PaymentPin from '@/views/auth/PaymentPinPage.vue'
 
 const routes = [
   {
@@ -110,6 +111,7 @@ const routes = [
     name: 'SignUp',
     component: SignUpPage,
   },
+  { path: '/payment-pin', name: 'PaymentPin', component: PaymentPin },
 ]
 
 const router = createRouter({
