@@ -3,7 +3,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChevronLeft } from 'lucide-vue-next'
 import Layout from '@/components/layout/Layout.vue'
+import { useSignUpStore } from '@/stores/signupStore'
+import axios from 'axios'
 
+const store = useSignUpStore()
 const router = useRouter()
 const step = ref(1)
 const firstPin = ref('')
@@ -24,20 +27,32 @@ function resetPin() {
   step.value = 1
 }
 
-function confirmPin() {
+async function confirmPin() {
   if (step.value === 1) {
     firstPin.value = currentPin.value
     currentPin.value = ''
     step.value = 2
   } else {
     if (firstPin.value === currentPin.value) {
-      alert('비밀번호 설정 완료!')
-      router.push('/login')
+      const payload = {
+        name: store.name,
+        username: store.username,
+        password: store.password,
+        paymentPin: firstPin.value,
+      }
+
+      try {
+        await axios.post('http://localhost:8080/api/members', payload)
+        alert('회원가입 완료!')
+        store.$reset()
+        router.push('/login')
+      } catch (err) {
+        alert('회원가입 실패!')
+        console.error(err)
+      }
     } else {
       alert('비밀번호가 일치하지 않습니다. 다시 시도해주세요.')
-      step.value = 1
-      firstPin.value = ''
-      currentPin.value = ''
+      resetPin()
     }
   }
 }
@@ -82,7 +97,6 @@ function confirmPin() {
 
         <!-- 키패드 + 버튼 전체 래퍼 -->
         <div class="mt-auto pb-40">
-          <!-- 키패드 -->
           <div
             class="bg-white rounded-t-3xl px-8 pt-6 pb-10 w-full shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
           >

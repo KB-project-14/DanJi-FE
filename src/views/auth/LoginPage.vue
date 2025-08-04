@@ -3,14 +3,33 @@ import { ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
 import { Lock, User, ChevronRight } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
 
+const router = useRouter()
 const username = ref('')
 const password = ref('')
 
-function onLogin() {
-  console.log('로그인 시도:', username.value, password.value)
+async function onLogin() {
+  try {
+    const res = await axios.post('http://localhost:8080/api/members/login', {
+      username: username.value,
+      password: password.value,
+    })
+
+    // 로그인 성공 시 토큰 저장
+    localStorage.setItem('EXIT_LOGIN_TOKEN', res.data.accessToken)
+    localStorage.setItem('EXIT_LOGIN_REFRESH_TOKEN', res.data.refreshToken)
+
+    alert('로그인 성공!')
+    router.push('/home')
+  } catch (err) {
+    console.error(err)
+    alert('로그인 실패!')
+  }
 }
 </script>
+
 <template>
   <Layout header-type="basic" :is-bottom-nav="false" :show-left-icon="false">
     <template #content>
@@ -64,12 +83,12 @@ function onLogin() {
           <!-- 회원가입 링크 -->
           <router-link
             to="/signup"
-            class="flex items-center justify-end gap-[-10px] text-[13px] text-[#c7c7c7] mt-[4px] mb-[-20px] mr-[10px] ml-[-10px]"
+            class="flex items-center justify-end text-[13px] text-[#c7c7c7] mt-[4px] mb-[-20px] mr-[10px]"
           >
             단지의 첫 지갑을 만들어볼까요?
-            <span class="w-[6px] inline-block"></span>
+            <span class="mx-[4px]"></span>
             <strong class="font-normal">회원가입</strong>
-            <ChevronRight class="w-[14px] h-[14px] stroke-[2.5] text-[#c7c7c7] translate-x-[8px]" />
+            <ChevronRight class="w-[14px] h-[14px] stroke-[2.5] text-[#c7c7c7]" />
           </router-link>
         </div>
 
