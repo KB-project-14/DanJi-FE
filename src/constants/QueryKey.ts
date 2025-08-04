@@ -24,4 +24,6 @@ export const PAY_KEYS = {
 export const LOCAL_KEYS = {
   all: ['locals'] as const,
   detail: ['local_currrencies'] as const,
+  //TODO : 나중에 WALLET 쪽 쿼리 키에 합치기
+  details: ['local_currrency', 'create'],
 }
