@@ -6,14 +6,14 @@ export interface localResponseDtoType {
   updatedAt: string | null
 }
 
-export type BenefitType = 'CASHBACK' | 'DISCOUNT_CHARGE' | 'BONUS_CHARGE'
+export type BenefitType = 'CASHBACK' | 'DISCOUNT_CHARGE' | 'DISCOUNT' | 'BONUS_CHARGE'
 
 export interface localcurrencyListRequestDtoType {
   benefitType: BenefitType | null
   city: string | null
   localCurrencyId: string | null
   province: string | null
-  regionId: string | null
+  regionId: number | null
 }
 
 export interface localcurrencyResponseDtoType {
