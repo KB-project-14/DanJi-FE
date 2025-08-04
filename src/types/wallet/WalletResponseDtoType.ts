@@ -1,3 +1,4 @@
+// 지갑 조회
 export interface WalletResponseDtoType {
   balance: number
   createdAt: string
