@@ -9,7 +9,6 @@ import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType
 
 const router = useRouter()
 
-// 부모에서 내려오는 카드 props
 const props = defineProps<{
   cards: WalletResponseDtoType[]
 }>()
@@ -28,7 +27,6 @@ const sortedCards = computed(() =>
     : [],
 )
 
-// 현재 슬라이드 index
 const currentIndex = ref(0)
 
 const swiperEl = ref<any>(null)
@@ -49,7 +47,14 @@ onMounted(() => {
 <template>
   <div class="flex flex-col gap-4 max-w-full overflow-hidden">
     <!-- 순서 바꾸기 버튼 -->
-    <div class="flex items-center justify-end">
+    <div class="flex items-center justify-between">
+      <!-- 왼쪽: 나의 카드 1/총개수 -->
+      <div class="Body04 text-Black-2">
+        나의 카드
+        <span class="text-Gray-7"> {{ currentIndex + 1 }} / {{ sortedCards.length }} 개 </span>
+      </div>
+
+      <!-- 오른쪽: 순서 바꾸기 버튼 -->
       <button class="pr-20 Body04 text-Gray-4 underline" @click="orderCardPage">순서 바꾸기</button>
     </div>
 
@@ -69,7 +74,7 @@ onMounted(() => {
           :key="card.walletId"
           class="!w-[275px] shrink-0"
         >
-          <UserCard
+          <user-card
             :id="card.walletId"
             :balance="card.balance"
             :backgroundImageUrl="card.backgroundImageUrl || '/images/default-card.png'"
@@ -82,8 +87,11 @@ onMounted(() => {
     <!-- 혜택 안내 -->
     <div class="w-full text-right pr-20 Body04 text-Gray-4">
       <span v-if="sortedCards.length">
+        <!-- 카드 이름 -->
         {{ sortedCards[currentIndex]?.localCurrencyId }} 카드 혜택 :
+        <!-- 인센티브 종류 -->
         {{ sortedCards[currentIndex]?.benefitType }}
+        <!-- 몇 % 인지 -->
         {{ sortedCards[currentIndex]?.percentage }}%
       </span>
     </div>
