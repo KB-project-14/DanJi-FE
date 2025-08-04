@@ -25,8 +25,8 @@ export const getWalletList = async (
     },
   )
   // 통합 지갑, 지역 화폐 값 잘 들어오나 확인
-  // console.log('API 호출 URL:', '/api/wallets', 'walletType:', walletType)
-  // console.log('응답 데이터:', response.data)
+  console.log('API 호출 URL:', '/api/wallets', 'walletType:', walletType)
+  console.log('응답 데이터:', response.data)
 
   // 응답 없을 때 기본값 처리
   return response.data?.data ?? []

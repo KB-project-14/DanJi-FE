@@ -19,30 +19,12 @@ const cashBalance = computed(() => cashWallets.value?.[0]?.balance || 0)
 
 // 로컬카드 (LOCAL)
 const localWallets = useGetWalletList('LOCAL')
-const localCurrencies = useGetLocalCurrencies()
-
-// Wallet + LocalCurrency 병합
-const mergedLocalWallets = computed(() => {
-  if (!localWallets.value || !localCurrencies.value) return []
-
-  return localWallets.value.map((wallet) => {
-    const matched = localCurrencies.value.find(
-      (cur) => cur.local_currency_id === wallet.localCurrencyId,
-    )
-
-    return {
-      ...wallet,
-      localCurrencyName: matched?.name || '이름 없음',
-      benefitType: matched?.benefit_type || '',
-      percentage: matched?.percentage || 0,
-      maximum: matched?.maximum || 0,
-    }
-  })
-})
 
 // 카드 정렬 (displayOrder 기준)
 const sortedCards = computed(() =>
-  mergedLocalWallets.value.sort((a, b) => a.displayOrder - b.displayOrder),
+  (localWallets.value ? [...localWallets.value] : []).sort(
+    (a, b) => a.displayOrder - b.displayOrder,
+  ),
 )
 
 // 현재 카드 index값

@@ -26,7 +26,6 @@ const sortedCards = computed(() =>
     ? [...props.cards].sort((a, b) => a.displayOrder - b.displayOrder)
     : [],
 )
-
 const currentIndex = ref(0)
 
 const swiperEl = ref<any>(null)
@@ -86,7 +85,7 @@ onMounted(() => {
     <div class="w-full text-right pr-20 Body04 text-Gray-4">
       <span v-if="sortedCards.length">
         <!-- 카드 이름 -->
-        {{ sortedCards[currentIndex]?.localCurrencyId }} 카드 혜택 :
+        {{ sortedCards[currentIndex]?.localCurrencyName }} 카드 혜택 :
         <!-- 인센티브 종류 -->
         {{ sortedCards[currentIndex]?.benefitType }}
         <!-- 몇 % 인지 -->

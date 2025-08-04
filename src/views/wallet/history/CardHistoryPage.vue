@@ -200,7 +200,7 @@ const boxLabel = computed(() => {
       </div>
 
       <!-- 거래 내역 리스트 -->
-      <card-history-item-list :histories="transaction" @month-change="handleMonthChange" />
+      <!-- <card-history-item-list :histories="transaction" @month-change="handleMonthChange" /> -->
     </template>
   </Layout>
 </template>
