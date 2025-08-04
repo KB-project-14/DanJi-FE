@@ -8,18 +8,22 @@ import type {
   SetPinResponse,
 } from '@/types/auth'
 
-const BASE_URL = 'http://localhost:8080'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
 
 // 로그인
 export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
-  const response = await axios.post<LoginResponse>(`${BASE_URL}/api/auth/login`, payload)
-  return response.data
+  const { data } = await axios.post<LoginResponse>(`${BASE_URL}/api/auth/login`, payload)
+  localStorage.setItem('member_id', data.memberId) // ✅ UUID 저장
+  localStorage.setItem('EXIT_LOGIN_TOKEN', data.accessToken)
+  localStorage.setItem('EXIT_LOGIN_REFRESH_TOKEN', data.refreshToken)
+  return data
 }
 
 // 회원가입
 export const signUp = async (payload: SignUpRequest): Promise<SignUpResponse> => {
-  const response = await axios.post<SignUpResponse>(`${BASE_URL}/api/members`, payload)
-  return response.data
+  const { data } = await axios.post<SignUpResponse>(`${BASE_URL}/api/members`, payload)
+  localStorage.setItem('member_id', data.memberId) // ✅ UUID 저장
+  return data
 }
 
 // PIN 설정

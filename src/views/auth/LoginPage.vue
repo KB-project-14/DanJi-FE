@@ -4,28 +4,32 @@ import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
 import { Lock, User, ChevronRight } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { login } from '@/api/auth'
+import type { LoginRequest } from '@/types/auth'
 
 const router = useRouter()
 const username = ref('')
 const password = ref('')
+const isLoading = ref(false)
 
 async function onLogin() {
+  if (isLoading.value) return
+  isLoading.value = true
   try {
-    const res = await axios.post('http://localhost:8080/api/members/login', {
+    const loginData: LoginRequest = {
       username: username.value,
       password: password.value,
-    })
+    }
+    const response = await login(loginData)
+    localStorage.setItem('ACCESS_TOKEN', response.accessToken)
+    localStorage.setItem('REFRESH_TOKEN', response.refreshToken)
 
-    // 로그인 성공 시 토큰 저장
-    localStorage.setItem('EXIT_LOGIN_TOKEN', res.data.accessToken)
-    localStorage.setItem('EXIT_LOGIN_REFRESH_TOKEN', res.data.refreshToken)
-
-    alert('로그인 성공!')
     router.push('/home')
   } catch (err) {
-    console.error(err)
-    alert('로그인 실패!')
+    console.error('로그인 오류:', err)
+    alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.')
+  } finally {
+    isLoading.value = false
   }
 }
 </script>

@@ -6,6 +6,7 @@ export interface LoginRequest {
 
 // 로그인 응답
 export interface LoginResponse {
+  memberId: string
   success: boolean
   accessToken: string
   refreshToken: string
@@ -17,11 +18,13 @@ export interface SignUpRequest {
   name: string
   username: string
   password: string
+  paymentPin: string
 }
 
 // 회원가입 응답
 export interface SignUpResponse {
   success: boolean
+  memberId: string
   message?: string
 }
 

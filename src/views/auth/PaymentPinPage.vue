@@ -38,11 +38,11 @@ async function confirmPin() {
         name: store.name,
         username: store.username,
         password: store.password,
-        paymentPin: firstPin.value,
+        paymentPin: currentPin.value,
       }
 
       try {
-        await axios.post('http://localhost:8080/api/members', payload)
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/members`, payload)
         alert('회원가입 완료!')
         store.$reset()
         router.push('/login')
