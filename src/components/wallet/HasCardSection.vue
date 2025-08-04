@@ -5,30 +5,24 @@ import 'swiper/css'
 import { ref, computed, onMounted, nextTick, defineProps, defineEmits } from 'vue'
 import UserCard from '@/components/common/card/UserCard.vue'
 
-interface Card {
-  id: number
-  name: string
-  balance: number
-  backgroundImageUrl: string
-  order: number
-  benefit_type: string
-  percentage: number
-}
+import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 
 const router = useRouter()
+
+// emit으로 부모에게 index값 보내기
+const emit = defineEmits<{ (e: 'slide-change', index: number): void }>()
 
 const orderCardPage = () => {
   router.push('/order')
 }
 
-// props로 cards 받기
 const props = defineProps<{
-  cards: Card[]
+  cards: WalletResponseDtoType[]
 }>()
-// emit으로 부모에게 index값 보내기
-const emit = defineEmits<{ (e: 'slide-change', index: number): void }>()
 
-const sortedCards = computed(() => [...props.cards].sort((a, b) => a.order - b.order))
+// 카드 정렬 (displayOrder 기준)
+const sortedCards = computed(() => [...props.cards].sort((a, b) => a.displayOrder - b.displayOrder))
+
 const swiperEl = ref<any>(null)
 const currentSlideIndex = ref(1)
 
@@ -68,25 +62,25 @@ onMounted(() => {
       >
         <SwiperSlide
           v-for="(card, index) in sortedCards"
-          :key="card.id + '-' + index"
+          :key="card.walletId + '-' + index"
           class="!w-[275px] shrink-0"
         >
           <UserCard
-            :id="card.id"
+            :id="card.walletId"
             :balance="card.balance"
-            :backgroundImageUrl="card.backgroundImageUrl"
+            :backgroundImageUrl="card.backgroundImageUrl || '/images/default-card.png'"
             class="w-full"
           />
         </SwiperSlide>
       </Swiper>
     </div>
 
-    <!-- 혜택 안내 -->
+    <!-- 혜택 안내 (임시: localCurrencyId와 walletType으로 표시) -->
     <div class="w-full text-right pr-20 Body04 text-Gray-4">
       <span v-if="sortedCards[currentSlideIndex - 1]">
-        {{ sortedCards[currentSlideIndex - 1].name }}의 혜택 :
-        {{ sortedCards[currentSlideIndex - 1].benefit_type }}
-        {{ sortedCards[currentSlideIndex - 1].percentage }}%
+        {{ sortedCards[currentSlideIndex - 1].localCurrencyId }} 카드 ({{
+          sortedCards[currentSlideIndex - 1].walletType
+        }})
       </span>
     </div>
   </div>

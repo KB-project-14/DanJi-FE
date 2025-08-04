@@ -58,15 +58,15 @@ const goExchange = () => {
         </div>
 
         <!-- 카드 리스트 -->
-        <!-- <div class="pl-20 pt-[4rem] pb-[3rem] px-[1rem]">
+        <div class="pl-20 pt-[4rem] pb-[3rem] px-[1rem]">
           <HasCardSection
-            v-if="true"
+            v-if="sortedCards.length > 0"
             :cards="sortedCards"
             @click-card="goCardHistory"
             @slide-change="currentIndex = $event"
           />
           <NoCardSection v-else />
-        </div> -->
+        </div>
 
         <!-- 충전/환전 -->
         <div class="flex justify-center gap-10">

@@ -3,7 +3,7 @@ import { defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 
 const props = defineProps<{
-  id: number
+  id: string
   balance: number
   backgroundImageUrl: string
 }>()
@@ -19,7 +19,7 @@ const goToHistory = () => {
   <!-- 카드 이미지 추후 덮을 예정 -->
   <div
     class="relative w-full aspect-[1586/1000] mx-auto rounded-xl bg-cover bg-center border border-solid border-Gray-3"
-    :style="{ backgroundImage: `url(${backgroundImageUrl})` }"
+    :style="{ backgroundImage: `url(${props.backgroundImageUrl})` }"
     @click="goToHistory"
   >
     <!-- 오른쪽 하단 잔액  -->
