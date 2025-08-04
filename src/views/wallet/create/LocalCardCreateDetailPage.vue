@@ -59,13 +59,15 @@ const handleCompeleteClick = () => {
     walletType: 'LOCAL',
   }
 
-  mutate(requestBody)
-
-  if (!isError) {
-    router.replace({ name: 'LocalCardCreateSuccess' })
-  } else {
-    //TODO : 실패 했을 때 분기 처리 -> 아마 토스트 라이브러리 추가되면 그걸로 할듯합니다.
-  }
+  mutate(requestBody, {
+    onSuccess: () => {
+      router.replace({ name: 'LocalCardCreateSuccess' })
+    },
+    onError(error) {
+      //TODO : 실패 했을 때 분기 처리 -> 아마 토스트 라이브러리 추가되면 그걸로 할듯합니다.
+      console.log('이미 추가된 지역카드')
+    },
+  })
 }
 </script>
 
