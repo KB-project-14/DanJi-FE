@@ -12,12 +12,12 @@ export const getLocals = async (): Promise<localResponseDtoType[]> => {
 
 const useGetLocals = () => {
   const { data } = useQuery<localResponseDtoType[]>({
-    queryKey: [LOCAL_KEYS],
+    queryKey: LOCAL_KEYS.all,
     queryFn: getLocals,
     staleTime: 1000 * 60,
   })
 
-  return data
+  return data ?? []
 }
 
 export default useGetLocals
