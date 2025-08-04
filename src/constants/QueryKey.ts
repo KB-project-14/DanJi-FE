@@ -24,4 +24,6 @@ export const PAY_KEYS = {
 export const WALLET_KEYS = {
   all: ['wallets'] as const,
   list: (type: 'CASH' | 'LOCAL') => [...WALLET_KEYS.all, 'list', type] as const,
+  detail: (walletId: string) => [...WALLET_KEYS.all, 'detail', walletId] as const,
+  transactions: (walletId: string) => [...WALLET_KEYS.all, 'transactions', walletId] as const,
 }

@@ -8,16 +8,10 @@ import { WALLET_KEYS } from '@/constants/QueryKey'
 const ACCESS_TOKEN =
   'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAiLCJpYXQiOjE3NTQwMTE1NDMsImV4cCI6MzMyOTAwMTE1NDMsInVzZXJuYW1lIjoidGVzdGVyIiwicm9sZSI6IlJPTEVfQURNSU4ifQ.6016EI8NsaegS1Zl0y1FwbzoEBTBX5TY6hKKSgK1LtI'
 
-export const getWalletList = async (
-  walletType: 'CASH' | 'LOCAL',
-): Promise<WalletResponseDtoType[]> => {
-  const response: AxiosResponse<ApiResponse<WalletResponseDtoType[]>> = await axios.get(
-    '/api/wallets',
+export const getWalletDetail = async (walletId: string): Promise<WalletResponseDtoType> => {
+  const response: AxiosResponse<ApiResponse<WalletResponseDtoType>> = await axios.get(
+    `/api/wallets/${walletId}`,
     {
-      params: {
-        memberId: '00000000-0000-0000-0000-000000000000',
-        walletType,
-      },
       headers: {
         Authorization: ACCESS_TOKEN,
       },
@@ -26,14 +20,15 @@ export const getWalletList = async (
   return response.data.data
 }
 
-const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
-  const { data } = useQuery<WalletResponseDtoType[]>({
-    queryKey: WALLET_KEYS.list(walletType),
-    queryFn: () => getWalletList(walletType),
+const useGetWalletDetail = (walletId: string) => {
+  const { data } = useQuery<WalletResponseDtoType>({
+    queryKey: WALLET_KEYS.detail(walletId),
+    queryFn: () => getWalletDetail(walletId),
+    enabled: !!walletId,
     staleTime: 1000 * 60,
   })
 
   return data
 }
 
-export default useGetWalletList
+export default useGetWalletDetail
