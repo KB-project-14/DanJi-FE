@@ -5,54 +5,48 @@ import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
 import CardInfo from '@/components/wallet/create/CardInfo.vue'
 import CardBenefitInfo from '@/components/wallet/create/CardBenefitInfo.vue'
-import { onMounted, ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
+import useLocalCurrencyInfo from '@/composables/local/useLocalCurrencyInfo'
+import useLocalSelector from '@/composables/local/useLocalSelector'
+import router from '@/router'
 
 const route = useRoute()
+const routeCityId = computed(() => Number(route.params.id))
 
 const isModalVisible = ref<boolean>(false)
-const selectedRegion = ref<string>('')
-const selectedCity = ref<string>('')
 
-// mock 데이터
-const cardData = ref({
-  name: '부산 동백전',
-  image: '', // 현재는 빈 문자열로 임시 div 사용
-  title: '지역경제 활성화로',
-  subTitle: '100(백)가지 행복과 즐거움을 주는 "동백전"',
-  incentiveText: '동백전 인센티브 10%',
-  maxChargeAmount: '600,000원',
-  description:
-    '연말정산 시, 현금과 같은 30% 소득공제가 됩니다! ~~~~ 어쩌구 ~~~ ㅓㅈ쩌구 연말정산 시, 현금과 같은 30% 소득공제가 됩니다! ~~~~ 어쩌구 ~~~ ㅓㅈ쩌구',
-})
+const { selectedRegion, selectedCity, selectedCityId, getLocalInfoById } = useLocalSelector()
+const { localCurrencyName, benefitInfo, benefitDescription } = useLocalCurrencyInfo(
+  computed(() => ({
+    province: null,
+    city: null,
+    benefitType: null,
+    localCurrencyId: null,
+    regionId: routeCityId.value,
+  })),
+)
+
+const localInfo = computed(() => getLocalInfoById(routeCityId.value))
 
 const handleClickModal = (): void => {
   isModalVisible.value = !isModalVisible.value
 }
 
-const handleModalConfirm = (region: string, city: string): void => {
+const handleModalConfirm = async (region: string, city: string): Promise<void> => {
   selectedRegion.value = region
   selectedCity.value = city
   isModalVisible.value = false
-}
 
-// 라우터에서 전달받은 데이터 처리
-const initializeFromRoute = () => {
-  const routeRegion = route.params.region
-  const routeCity = route.params.city
+  await nextTick()
 
-  if (routeRegion && typeof routeRegion === 'string') {
-    selectedRegion.value = routeRegion
-  }
-
-  if (routeCity && typeof routeCity === 'string') {
-    selectedCity.value = routeCity
+  if (selectedCityId.value) {
+    router.replace({
+      name: 'LocalCardCreateDetail',
+      params: { id: selectedCityId.value.toString() },
+    })
   }
 }
-
-onMounted(async () => {
-  initializeFromRoute()
-})
 </script>
 
 <template>
@@ -68,28 +62,26 @@ onMounted(async () => {
         :is-icon="true"
         @click="handleClickModal"
       >
-        {{ selectedCity }}시
+        {{ localInfo.value?.city ?? localInfo.value?.province }}
       </danji-chip>
 
       <!-- 지역 필터 모달 -->
       <local-filter-modal
         :is-visible="isModalVisible"
-        v-model:initial-region="selectedRegion"
-        v-model:initial-city="selectedCity"
+        v-bind:initial-region="selectedRegion"
+        v-bind:initial-city="selectedCity"
         @close="handleClickModal"
         @confirm="handleModalConfirm"
       />
 
       <!-- 카드 이미지 & 이름 컴포넌트 -->
-      <card-info :card-name="cardData.name" :card-image="cardData.image" />
+      <card-info :card-name="localCurrencyName" />
 
       <!-- 카드 혜택 정보 컴포넌트 -->
       <card-benefit-info
-        :title="cardData.title"
-        :sub-title="cardData.subTitle"
-        :incentive-text="cardData.incentiveText"
-        :max-charge-amount="cardData.maxChargeAmount"
-        :description="cardData.description"
+        :incentive-text="benefitDescription"
+        :max-charge-amount="String(benefitInfo?.maximum ?? 0)"
+        description="어쩌구 저쩌구"
       />
 
       <!-- 하단 버튼 -->
