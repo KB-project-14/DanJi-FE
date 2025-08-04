@@ -51,7 +51,7 @@ const handleModalConfirm = async (region: string, city: string): Promise<void> =
   }
 }
 
-const { mutate, isPending } = useAddLocalCard()
+const { mutate, isPending, isError } = useAddLocalCard()
 
 const handleCompeleteClick = () => {
   const requestBody: localCardCreateRequestDtoType = {
@@ -60,6 +60,12 @@ const handleCompeleteClick = () => {
   }
 
   mutate(requestBody)
+
+  if (!isError) {
+    router.replace({ name: 'LocalCardCreateSuccess' })
+  } else {
+    //TODO : 실패 했을 때 분기 처리 -> 아마 토스트 라이브러리 추가되면 그걸로 할듯합니다.
+  }
 }
 </script>
 

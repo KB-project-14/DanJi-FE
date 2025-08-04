@@ -21,6 +21,8 @@ import SignUpPage from '@/views/auth/SignUpPage.vue'
 import LocalCardCreateSelectLocalPage from '@/views/wallet/create/LocalCardCreateSelectLocalPage.vue'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 import PaymentPin from '@/views/auth/PaymentPinPage.vue'
+import LocalCardCreateSuccessPage from '@/views/wallet/create/LocalCardCreateSuccessPage.vue'
+import { Component } from 'lucide-vue-next'
 
 const routes = [
   {
@@ -96,6 +98,11 @@ const routes = [
     path: '/wallet/card/create/:id',
     name: 'LocalCardCreateDetail',
     component: LocalCardCreateDetailPage,
+  },
+  {
+    path: '/wallet/card/create/success',
+    name: 'LocalCardCreateSuccess',
+    component: LocalCardCreateSuccessPage,
   },
   {
     path: '/map',
