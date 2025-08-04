@@ -25,7 +25,8 @@ const useGetWalletDetail = (walletId: string) => {
     queryKey: WALLET_KEYS.detail(walletId),
     queryFn: () => getWalletDetail(walletId),
     enabled: !!walletId,
-    staleTime: 1000 * 60,
+    // 목 데이터 사용 중이라 최신내용 필요하여 1분 설정
+    // staleTime: 1000 * 60,
   })
 
   return data

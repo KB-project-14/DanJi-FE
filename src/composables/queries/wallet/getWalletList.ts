@@ -24,8 +24,9 @@ export const getWalletList = async (
       },
     },
   )
-  console.log('API 호출 URL:', '/api/wallets', 'walletType:', walletType)
-  console.log('응답 데이터:', response.data)
+  // 통합 지갑, 지역 화폐 값 잘 들어오나 확인
+  // console.log('API 호출 URL:', '/api/wallets', 'walletType:', walletType)
+  // console.log('응답 데이터:', response.data)
 
   // 응답 없을 때 기본값 처리
   return response.data?.data ?? []
@@ -35,10 +36,10 @@ const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
   const { data } = useQuery<WalletResponseDtoType[]>({
     queryKey: WALLET_KEYS.list(walletType),
     queryFn: () => getWalletList(walletType),
-    staleTime: 1000 * 60,
+    // 목 데이터 사용 중이라 최신내용 필요하여 1분 설정
+    // staleTime: 1000 * 60,
   })
 
-  // data.value가 undefined일 때도 빈 배열 반환
   return computed(() => data.value ?? [])
 }
 export default useGetWalletList
