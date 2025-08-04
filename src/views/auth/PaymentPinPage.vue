@@ -47,8 +47,13 @@ async function confirmPin() {
         store.$reset()
         router.push('/login')
       } catch (err) {
-        alert('회원가입 실패!')
-        console.error(err)
+        console.error('회원가입 오류:', err)
+        if (axios.isAxiosError(err)) {
+          const message = err.response?.data?.message || '회원가입에 실패했습니다.'
+          alert(message)
+        } else {
+          alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.')
+        }
       }
     } else {
       alert('비밀번호가 일치하지 않습니다. 다시 시도해주세요.')
