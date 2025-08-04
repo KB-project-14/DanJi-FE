@@ -16,13 +16,11 @@ const isValid = computed(() => !!name.value && !!username.value && !!password.va
 
 function onNext() {
   if (!isValid.value) return
-  // 입력 데이터 저장
   store.setInfo({
     name: name.value,
     username: username.value,
     password: password.value,
   })
-  // 핀 입력 페이지로 이동
   router.push('/payment-pin')
 }
 </script>
