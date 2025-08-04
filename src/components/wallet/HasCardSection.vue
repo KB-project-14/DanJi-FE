@@ -26,6 +26,7 @@ const sortedCards = computed(() =>
     ? [...props.cards].sort((a, b) => a.displayOrder - b.displayOrder)
     : [],
 )
+
 const currentIndex = ref(0)
 
 const swiperEl = ref<any>(null)
