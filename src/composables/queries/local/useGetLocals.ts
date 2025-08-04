@@ -6,7 +6,11 @@ import type { localResponseDtoType } from '@/types/local/localTypes'
 import type { AxiosResponse } from 'axios'
 
 export const getLocals = async (): Promise<localResponseDtoType[]> => {
-  const response: AxiosResponse<ApiResponse<localResponseDtoType[]>> = await get('/api/regions')
+  const response: AxiosResponse<ApiResponse<localResponseDtoType[]>> = await get('/api/regions', {
+    params: {
+      hasLocalCurrency: true,
+    },
+  })
   return response.data.data
 }
 
