@@ -19,3 +19,9 @@ export const MYPAGE_KEYS = {
 export const PAY_KEYS = {
   all: ['pay'] as const,
 }
+
+// 메인 페이지 쿼리 키
+export const WALLET_KEYS = {
+  all: ['wallets'] as const,
+  list: (type: 'CASH' | 'LOCAL') => [...WALLET_KEYS.all, 'list', type] as const,
+}
