@@ -20,6 +20,12 @@ export const PAY_KEYS = {
   all: ['pay'] as const,
 }
 
+//지역, 지역화폐 관련 쿼리 키
+export const LOCAL_KEYS = {
+  all: ['locals'] as const,
+  detail: ['local_currrencies'] as const,
+}
+
 // 회원가입 페이지 쿼리 키
 export const SIGNUP_KEYS = {
   all: ['signup'] as const,
