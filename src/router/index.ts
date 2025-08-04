@@ -21,6 +21,7 @@ import SignUpPage from '@/views/auth/SignUpPage.vue'
 import LocalCardCreateSelectLocalPage from '@/views/wallet/create/LocalCardCreateSelectLocalPage.vue'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
 import PaymentPin from '@/views/auth/PaymentPinPage.vue'
+import BadgePage from '@/views/badge/BadgePage.vue'
 
 const routes = [
   {
@@ -100,6 +101,10 @@ const routes = [
   {
     path: '/map',
     component: MapPage,
+  },
+  {
+    path: '/badge',
+    component: BadgePage,
   },
   {
     path: '/login',
