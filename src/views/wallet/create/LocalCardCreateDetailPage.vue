@@ -81,7 +81,6 @@ const handleModalConfirm = async (region: string, city: string): Promise<void> =
       <card-benefit-info
         :incentive-text="benefitDescription"
         :max-charge-amount="String(benefitInfo?.maximum ?? 0)"
-        description="어쩌구 저쩌구"
       />
 
       <!-- 하단 버튼 -->

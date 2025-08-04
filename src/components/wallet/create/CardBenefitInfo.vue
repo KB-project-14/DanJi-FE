@@ -9,11 +9,6 @@ const props = defineProps<{
    * 최대 충전 가능 금액
    */
   maxChargeAmount: string
-
-  /**
-   * 카드 부가 설명
-   */
-  description: string
 }>()
 </script>
 
