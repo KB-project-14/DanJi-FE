@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { format } from 'date-fns'
-
 import { useRoute } from 'vue-router'
 import { startOfMonth, endOfMonth } from 'date-fns'
 
@@ -9,46 +7,15 @@ import Layout from '@/components/layout/Layout.vue'
 import CardHistoryItemList from '@/components/common/history/CardHistoryItemList.vue'
 import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 
+import useGetWalletList from '@/composables/queries/wallet/getWalletList'
+
 // 라우트에서 카드 ID
 const route = useRoute()
-const cardId = Number(route.params.id)
+const cardId = route.params.id as string
 
-// 현재 선택된 월 (자식에서 emit으로 업데이트됨)
-const currentMonthDate = ref(new Date())
+const localWallets = useGetWalletList('LOCAL')
 
-// 카드 데이터 (API 연동 예정)
-const allCards = [
-  {
-    id: 1,
-    name: '동백전',
-    balance: 32000,
-    benefit: 10000, // 혜택 금액
-    maximum: 500000, // 최대 한도
-    benefit_type: '캐시백',
-    percentage: 10,
-  },
-  {
-    id: 2,
-    name: '서울Pay',
-    balance: 15000,
-    benefit: 5000,
-    maximum: 500000,
-    benefit_type: '캐시백',
-    percentage: 5,
-  },
-  {
-    id: 3,
-    name: '강원상품권',
-    balance: 25000,
-    benefit: 7000,
-    maximum: 500000,
-    benefit_type: '인센티브',
-    percentage: 7,
-  },
-]
-
-// 카드 정보
-const cardInfo = computed(() => allCards.find((c) => c.id === cardId))
+const cardInfo = computed(() => (localWallets.value ?? []).find((c) => c.walletId === cardId))
 
 // 거래 내역 더미 데이터
 interface HistoryItem {
@@ -103,7 +70,10 @@ const transaction: HistoryItem[] = [
   },
 ]
 
-// 박스 데이터 계산
+// 현재 선택된 월 (자식에서 emit으로 업데이트됨)
+const currentMonthDate = ref(new Date())
+
+// 이번 달 충전 금액
 const chargedAmount = computed(() => {
   const start = startOfMonth(currentMonthDate.value).getTime()
   const end = endOfMonth(currentMonthDate.value).getTime()
@@ -118,9 +88,11 @@ const chargedAmount = computed(() => {
     .reduce((sum, h) => sum + h.amount, 0)
 })
 
-const availableAmount = computed(() =>
-  cardInfo.value ? cardInfo.value.maximum - chargedAmount.value : 0,
-)
+// 충전 가능 금액
+const availableAmount = computed(() => {
+  const max = cardInfo.value?.maximum ?? 0 // maximum 없으면 0
+  return max - chargedAmount.value
+})
 
 const selectedPeriod = ref('이번달')
 const selectedStartDate = ref<Date | null>(null)
@@ -150,7 +122,7 @@ const boxLabel = computed(() => {
 <template>
   <Layout
     :header-type="'basic'"
-    :header-title="cardInfo?.name || '카드 상세'"
+    :header-title="cardInfo?.localCurrencyName || '카드 상세'"
     :is-bottom-nav="false"
     :showLeftIcon="true"
   >
@@ -161,18 +133,18 @@ const boxLabel = computed(() => {
           <div>
             <!-- 카드명 + 툴팁 -->
             <div class="flex items-center gap-2 relative">
-              <p class="Body00 text-Black-2">{{ cardInfo?.name }}</p>
+              <p class="Body00 text-Black-2">{{ cardInfo?.localCurrencyName }}</p>
               <tooltip
                 position="top"
                 align="start"
-                :message="`이번달 ${cardInfo?.name}의 ${cardInfo?.benefit_type}은 ${cardInfo?.percentage}% 입니다.`"
+                :message="`이번달 ${cardInfo?.localCurrencyName}의 ${cardInfo?.benefitType}은 ${cardInfo?.percentage}% 입니다.`"
               />
             </div>
             <!-- 잔액 -->
-            <p class="Head0 text-Black-2">{{ cardInfo?.balance.toLocaleString() }} 원</p>
+            <p class="Head0 text-Black-2">{{ cardInfo?.balance?.toLocaleString() }} 원</p>
             <div class="flex items-center gap-2 relative">
               <p class="Body04 text-Gray-5">충전 최대 한도 :</p>
-              <p class="Body01">{{ cardInfo?.maximum.toLocaleString() }}원</p>
+              <p class="Body01">{{ cardInfo?.maximum?.toLocaleString() }}원</p>
             </div>
           </div>
 
@@ -190,7 +162,7 @@ const boxLabel = computed(() => {
           </div>
           <div class="flex justify-between mb-[1.2rem] text-Gray-7">
             <span>{{ boxLabel }} 받은 혜택:</span>
-            <span class="text-Blue-0">{{ cardInfo?.benefit.toLocaleString() }}원</span>
+            <!-- <span class="text-Blue-0">{{ cardInfo?.benefit.toLocaleString() }}원</span> -->
           </div>
           <div class="flex justify-between text-Gray-7">
             <span>{{ boxLabel }} 충전 가능 금액:</span>
