@@ -5,10 +5,10 @@ import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import router from '@/router'
 import useLocalSelector from '@/composables/local/useLocalSelector'
 
-// 지역 선택 로직을 composable로 분리
 const {
   selectedRegion,
   selectedCity,
+  shouldShowCitySelector,
   regionNames,
   cityNames,
   isButtonDisabled,
@@ -56,7 +56,7 @@ const handleCardCreateConfirm = (): void => {
           />
         </div>
 
-        <div class="mt-[3.1rem]">
+        <div class="mt-[3.1rem]" v-if="shouldShowCitySelector">
           <span class="Body01 text-Brown-3">지역 선택:</span>
           <danji-select
             class="mt-[0.4rem]"
