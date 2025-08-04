@@ -23,4 +23,5 @@ export const PAY_KEYS = {
 //지역, 지역화폐 관련 쿼리 키
 export const LOCAL_KEYS = {
   all: ['locals'] as const,
+  detail: ['local_currrencies'] as const,
 }
