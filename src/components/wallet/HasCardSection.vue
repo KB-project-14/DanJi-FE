@@ -33,7 +33,7 @@ const swiperEl = ref<any>(null)
 
 const onSlideChange = (swiper: any) => {
   currentIndex.value = swiper.activeIndex
-  emit('slide-change', swiper.activeIndex) // 부모에게도 전달
+  emit('slide-change', swiper.activeIndex)
 }
 
 onMounted(() => {
@@ -48,13 +48,11 @@ onMounted(() => {
   <div class="flex flex-col gap-4 max-w-full overflow-hidden">
     <!-- 순서 바꾸기 버튼 -->
     <div class="flex items-center justify-between">
-      <!-- 왼쪽: 나의 카드 1/총개수 -->
       <div class="Body04 text-Black-2">
         나의 카드
         <span class="text-Gray-7"> {{ currentIndex + 1 }} / {{ sortedCards.length }} 개 </span>
       </div>
 
-      <!-- 오른쪽: 순서 바꾸기 버튼 -->
       <button class="pr-20 Body04 text-Gray-4 underline" @click="orderCardPage">순서 바꾸기</button>
     </div>
 
