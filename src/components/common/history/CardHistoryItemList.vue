@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { format } from 'date-fns'
+import { ref, computed } from 'vue'
+import { startOfMonth, endOfMonth, subMonths, addMonths, format } from 'date-fns'
+import { ChevronRight, ChevronLeft, ChevronDown } from 'lucide-vue-next'
 
-defineProps<{
+import CardHistoryItem from './CardHistoryItem.vue'
+import TransactionFilterModal from '../modal/TransactionFilterModal.vue'
+
+const props = defineProps<{
   histories: {
     comment: string
     amount: number
@@ -12,57 +17,124 @@ defineProps<{
   }[]
 }>()
 
-// 거래 유형 별 comment
-const getDisplayText = (direction: string, type: string) => {
-  if (type === 'REFUND') return '결제 취소'
-  if (type === 'CHARGE') return '충전'
-  if (direction === 'INCOME') return '입금'
-  return '출금'
+// 필터 상태
+const appliedFilter = ref({
+  period: '이번달',
+  type: '전체',
+  order: '최신순',
+  startDate: null as Date | null,
+  endDate: null as Date | null,
+})
+
+// 월 이동 상태
+const currentMonthDate = ref(new Date())
+
+// 월 이동 함수
+const prevMonth = () => (currentMonthDate.value = subMonths(currentMonthDate.value, 1))
+const nextMonth = () => (currentMonthDate.value = addMonths(currentMonthDate.value, 1))
+
+// 월 표기
+const displayMonth = computed(() => format(currentMonthDate.value, 'M월'))
+
+// 필터 모달
+const isFilterOpen = ref(false)
+const openFilter = () => (isFilterOpen.value = true)
+const closeFilter = () => (isFilterOpen.value = false)
+const applyFilter = (filter: typeof appliedFilter.value) => {
+  appliedFilter.value = filter
+
+  if (filter.period === '이번달') {
+    currentMonthDate.value = new Date()
+  } else if (filter.period === '지난달') {
+    currentMonthDate.value = subMonths(new Date(), 1)
+  }
 }
 
-// 색상
-const getAmountColor = (direction: string) => {
-  return direction === 'INCOME' ? 'text-Blue-0' : 'text-Red-0'
-}
+// 필터링된 데이터
+const filteredHistories = computed(() => {
+  let list = [...props.histories]
 
-// 날짜 표기법 통일
-const formatDateTime = (dateString: string) => {
-  const date = new Date(dateString)
-  return format(date, 'yyyy.MM.dd HH:mm:ss')
-}
+  const start = startOfMonth(currentMonthDate.value).getTime()
+  const end = endOfMonth(currentMonthDate.value).getTime()
 
-const emit = defineEmits<{
-  (
-    e: 'month-change',
-    payload: {
-      date: Date
-      period: string
-      startDate: Date | null
-      endDate: Date | null
-    },
-  ): void
-}>()
+  list = list.filter((h) => {
+    const historyDate = new Date(h.createdAt).getTime()
+    return historyDate >= start && historyDate <= end
+  })
+
+  if (appliedFilter.value.type === '입금만') {
+    list = list.filter((h) => h.direction === 'INCOME')
+  } else if (appliedFilter.value.type === '출금만') {
+    list = list.filter((h) => h.direction === 'EXPENSE')
+  }
+
+  list.sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime()
+    const dateB = new Date(b.createdAt).getTime()
+    return appliedFilter.value.order === '최신순' ? dateB - dateA : dateA - dateB
+  })
+
+  return list
+})
+
+// 날짜 포맷
+const formatDate = (date: Date) => format(date, 'yyyy.MM.dd')
 </script>
 
 <template>
-  <div
-    v-for="item in histories"
-    :key="item.createdAt"
-    class="flex flex-col py-[1.6rem] border-b border-Gray-1"
-  >
-    <!-- 상호명 + 결제 금액 -->
-    <div class="flex justify-between pb-[0.5rem] items-center">
-      <span class="Head02 text-Black2">{{ item.comment }}</span>
-      <span :class="['Head02', getAmountColor(item.direction)]">
-        {{ getDisplayText(item.direction, item.type) }}
-        {{ (item.amount ?? 0).toLocaleString() }} 원
-      </span>
+  <div class="flex flex-col">
+    <div class="flex items-center justify-between bg-Gray-1 p-[1rem]">
+      <!-- 월 이동 -->
+      <div v-if="appliedFilter.period !== '직접 설정'" class="flex items-center gap-2">
+        <button class="px-[0.2rem] text-Gray-5" @click="prevMonth"><ChevronLeft /></button>
+        <span class="Body00">{{ displayMonth }}</span>
+        <button class="px-[0.2rem] text-Gray-5" @click="nextMonth"><ChevronRight /></button>
+      </div>
+
+      <!-- 필터 버튼 -->
+      <button class="flex items-center gap-1 Body02 text-Gray-5 ml-auto" @click="openFilter">
+        <template
+          v-if="
+            appliedFilter.period === '직접 설정' && appliedFilter.startDate && appliedFilter.endDate
+          "
+        >
+          {{ formatDate(appliedFilter.startDate) }} ~ {{ formatDate(appliedFilter.endDate) }}
+          {{ appliedFilter.type }} · {{ appliedFilter.order }}
+        </template>
+        <template v-else>
+          {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
+        </template>
+        <ChevronDown class="w-[1.4rem] h-[1.4rem]" />
+      </button>
     </div>
 
-    <!-- 결제 시간 + 결제 후 잔액 -->
-    <div class="flex justify-between mt-[0.4rem] Body04 text-Gray-5">
-      <span>{{ formatDateTime(item.createdAt) }}</span>
-      <span>잔액 {{ (item.afterBalance ?? 0).toLocaleString() }} 원</span>
+    <!-- 필터 모달 -->
+    <transaction-filter-modal
+      v-if="isFilterOpen"
+      :initial-filter="appliedFilter"
+      @close="closeFilter"
+      @confirm="applyFilter"
+    />
+
+    <!-- 거래 내역 리스트 -->
+    <div class="p-[1rem] pl-[2rem] pr-[2rem]">
+      <template v-if="filteredHistories.length > 0">
+        <card-history-item
+          v-for="(history, index) in filteredHistories"
+          :key="index"
+          :comment="history.comment"
+          :amount="history.amount"
+          :afterBalance="history.afterBalance"
+          :direction="history.direction"
+          :type="history.type"
+          :createdAt="history.createdAt"
+        />
+      </template>
+      <template v-else>
+        <div class="flex flex-col items-center justify-center py-8 text-Gray-5 Body02">
+          <p>이용 내역이 없습니다.</p>
+        </div>
+      </template>
     </div>
   </div>
 </template>

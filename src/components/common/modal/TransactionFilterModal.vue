@@ -5,36 +5,23 @@ import { format } from 'date-fns'
 import 'vue-datepicker-next/index.css'
 import DanjiButton from '../button/DanjiButton.vue'
 
+import type { FilterType } from '@/types/wallet/FilterType'
+
 const props = defineProps<{
-  initialFilter: {
-    period: string
-    type: string
-    order: string
-    startDate: Date | null
-    endDate: Date | null
-  }
+  initialFilter: FilterType
 }>()
 
 const emit = defineEmits<{
-  (
-    e: 'confirm',
-    filter: {
-      period: string
-      type: string
-      order: string
-      startDate: Date | null
-      endDate: Date | null
-    },
-  ): void
+  (e: 'confirm', filter: FilterType): void
   (e: 'close'): void
 }>()
 
 // 상태
-const period = ref<'이번달' | '지난달' | '직접 설정'>('이번달')
+const period = ref<'이번달' | '지난달' | '직접 설정'>(props.initialFilter.period as any)
 const type = ref(props.initialFilter.type)
 const order = ref(props.initialFilter.order)
-const startDate = ref<Date | null>(null)
-const endDate = ref<Date | null>(null)
+const startDate = ref<Date | null>(props.initialFilter.startDate)
+const endDate = ref<Date | null>(props.initialFilter.endDate)
 
 // 버튼 스타일
 const getButtonClass = (isActive: boolean) =>

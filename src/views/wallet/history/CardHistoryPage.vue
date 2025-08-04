@@ -1,69 +1,83 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { format, startOfMonth, endOfMonth } from 'date-fns'
+import { startOfMonth, endOfMonth, format } from 'date-fns'
 
 import Layout from '@/components/layout/Layout.vue'
 import CardHistoryItemList from '@/components/common/history/CardHistoryItemList.vue'
 import Tooltip from '@/components/common/tooltip/Tooltip.vue'
+import TransactionFilterModal from '@/components/common/modal/TransactionFilterModal.vue'
 
 import useGetWalletList from '@/composables/queries/wallet/getWalletList'
 import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
+import type { FilterType } from '@/types/wallet/FilterType'
 
 // 라우트에서 카드 ID
 const route = useRoute()
 const cardId = route.params.id as string
 
-// 카드 정보 가져오기
+// 카드 정보
 const localWallets = useGetWalletList('LOCAL')
 const cardInfo = computed(() => (localWallets.value ?? []).find((c) => c.walletId === cardId))
 
-// 날짜 기본값 (이번달 1일~오늘)
-const currentMonthDate = ref(new Date())
-const startDate = format(startOfMonth(currentMonthDate.value), 'yyyy-MM-dd')
-const lastDate = format(endOfMonth(currentMonthDate.value), 'yyyy-MM-dd')
+// === 필터 상태 ===
+const today = new Date()
+
+const filter = ref<FilterType>({
+  period: '이번달',
+  type: '전체',
+  order: '최신순',
+  startDate: startOfMonth(today),
+  endDate: endOfMonth(today),
+})
+
+// 모달 열림 상태
+const showFilterModal = ref(false)
+const openFilterModal = () => (showFilterModal.value = true)
+const closeFilterModal = () => (showFilterModal.value = false)
+
+// 필터 확인 시 업데이트
+const handleFilterConfirm = (newFilter: FilterType) => {
+  filter.value = newFilter
+  closeFilterModal()
+}
+
+// === API 호출용 파라미터 ===
+const startDate = computed(() =>
+  format(filter.value.startDate ?? startOfMonth(today), 'yyyy-MM-dd'),
+)
+const lastDate = computed(() => format(filter.value.endDate ?? endOfMonth(today), 'yyyy-MM-dd'))
 
 // 거래내역 API 호출
 const transactionsData = useGetWalletTransaction(cardId, {
-  startDate,
-  lastDate,
-  direction: undefined, // 전체 조회
-  sortOrder: 'DESC',
+  startDate: startDate.value,
+  lastDate: lastDate.value,
+  direction:
+    filter.value.type === '입금만'
+      ? 'INCOME'
+      : filter.value.type === '출금만'
+        ? 'EXPENSE'
+        : undefined,
+  sortOrder: filter.value.order === '최신순' ? 'DESC' : 'ASC',
 })
 
-// 거래내역 + 집계값 computed
+// 거래내역 + 집계값
 const transactions = computed(() => transactionsData.value?.transactions ?? [])
 const aggregateCharge = computed(() => transactionsData.value?.aggregateCharge ?? 0)
 const aggregateIncentive = computed(() => transactionsData.value?.aggregateIncentive ?? 0)
 
-// 충전 가능 금액 (maximum - aggregateCharge)
+// 충전 가능 금액
 const availableAmount = computed(() => {
   const max = cardInfo.value?.maximum ?? 0
-  return max - aggregateCharge.value
+  return Math.max(0, max - aggregateCharge.value)
 })
 
-// 기간 라벨 (이번달 / 직접설정)
-const selectedPeriod = ref('이번달')
-const selectedStartDate = ref<Date | null>(null)
-const selectedEndDate = ref<Date | null>(null)
-
-const handleMonthChange = (payload: {
-  date: Date
-  period: string
-  startDate: Date | null
-  endDate: Date | null
-}) => {
-  currentMonthDate.value = payload.date
-  selectedPeriod.value = payload.period
-  selectedStartDate.value = payload.startDate
-  selectedEndDate.value = payload.endDate
-}
-
+// 박스 라벨
 const boxLabel = computed(() => {
-  if (selectedPeriod.value === '직접 설정' && selectedStartDate.value && selectedEndDate.value) {
+  if (filter.value.period === '직접 설정' && filter.value.startDate && filter.value.endDate) {
     return '설정기간에'
   }
-  return `${currentMonthDate.value.getMonth() + 1}월`
+  return `${(filter.value.startDate?.getMonth() ?? today.getMonth()) + 1}월`
 })
 </script>
 
@@ -79,7 +93,6 @@ const boxLabel = computed(() => {
       <div class="p-[3rem]">
         <div class="flex justify-between items-center mb-[2rem]">
           <div>
-            <!-- 카드명 + 툴팁 -->
             <div class="flex items-center gap-2 relative">
               <p class="Body00 text-Black-2">{{ cardInfo?.localCurrencyName }}</p>
               <tooltip
@@ -88,7 +101,6 @@ const boxLabel = computed(() => {
                 :message="`이번달 ${cardInfo?.localCurrencyName}의 ${cardInfo?.benefitType}은 ${cardInfo?.percentage}% 입니다.`"
               />
             </div>
-            <!-- 잔액 -->
             <p class="Head0 text-Black-2">{{ cardInfo?.balance?.toLocaleString() }} 원</p>
             <div class="flex items-center gap-2 relative">
               <p class="Body04 text-Gray-5">충전 최대 한도 :</p>
@@ -120,7 +132,23 @@ const boxLabel = computed(() => {
       </div>
 
       <!-- 거래 내역 리스트 -->
-      <card-history-item-list :histories="transactions" @month-change="handleMonthChange" />
+      <card-history-item-list :histories="transactions" />
+
+      <!-- 필터 버튼 -->
+      <button
+        class="fixed bottom-[8rem] right-[2rem] bg-Blue-0 text-White-1 p-3 rounded-full shadow-md"
+        @click="openFilterModal"
+      >
+        필터
+      </button>
+
+      <!-- 필터 모달 -->
+      <transaction-filter-modal
+        v-if="showFilterModal"
+        :initial-filter="filter"
+        @confirm="handleFilterConfirm"
+        @close="closeFilterModal"
+      />
     </template>
   </Layout>
 </template>
