@@ -6,26 +6,25 @@ export interface LoginRequest {
 
 // 로그인 응답
 export interface LoginResponse {
-  memberId: string
-  success: boolean
   accessToken: string
   refreshToken: string
-  message?: string
+  memberId: string
 }
 
 // 회원가입 요청
-export interface SignUpRequest {
-  name: string
+export interface SignUpResponse {
+  memberId: string
   username: string
-  password: string
-  paymentPin: string
+  name: string
+  createdAt: string
 }
 
-// 회원가입 응답
-export interface SignUpResponse {
-  success: boolean
-  memberId: string
-  message?: string
+// 회우너가입 응답
+export interface SignUpRequest {
+  username: string
+  password: string
+  name: string
+  paymentPin: string
 }
 
 // PIN 설정 요청
@@ -37,5 +36,4 @@ export interface SetPinRequest {
 // PIN 설정 응답
 export interface SetPinResponse {
   success: boolean
-  message?: string
 }

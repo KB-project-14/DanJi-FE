@@ -4,11 +4,13 @@ import { useRouter } from 'vue-router'
 import { ChevronLeft } from 'lucide-vue-next'
 import Layout from '@/components/layout/Layout.vue'
 import { useSignUpStore } from '@/stores/signupStore'
-import axios from 'axios'
 import { signUp } from '@/api/auth'
+import type { SignUpRequest } from '@/types/auth'
+import type { AxiosError } from 'axios'
 
 const store = useSignUpStore()
 const router = useRouter()
+
 const step = ref(1)
 const firstPin = ref('')
 const currentPin = ref('')
@@ -30,36 +32,39 @@ function resetPin() {
 
 async function confirmPin() {
   if (step.value === 1) {
+    if (currentPin.value.length < 4) {
+      alert('핀번호 4자리를 입력해주세요.')
+      return
+    }
     firstPin.value = currentPin.value
     currentPin.value = ''
     step.value = 2
-  } else {
-    if (firstPin.value === currentPin.value) {
-      const signUpPayload = {
-        name: store.name,
-        username: store.username,
-        password: store.password,
-        paymentPin: firstPin.value,
-      }
+    return
+  }
 
-      try {
-        await signUp(signUpPayload)
-        alert('회원가입 완료!')
-        store.$reset()
-        router.push('/login')
-      } catch (err) {
-        console.error('회원가입 오류:', err)
-        if (axios.isAxiosError(err)) {
-          const message = err.response?.data?.message || '회원가입에 실패했습니다.'
-          alert(message)
-        } else {
-          alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.')
-        }
-      }
-    } else {
-      alert('비밀번호가 일치하지 않습니다. 다시 시도해주세요.')
-      resetPin()
-    }
+  if (firstPin.value !== currentPin.value) {
+    alert('핀번호가 일치하지 않습니다. 다시 시도해주세요.')
+    resetPin()
+    return
+  }
+
+  const signUpPayload: SignUpRequest = {
+    name: store.name,
+    username: store.username,
+    password: store.password,
+    paymentPin: firstPin.value,
+  }
+
+  try {
+    await signUp(signUpPayload)
+    alert('회원가입 완료!')
+    store.$reset()
+    router.push('/login')
+  } catch (err: unknown) {
+    const error = err as AxiosError<{ message?: string }>
+    console.error('회원가입 오류:', error)
+    const message = error.response?.data?.message || '회원가입에 실패했습니다. 다시 시도해주세요.'
+    alert(message)
   }
 }
 </script>

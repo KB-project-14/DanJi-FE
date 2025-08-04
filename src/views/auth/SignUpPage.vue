@@ -8,19 +8,23 @@ import { useSignUpStore } from '@/stores/signupStore'
 
 const router = useRouter()
 const store = useSignUpStore()
-const name = ref('')
-const username = ref('')
-const password = ref('')
+const name = ref<string>('')
+const username = ref<string>('')
+const password = ref<string>('')
 
-const isValid = computed(() => !!name.value && !!username.value && !!password.value)
+const isValid = computed<boolean>(() => {
+  return name.value.trim() !== '' && username.value.trim() !== '' && password.value.trim() !== ''
+})
 
-function onNext() {
+function onNext(): void {
   if (!isValid.value) return
+
   store.setInfo({
-    name: name.value,
-    username: username.value,
+    name: name.value.trim(),
+    username: username.value.trim(),
     password: password.value,
   })
+
   router.push('/payment-pin')
 }
 </script>

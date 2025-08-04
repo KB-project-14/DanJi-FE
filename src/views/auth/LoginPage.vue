@@ -5,31 +5,43 @@ import DanjiInput from '@/components/common/form/DanjiInput.vue'
 import { Lock, User, ChevronRight } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
 import { login } from '@/api/auth'
-import type { LoginRequest } from '@/types/auth'
+import type { LoginRequest, LoginResponse } from '@/types/auth'
+import axios from 'axios'
 
 const router = useRouter()
 const username = ref('')
 const password = ref('')
 const isLoading = ref(false)
+const errorMessage = ref('')
 
 async function onLogin() {
   if (isLoading.value) return
   isLoading.value = true
+  errorMessage.value = ''
+
   try {
     const loginData: LoginRequest = {
       username: username.value,
       password: password.value,
     }
-    const response = await login(loginData)
-    localStorage.setItem('ACCESS_TOKEN', response.accessToken)
-    localStorage.setItem('REFRESH_TOKEN', response.refreshToken)
+
+    const response: LoginResponse = await login(loginData)
+    const { accessToken, refreshToken } = response
+
+    localStorage.setItem('ACCESS_TOKEN', accessToken)
+    localStorage.setItem('REFRESH_TOKEN', refreshToken)
 
     router.push('/home')
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('로그인 오류:', err)
-    alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.')
-  } finally {
-    isLoading.value = false
+
+    if (axios.isAxiosError(err)) {
+      errorMessage.value = err.response?.data?.message || '로그인에 실패했습니다.'
+    } else if (err instanceof Error) {
+      errorMessage.value = err.message
+    } else {
+      errorMessage.value = '알 수 없는 오류가 발생했습니다.'
+    }
   }
 }
 </script>
