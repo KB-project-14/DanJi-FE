@@ -37,14 +37,9 @@ import useLocalSelector from '@/composables/local/useLocalSelector'
  * @prop initalRegion - 초기 선택 도 이름 (예: `'강원도'`)
  * @prop initialCity - 초기 선택 시 이름 (예: `'춘천시'`)
  *
- * @event close - 모달 외부를 클릭하면 발생하며, 모달을 닫기 위한 이벤트입니다.
  * @event confirm - "확인" 버튼 클릭 시 발생하며, 선택된 도/시 정보를 함께 전달합니다.
  *                  `(region: string, city: string)` 형식으로 전달됩니다.
  *
- * @remarks
- * - 내부에서 `/api/local/list`를 호출해 도/시 데이터를 불러옵니다.
- * - 도를 변경하면 자동으로 해당 도의 첫 번째 시를 선택합니다.
- * - 모바일 하단 슬라이드 형태이며, `translate-y`를 활용한 트랜지션 효과가 포함되어 있습니다.
  */
 
 const props = defineProps<{
@@ -54,7 +49,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'close'): void
   (e: 'confirm', region: string, city: string): void
 }>()
 
@@ -96,7 +90,7 @@ watch(
     >
       <!-- 행정구역(도) 선택 -->
       <div class="mb-[4rem]">
-        <h4 class="mb-[1rem] text-Black-2 Body00">행정구역(도)</h4>
+        <h4 class="mb-[1rem] text-Black-2 Body00">행정구역</h4>
         <danji-chip-group
           :options="regionNames"
           v-model="selectedRegion"
@@ -106,7 +100,7 @@ watch(
 
       <!-- 지역(시) 선택 -->
       <div class="mb-[4.4rem]" v-if="shouldShowCitySelector">
-        <h4 class="mb-[1rem] text-Black-2 Body00">지역(시)</h4>
+        <h4 class="mb-[1rem] text-Black-2 Body00">지역(시/군/구)</h4>
         <danji-chip-group :options="cityNames" v-model="selectedCity" />
       </div>
 

@@ -47,7 +47,7 @@ const handleCardCreateConfirm = (): void => {
 
         <!-- 선택 -->
         <div class="mt-[2.5rem]">
-          <span class="Body01 text-Brown-3">행정 구역(도) 선택:</span>
+          <span class="Body01 text-Brown-3">행정 구역 선택 :</span>
           <danji-select
             class="mt-[0.4rem]"
             :options="regionNames"
@@ -57,7 +57,7 @@ const handleCardCreateConfirm = (): void => {
         </div>
 
         <div class="mt-[3.1rem]" v-if="shouldShowCitySelector">
-          <span class="Body01 text-Brown-3">지역 선택:</span>
+          <span class="Body01 text-Brown-3">지역 선택(시/군/구) :</span>
           <danji-select
             class="mt-[0.4rem]"
             :options="cityNames"
