@@ -17,10 +17,10 @@ let badgeCount = 5
       </div>
       <!-- 뱃지 리스트 아이템 -->
       <div
-        class="flex flex-col justify-center items-center w-[31.7rem] h-[9.4rem] text-Gray-8 Head03 border-solid border-[0.2rem] border-Gray-1 rounded-[1.6rem]"
+        class="relative flex flex-col justify-center items-center w-[31.7rem] h-[9.7rem] text-Gray-8 Head03 border-solid border-[0.2rem] border-Gray-1 rounded-[1.6rem]"
       >
-        <span class="relative top-[-17%] bg-White-0">행운의 감자</span>
-        <div class="flex justify-between">
+        <span class="absolute top-[-13%] bg-White-0">행운의 감자</span>
+        <div class="flex justify-between items-center px-[2.2rem] w-full">
           <img src="" alt="" class="w-[6rem] h-[6rem]" />
           <img src="" alt="" class="w-[6rem] h-[6rem]" />
           <img src="" alt="" class="w-[6rem] h-[6rem]" />
@@ -28,10 +28,10 @@ let badgeCount = 5
       </div>
       <!-- 뱃지 리스트 아이템 -->
       <div
-        class="flex flex-col justify-center items-center w-[31.7rem] h-[9.4rem] text-Gray-8 Head03 border-solid border-[0.2rem] border-Gray-1 rounded-[1.6rem]"
+        class="relative flex flex-col justify-center items-center w-[31.7rem] h-[9.7rem] text-Gray-8 Head03 border-solid border-[0.2rem] border-Gray-1 rounded-[1.6rem]"
       >
-        <span class="relative top-[-17%] bg-White-0">돌하르방의 청혼</span>
-        <div class="flex justify-between">
+        <span class="absolute top-[-13%] bg-White-0">돌하르방의 청혼</span>
+        <div class="flex justify-between items-center px-[2.2rem] w-full">
           <img src="" alt="" class="w-[6rem] h-[6rem]" />
           <img src="" alt="" class="w-[6rem] h-[6rem]" />
           <img src="" alt="" class="w-[6rem] h-[6rem]" />
