@@ -9,7 +9,6 @@ import HasCardSection from '@/components/wallet/HasCardSection.vue'
 import NoCardSection from '@/components/wallet/NoCardSection.vue'
 
 import useGetWalletList from '@/composables/queries/wallet/getWalletList'
-import useGetLocalCurrencies from '@/composables/queries/local/getLocalCurrencies'
 
 const router = useRouter()
 
