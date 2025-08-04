@@ -20,9 +20,19 @@ import DanjiSelectDropdown from './DanjiSelectDropdown.vue'
  * />
  * ```
  *
+ * @example 비활성화된 셀렉트
+ * ```vue
+ * <danji-select
+ *   v-model="selectedCity"
+ *   :options="cityOptions"
+ *   :disabled="!selectedRegion"
+ * />
+ * ```
+ *
  * @prop modelValue - 현재 선택된 값입니다. v-model을 통해 부모 컴포넌트와 바인딩됩니다.
  * @prop label - (선택) 셀렉트 박스 상단에 표시할 라벨 텍스트입니다.
  * @prop options - 드롭다운에 표시할 항목 리스트입니다. 단순 문자열 배열로 구성됩니다.
+ * @prop disabled - (선택) 셀렉트 박스 비활성화 여부입니다.
  *
  * @event update:modelValue - 항목 선택 시 발생하며, 선택된 문자열 값을 전달합니다.
  */
@@ -31,6 +41,7 @@ const props = defineProps<{
   modelValue: string
   label?: string
   options: string[]
+  disabled?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -46,19 +57,24 @@ const displayText = computed(() => (selectedOption.value ? selectedOption.value 
 
 const selectClass = computed(() => {
   const base =
-    'w-full px-[1.4rem] py-[1.1rem] border-[2px] rounded-[1.2rem] bg-White-0 Body00 cursor-pointer transition-all duration-200'
-  const normal = 'border-Gray-1 text-Black-1'
-  const open = 'border-Gray-3 shadow-sm'
+    'w-full px-[1.4rem] py-[1.1rem] border-[2px] rounded-[1.2rem] bg-White-0 Body00 transition-all duration-200'
+  const normal = 'border-Gray-1 text-Black-1 cursor-pointer'
+  const open = 'border-Gray-3 shadow-sm cursor-pointer'
+  const disabled = 'border-Gray-1 text-Gray-2 cursor-not-allowed'
   const placeholder = !selectedOption.value ? 'text-Gray-2' : ''
 
-  return isOpen.value ? `${base} ${open} ${placeholder}` : `${base} ${normal} ${placeholder}`
+  if (props.disabled) return `${base} ${disabled}`
+  if (isOpen.value) return `${base} ${open} ${placeholder}`
+  return `${base} ${normal} ${placeholder}`
 })
 
 const toggleDropdown = () => {
+  if (props.disabled) return
   isOpen.value = !isOpen.value
 }
 
 const handleSelect = (value: string) => {
+  if (props.disabled) return
   emit('update:modelValue', value)
   isOpen.value = false
 }
@@ -93,8 +109,11 @@ onUnmounted(() => {
         <ChevronDown
           :size="20"
           :stroke-width="1.5"
-          :class="isOpen ? 'rotate-180' : 'rotate-0'"
-          class="text-Gray-5 transition-all duration-200 ml-auto"
+          :class="[
+            isOpen && !disabled ? 'rotate-180' : 'rotate-0',
+            disabled ? 'text-Gray-3' : 'text-Gray-5',
+          ]"
+          class="transition-all duration-200 ml-auto"
         />
       </div>
 
@@ -108,7 +127,7 @@ onUnmounted(() => {
         leave-to-class="transform scale-95 opacity-0"
       >
         <danji-select-dropdown
-          v-if="isOpen"
+          v-if="isOpen && !disabled"
           :modelValue="modelValue"
           :options="options"
           @select="handleSelect"

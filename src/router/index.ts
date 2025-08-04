@@ -18,9 +18,12 @@ import MapPage from '@/views/map/MapPage.vue'
 import ExchangeCompletePage from '@/views/wallet/exchange/ExchangeCompletePage.vue'
 import LoginPage from '@/views/auth/LoginPage.vue'
 import SignUpPage from '@/views/auth/SignUpPage.vue'
+<<<<<<<<< Temporary merge branch 1
 import PaymentPin from '@/views/auth/PaymentPinPage.vue'
+=========
 import LocalCardCreateSelectLocalPage from '@/views/wallet/create/LocalCardCreateSelectLocalPage.vue'
 import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDetailPage.vue'
+import PaymentPin from '@/views/auth/PaymentPinPage.vue'
 
 const routes = [
   {
@@ -93,7 +96,7 @@ const routes = [
     component: ExchangeCompletePage,
   },
   {
-    path: '/wallet/card/create/:region/:city',
+    path: '/wallet/card/create/:id',
     name: 'LocalCardCreateDetail',
     component: LocalCardCreateDetailPage,
   },
