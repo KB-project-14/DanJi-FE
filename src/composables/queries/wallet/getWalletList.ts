@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/vue-query'
+import { computed } from 'vue'
 import axios from 'axios'
 import type { AxiosResponse } from 'axios'
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
@@ -23,7 +24,11 @@ export const getWalletList = async (
       },
     },
   )
-  return response.data.data
+  console.log('API 호출 URL:', '/api/wallets', 'walletType:', walletType)
+  console.log('응답 데이터:', response.data)
+
+  // 응답 없을 때 기본값 처리
+  return response.data?.data ?? []
 }
 
 const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
@@ -33,7 +38,7 @@ const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
     staleTime: 1000 * 60,
   })
 
-  return data
+  // data.value가 undefined일 때도 빈 배열 반환
+  return computed(() => data.value ?? [])
 }
-
 export default useGetWalletList

@@ -9,27 +9,33 @@ import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType
 
 const router = useRouter()
 
-// emit으로 부모에게 index값 보내기
+// 부모에서 내려오는 카드 props
+const props = defineProps<{
+  cards: WalletResponseDtoType[]
+}>()
+
+// 부모에게 슬라이드 변경 이벤트 전달
 const emit = defineEmits<{ (e: 'slide-change', index: number): void }>()
 
 const orderCardPage = () => {
   router.push('/order')
 }
 
-const props = defineProps<{
-  cards: WalletResponseDtoType[]
-}>()
+// displayOrder 기준 오름차순 정렬
+const sortedCards = computed(() =>
+  props.cards && props.cards.length
+    ? [...props.cards].sort((a, b) => a.displayOrder - b.displayOrder)
+    : [],
+)
 
-// 카드 정렬 (displayOrder 기준)
-const sortedCards = computed(() => [...props.cards].sort((a, b) => a.displayOrder - b.displayOrder))
+// 현재 슬라이드 index
+const currentIndex = ref(0)
 
 const swiperEl = ref<any>(null)
-const currentSlideIndex = ref(1)
 
 const onSlideChange = (swiper: any) => {
-  currentSlideIndex.value = swiper.activeIndex + 1
-  // 부모에게 현재 index값 전달
-  emit('slide-change', swiper.activeIndex)
+  currentIndex.value = swiper.activeIndex
+  emit('slide-change', swiper.activeIndex) // 부모에게도 전달
 }
 
 onMounted(() => {
@@ -42,14 +48,12 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-4 max-w-full overflow-hidden">
-    <div class="flex items-center justify-between">
-      <!-- 나의 카드 + 순서 바꾸기 버튼 -->
-      <div class="Body02 text-Black-2">
-        나의 카드 {{ currentSlideIndex }} / {{ sortedCards.length }}개
-      </div>
+    <!-- 순서 바꾸기 버튼 -->
+    <div class="flex items-center justify-end">
       <button class="pr-20 Body04 text-Gray-4 underline" @click="orderCardPage">순서 바꾸기</button>
     </div>
-    <!-- 카드 사진 -->
+
+    <!-- 카드 슬라이더 -->
     <div class="overflow-hidden">
       <Swiper
         ref="swiperEl"
@@ -62,7 +66,7 @@ onMounted(() => {
       >
         <SwiperSlide
           v-for="(card, index) in sortedCards"
-          :key="card.walletId + '-' + index"
+          :key="card.walletId"
           class="!w-[275px] shrink-0"
         >
           <UserCard
@@ -77,10 +81,10 @@ onMounted(() => {
 
     <!-- 혜택 안내 -->
     <div class="w-full text-right pr-20 Body04 text-Gray-4">
-      <span v-if="sortedCards[currentSlideIndex - 1]">
-        {{ sortedCards[currentSlideIndex - 1].localCurrencyId }} 카드 혜택:
-        {{ sortedCards[currentSlideIndex - 1] }} 인센티브
-        {{ sortedCards[currentSlideIndex - 1].percentage }}%
+      <span v-if="sortedCards.length">
+        {{ sortedCards[currentIndex]?.localCurrencyId }} 카드 혜택 :
+        {{ sortedCards[currentIndex]?.benefitType }}
+        {{ sortedCards[currentIndex]?.percentage }}%
       </span>
     </div>
   </div>

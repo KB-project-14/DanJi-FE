@@ -6,7 +6,6 @@ const router = useRouter()
 
 defineProps<{
   walletAmount: number
-  totalAsset: number
 }>()
 
 // 통합 지갑 선택시 총자산보기 페이지 이동
