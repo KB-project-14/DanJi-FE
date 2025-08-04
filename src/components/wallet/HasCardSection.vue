@@ -75,12 +75,12 @@ onMounted(() => {
       </Swiper>
     </div>
 
-    <!-- 혜택 안내 (임시: localCurrencyId와 walletType으로 표시) -->
+    <!-- 혜택 안내 -->
     <div class="w-full text-right pr-20 Body04 text-Gray-4">
       <span v-if="sortedCards[currentSlideIndex - 1]">
-        {{ sortedCards[currentSlideIndex - 1].localCurrencyId }} 카드 ({{
-          sortedCards[currentSlideIndex - 1].walletType
-        }})
+        {{ sortedCards[currentSlideIndex - 1].localCurrencyId }} 카드 혜택:
+        {{ sortedCards[currentSlideIndex - 1] }} 인센티브
+        {{ sortedCards[currentSlideIndex - 1].percentage }}%
       </span>
     </div>
   </div>
