@@ -35,7 +35,6 @@ async function confirmPin() {
     step.value = 2
   } else {
     if (firstPin.value === currentPin.value) {
-      // 먼저 회원가입
       const signUpPayload = {
         name: store.name,
         username: store.username,
