@@ -8,61 +8,20 @@ import TotalWallet from '@/components/wallet/TotalWallet.vue'
 import HasCardSection from '@/components/wallet/HasCardSection.vue'
 import NoCardSection from '@/components/wallet/NoCardSection.vue'
 
-interface Card {
-  id: number
-  name: string
-  balance: number
-  backgroundImageUrl: string
-  order: number
-  benefit_type: string
-  percentage: number
-}
+import useGetWalletList from '@/composables/queries/wallet/getWalletList'
 
 const router = useRouter()
 
-// 더미 카드 데이터
-const cards = ref<Card[]>([
-  {
-    id: 1,
-    name: '동백전',
-    balance: 32000,
-    backgroundImageUrl: '/',
-    order: 3,
-    benefit_type: '캐시백',
-    percentage: 10,
-  },
-  {
-    id: 2,
-    name: '서울Pay',
-    balance: 15000,
-    backgroundImageUrl: '/',
-    order: 1,
-    benefit_type: '캐시백',
-    percentage: 5,
-  },
-  {
-    id: 3,
-    name: '강원상품권',
-    balance: 25000,
-    backgroundImageUrl: '/',
-    order: 2,
-    benefit_type: '인센티브',
-    percentage: 7,
-  },
-  {
-    id: 4,
-    name: '부산Pay',
-    balance: 25000,
-    backgroundImageUrl: '/',
-    order: 4,
-    benefit_type: '인센티브',
-    percentage: 8,
-  },
-])
+// API 호출: 통합지갑(CASH), 로컬카드(LOCAL)
+const cashWallets = useGetWalletList('CASH') // 통합지갑
+const localWallets = useGetWalletList('LOCAL') // 로컬카드
 
-// order 기준으로 정렬
-const sortedCards = computed(() => [...cards.value].sort((a, b) => a.order - b.order))
-
+// 카드 정렬 (displayOrder 기준)
+const sortedCards = computed(() => {
+  return localWallets.value
+    ? [...localWallets.value].sort((a, b) => a.displayOrder - b.displayOrder)
+    : []
+})
 // 현재 카드 index값
 const currentIndex = ref(0)
 
@@ -74,13 +33,13 @@ const goCardHistory = (id: number) => {
 // 충전 버튼 클릭 시
 const goCharge = () => {
   const selectedCard = sortedCards.value[currentIndex.value]
-  router.push(`/card/charge/${selectedCard.id}`)
+  if (selectedCard) router.push(`/card/charge/${selectedCard.walletId}`)
 }
 
 // 환전 버튼 클릭 시
 const goExchange = () => {
   const selectedCard = sortedCards.value[currentIndex.value]
-  router.push(`/card/exchange/${selectedCard.id}`)
+  if (selectedCard) router.push(`/card/exchange/${selectedCard.walletId}`)
 }
 </script>
 
@@ -91,12 +50,15 @@ const goExchange = () => {
         <!-- 통합지갑 -->
         <div class="flex justify-center pt-[3rem]">
           <div class="w-[270px]">
-            <TotalWallet :wallet-amount="82000" :total-asset="582000" />
+            <total-wallet
+              :wallet-amount="cashWallets?.[0]?.balance || 0"
+              :total-asset="cashWallets?.[0]?.balance || 0"
+            />
           </div>
         </div>
 
         <!-- 카드 리스트 -->
-        <div class="pl-20 pt-[4rem] pb-[3rem] px-[1rem]">
+        <!-- <div class="pl-20 pt-[4rem] pb-[3rem] px-[1rem]">
           <HasCardSection
             v-if="true"
             :cards="sortedCards"
@@ -104,7 +66,7 @@ const goExchange = () => {
             @slide-change="currentIndex = $event"
           />
           <NoCardSection v-else />
-        </div>
+        </div> -->
 
         <!-- 충전/환전 -->
         <div class="flex justify-center gap-10">

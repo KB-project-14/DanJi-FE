@@ -1,4 +1,4 @@
-import { WalletTransactionItemType } from './WalletTransactionItemType'
+import type { WalletTransactionItemType } from './WalletTransactionItemType'
 
 export interface WalletTransactionDataType {
   aggregateCharge: number
