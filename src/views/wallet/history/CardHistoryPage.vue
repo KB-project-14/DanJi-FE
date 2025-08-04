@@ -134,14 +134,6 @@ const boxLabel = computed(() => {
       <!-- 거래 내역 리스트 -->
       <card-history-item-list :histories="transactions" />
 
-      <!-- 필터 버튼 -->
-      <button
-        class="fixed bottom-[8rem] right-[2rem] bg-Blue-0 text-White-1 p-3 rounded-full shadow-md"
-        @click="openFilterModal"
-      >
-        필터
-      </button>
-
       <!-- 필터 모달 -->
       <transaction-filter-modal
         v-if="showFilterModal"
