@@ -5,6 +5,7 @@ import { ChevronLeft } from 'lucide-vue-next'
 import Layout from '@/components/layout/Layout.vue'
 import { useSignUpStore } from '@/stores/signupStore'
 import axios from 'axios'
+import { signUp } from '@/api/auth'
 
 const store = useSignUpStore()
 const router = useRouter()
@@ -34,15 +35,16 @@ async function confirmPin() {
     step.value = 2
   } else {
     if (firstPin.value === currentPin.value) {
-      const payload = {
+      // 먼저 회원가입
+      const signUpPayload = {
         name: store.name,
         username: store.username,
         password: store.password,
-        paymentPin: currentPin.value,
+        paymentPin: firstPin.value,
       }
 
       try {
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/members`, payload)
+        await signUp(signUpPayload)
         alert('회원가입 완료!')
         store.$reset()
         router.push('/login')
