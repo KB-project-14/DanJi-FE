@@ -40,5 +40,9 @@ export const useGetWalletTransaction = (
     queryFn: () => getWalletTransaction(walletId, params),
   })
 
-  return computed(() => data.value ?? null)
+  return {
+    data: computed(() => data.value ?? null),
+    isLoading: computed(() => isLoading.value),
+    error: computed(() => error.value),
+  }
 }
