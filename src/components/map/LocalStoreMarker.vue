@@ -7,28 +7,30 @@ interface Props {
   isSelected?: boolean
 }
 
-const props = defineProps<Props>()
-
-const emit = defineEmits<{
+interface Emit {
   (e: 'click'): void
-}>()
+}
 
+const props = defineProps<Props>()
+const emit = defineEmits<Emit>()
+
+//지역화폐 마커 색상 (임시)
 const COLORS = [
-  '#FF3B30', // 강렬한 빨간색
-  '#FF9500', // 쨍한 주황색
-  '#FFD60A', // 밝은 노랑
-  '#34C759', // 선명한 라임 그린
-  '#00C7BE', // 강한 민트
-  '#007AFF', // 맑은 블루
-  '#5856D6', // 선명한 바이올렛
-  '#AF52DE', // 밝은 자주색
-  '#FF2D55', // 핫핑크
-  '#5AC8FA', // 하늘색
-  '#FF9F0A', // 진한 오렌지
-  '#BF5AF2', // 핑크 보라
-  '#FF375F', // 진한 레드핑크
-  '#32D74B', // 밝은 초록
-  '#0A84FF', // 밝고 강한 파랑
+  '#FF3B30',
+  '#FF9500',
+  '#FFD60A',
+  '#34C759',
+  '#00C7BE',
+  '#007AFF',
+  '#5856D6',
+  '#AF52DE',
+  '#FF2D55',
+  '#5AC8FA',
+  '#FF9F0A',
+  '#BF5AF2',
+  '#FF375F',
+  '#32D74B',
+  '#0A84FF',
 ]
 
 // 문자열을 해시값으로 변환 후 색상 반환
@@ -43,15 +45,6 @@ function getHashColor(str: string): string {
 
 <template>
   <div @click.stop="emit('click')" class="relative flex flex-col items-center">
-    <transition name="marker-scale" appear>
-      <img
-        v-if="isSelected"
-        :src="mapMarker"
-        alt="Selected Marker"
-        class="absolute top-[-3rem] w-[40px] h-[40px] z-[10rem] pointer-events-none transform transition duration-300 ease-out scale-0 opacity-0 animate-fade-in-scale"
-      />
-    </transition>
-
     <div class="flex flex-col items-center">
       <svg
         width="25.8"
@@ -95,8 +88,21 @@ function getHashColor(str: string): string {
         </defs>
       </svg>
     </div>
-    <div class="Body03 text-center leading-tight w-[80px] truncate mt-[2px]">
+    <div class="Body03 text-center leading-tight truncate">
       {{ storeName }}
     </div>
+
+    <transition
+      enter-active-class="animate-fade-in-scale"
+      leave-active-class="animate-fade-out-scale"
+      appear
+    >
+      <img
+        v-if="isSelected"
+        :src="mapMarker"
+        alt="Selected Marker"
+        class="absolute top-[-3rem] w-[40px] h-[40px] z-[50] pointer-events-none"
+      />
+    </transition>
   </div>
 </template>
