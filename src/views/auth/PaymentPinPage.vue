@@ -42,27 +42,31 @@ async function confirmPin() {
     return
   }
 
+  if (currentPin.value.length < 4) {
+    alert('핀번호 4자리를 입력해주세요.')
+    return
+  }
+
   if (firstPin.value !== currentPin.value) {
     alert('핀번호가 일치하지 않습니다. 다시 시도해주세요.')
     resetPin()
     return
   }
 
-  const signUpPayload: SignUpRequest = {
-    name: store.name,
-    username: store.username,
-    password: store.password,
-    paymentPin: firstPin.value,
-  }
-
   try {
+    const signUpPayload: SignUpRequest = {
+      name: store.name,
+      username: store.username,
+      password: store.password,
+      paymentPin: firstPin.value,
+    }
+
     await signUp(signUpPayload)
     alert('회원가입 완료!')
     store.$reset()
     router.push('/login')
   } catch (err: unknown) {
     const error = err as AxiosError<{ message?: string }>
-    console.error('회원가입 오류:', error)
     const message = error.response?.data?.message || '회원가입에 실패했습니다. 다시 시도해주세요.'
     alert(message)
   }
