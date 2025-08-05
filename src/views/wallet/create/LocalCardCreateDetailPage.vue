@@ -10,6 +10,8 @@ import { useRoute } from 'vue-router'
 import useLocalCurrencyInfo from '@/composables/local/useLocalCurrencyInfo'
 import useLocalSelector from '@/composables/local/useLocalSelector'
 import router from '@/router'
+import useAddLocalCard from '@/composables/queries/local/useAddLocalCard'
+import type { localCardCreateRequestDtoType } from '@/types/local/localTypes'
 
 const route = useRoute()
 const routeCityId = computed(() => Number(route.params.id))
@@ -17,15 +19,16 @@ const routeCityId = computed(() => Number(route.params.id))
 const isModalVisible = ref<boolean>(false)
 
 const { selectedRegion, selectedCity, selectedCityId, getLocalInfoById } = useLocalSelector()
-const { localCurrencyName, benefitInfo, benefitDescription } = useLocalCurrencyInfo(
-  computed(() => ({
-    province: null,
-    city: null,
-    benefitType: null,
-    localCurrencyId: null,
-    regionId: routeCityId.value,
-  })),
-)
+const { localCurrencyName, benefitInfo, benefitDescription, localCurrencyId } =
+  useLocalCurrencyInfo(
+    computed(() => ({
+      province: null,
+      city: null,
+      benefitType: null,
+      localCurrencyId: null,
+      regionId: routeCityId.value,
+    })),
+  )
 
 const localInfo = computed(() => getLocalInfoById(routeCityId.value))
 
@@ -46,6 +49,25 @@ const handleModalConfirm = async (region: string, city: string): Promise<void> =
       params: { id: selectedCityId.value.toString() },
     })
   }
+}
+
+const { mutate, isPending, isError } = useAddLocalCard()
+
+const handleCompeleteClick = () => {
+  const requestBody: localCardCreateRequestDtoType = {
+    localCurrencyId: localCurrencyId.value,
+    walletType: 'LOCAL',
+  }
+
+  mutate(requestBody, {
+    onSuccess: () => {
+      router.replace({ name: 'LocalCardCreateSuccess' })
+    },
+    onError(error) {
+      //TODO : 실패 했을 때 분기 처리 -> 아마 토스트 라이브러리 추가되면 그걸로 할듯합니다.
+      console.log('이미 추가된 지역카드')
+    },
+  })
 }
 </script>
 
@@ -85,7 +107,9 @@ const handleModalConfirm = async (region: string, city: string): Promise<void> =
 
       <!-- 하단 버튼 -->
       <div class="flex justify-center mt-[3.4rem] mb-[4rem]">
-        <danji-button variant="large">발급하기</danji-button>
+        <danji-button variant="large" @click="handleCompeleteClick" :disabled="isPending"
+          >발급하기</danji-button
+        >
       </div>
     </template>
   </layout>

@@ -49,7 +49,7 @@ const handleCardDelete = () => {
         </div>
 
         <!-- 해지 모달 -->
-        <CardDeleteModal
+        <card-delete-modal
           :is-open="showDeleteModal"
           @close="showDeleteModal = false"
           @confirm="handleCardDelete"

@@ -6,7 +6,6 @@ const router = useRouter()
 
 defineProps<{
   walletAmount: number
-  totalAsset: number
 }>()
 
 // 통합 지갑 선택시 총자산보기 페이지 이동
@@ -19,7 +18,9 @@ const goWalletPage = () => {
     <!-- 상단 영역: 2/3 비율 -->
     <div class="flex flex-col items-start p-4 bg-Yellow-0/40 flex-[2]">
       <span class="mb-1 Head4 text-Gray-6">통합지갑</span>
-      <span class="self-center Head0 text-Black">{{ walletAmount.toLocaleString() }}원</span>
+      <span class="self-center Head0 text-Black">
+        {{ (walletAmount ?? 0).toLocaleString() }}원
+      </span>
     </div>
 
     <!-- 하단 영역: 1/3 비율 -->

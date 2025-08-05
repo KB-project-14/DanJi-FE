@@ -1,196 +1,174 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { format } from 'date-fns'
-
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { startOfMonth, endOfMonth } from 'date-fns'
+import { startOfMonth, format } from 'date-fns'
 
 import Layout from '@/components/layout/Layout.vue'
 import CardHistoryItemList from '@/components/common/history/CardHistoryItemList.vue'
 import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 
+import useGetWalletList from '@/composables/queries/wallet/getWalletList'
+import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
+import type { FilterType } from '@/types/wallet/FilterType'
+import type { Transaction, WalletTransactionParams } from '@/types/transaction/TransactionType'
+import { ShowerHeadIcon } from 'lucide-vue-next'
+
 // 라우트에서 카드 ID
 const route = useRoute()
-const cardId = Number(route.params.id)
-
-// 현재 선택된 월 (자식에서 emit으로 업데이트됨)
-const currentMonthDate = ref(new Date())
-
-// 카드 데이터 (API 연동 예정)
-const allCards = [
-  {
-    id: 1,
-    name: '동백전',
-    balance: 32000,
-    benefit: 10000, // 혜택 금액
-    maximum: 500000, // 최대 한도
-    benefit_type: '캐시백',
-    percentage: 10,
-  },
-  {
-    id: 2,
-    name: '서울Pay',
-    balance: 15000,
-    benefit: 5000,
-    maximum: 500000,
-    benefit_type: '캐시백',
-    percentage: 5,
-  },
-  {
-    id: 3,
-    name: '강원상품권',
-    balance: 25000,
-    benefit: 7000,
-    maximum: 500000,
-    benefit_type: '인센티브',
-    percentage: 7,
-  },
-]
+const cardId = route.params.id as string
 
 // 카드 정보
-const cardInfo = computed(() => allCards.find((c) => c.id === cardId))
+const localWallets = useGetWalletList('LOCAL')
+const cardInfo = computed(() => (localWallets.value ?? []).find((c) => c.walletId === cardId))
 
-// 거래 내역 더미 데이터
-interface HistoryItem {
-  comment: string
-  amount: number
-  afterBalance: number
-  direction: 'INCOME' | 'EXPENSE'
-  type: 'CHARGE' | 'REFUND' | 'CONVERT' | 'PAYMENT'
-  createdAt: string
-}
-
-const transaction: HistoryItem[] = [
-  {
-    comment: '단지카페',
-    amount: 5000,
-    afterBalance: 95000,
-    direction: 'EXPENSE',
-    type: 'PAYMENT',
-    createdAt: '2025-07-18T09:15:20',
-  },
-  {
-    comment: '샤브온당',
-    amount: 12000,
-    afterBalance: 83000,
-    direction: 'EXPENSE',
-    type: 'PAYMENT',
-    createdAt: '2025-07-19T12:40:15',
-  },
-  {
-    comment: '충전',
-    amount: 100000,
-    afterBalance: 183000,
-    direction: 'INCOME',
-    type: 'CHARGE',
-    createdAt: '2025-07-20T08:30:32',
-  },
-  {
-    comment: '마트 장보기',
-    amount: 48500,
-    afterBalance: 134500,
-    direction: 'EXPENSE',
-    type: 'PAYMENT',
-    createdAt: '2025-07-21T18:22:10',
-  },
-  {
-    comment: '버스 교통비 환불',
-    amount: 1250,
-    afterBalance: 135750,
-    direction: 'INCOME',
-    type: 'REFUND',
-    createdAt: '2025-07-22T14:05:42',
-  },
-]
-
-// 박스 데이터 계산
-const chargedAmount = computed(() => {
-  const start = startOfMonth(currentMonthDate.value).getTime()
-  const end = endOfMonth(currentMonthDate.value).getTime()
-
-  return transaction
-    .filter(
-      (h) =>
-        h.type === 'CHARGE' &&
-        new Date(h.createdAt).getTime() >= start &&
-        new Date(h.createdAt).getTime() <= end,
-    )
-    .reduce((sum, h) => sum + h.amount, 0)
+// 필터 상태 (부모에서 관리)
+const today = new Date()
+const filter = ref<FilterType>({
+  period: '이번달',
+  type: '전체',
+  order: '최신순',
+  startDate: startOfMonth(today),
+  endDate: today,
 })
 
-const availableAmount = computed(() =>
-  cardInfo.value ? cardInfo.value.maximum - chargedAmount.value : 0,
+// API 쿼리 파라미터
+const queryParams = computed((): WalletTransactionParams => {
+  const params: WalletTransactionParams = {
+    sortOrder: filter.value.order === '최신순' ? 'DESC' : 'ASC',
+  }
+
+  if (filter.value.startDate) {
+    params.startDate = format(filter.value.startDate, 'yyyy-MM-dd')
+  }
+
+  if (filter.value.endDate) {
+    params.lastDate = format(filter.value.endDate, 'yyyy-MM-dd')
+  }
+
+  if (filter.value.type === '입금만') {
+    params.direction = 'INCOME'
+  } else if (filter.value.type === '출금만') {
+    params.direction = 'EXPENSE'
+  }
+
+  return params
+})
+// 거래내역 API 호출 (부모에서만 실행)
+const { data: transactionsData, isLoading } = useGetWalletTransaction(
+  cardId,
+  queryParams,
+  computed(() => !!cardId),
 )
 
-const selectedPeriod = ref('이번달')
-const selectedStartDate = ref<Date | null>(null)
-const selectedEndDate = ref<Date | null>(null)
+// 디버깅용 - API 요청 파라미터 확인
+watch([queryParams, transactionsData], ([params, data]) => {}, { immediate: true })
 
-const handleMonthChange = (payload: {
-  date: Date
-  period: string
-  startDate: Date | null
-  endDate: Date | null
-}) => {
-  currentMonthDate.value = payload.date
-  selectedPeriod.value = payload.period
-  selectedStartDate.value = payload.startDate
-  selectedEndDate.value = payload.endDate
-}
+// 거래내역 + 집계값 (필터링 적용)
+const transactions = computed(() => {
+  let filtered: Transaction[] = transactionsData.value?.transactions ?? []
 
-// 금액 안내 박스 문구 설정
-const boxLabel = computed(() => {
-  if (selectedPeriod.value === '직접 설정' && selectedStartDate.value && selectedEndDate.value) {
-    return '설정기간에'
+  // 날짜 필터링
+  if (filter.value.startDate && filter.value.endDate) {
+    const startDate = new Date(filter.value.startDate)
+    const endDate = new Date(filter.value.endDate)
+    startDate.setHours(0, 0, 0, 0)
+    endDate.setHours(23, 59, 59, 999)
+
+    filtered = filtered.filter((transaction: Transaction) => {
+      const transactionDate = new Date(transaction.createdAt)
+      return transactionDate >= startDate && transactionDate <= endDate
+    })
   }
-  return `${currentMonthDate.value.getMonth() + 1}월`
+
+  // 거래 유형 필터링
+  if (filter.value.type === '입금만') {
+    filtered = filtered.filter((transaction: Transaction) => transaction.direction === 'INCOME')
+  } else if (filter.value.type === '출금만') {
+    filtered = filtered.filter((transaction: Transaction) => transaction.direction === 'EXPENSE')
+  }
+
+  // 정렬
+  if (filter.value.order === '최신순') {
+    filtered.sort(
+      (a: Transaction, b: Transaction) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+  } else {
+    filtered.sort(
+      (a: Transaction, b: Transaction) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    )
+  }
+
+  return filtered
 })
+const aggregateCharge = computed(() => transactionsData.value?.aggregateCharge ?? 0)
+const aggregateIncentive = computed(() => transactionsData.value?.aggregateIncentive ?? 0)
+
+// 충전 가능 금액
+const availableAmount = computed(() => {
+  const max = cardInfo.value?.maximum ?? 0
+  return Math.max(0, max - aggregateCharge.value)
+})
+
+// 박스 라벨 (항상 이번달 기준)
+const boxLabel = `${today.getMonth() + 1}월`
+
+// 필터 업데이트 핸들러
+const handleFilterUpdate = (newFilter: FilterType) => {
+  filter.value = newFilter
+}
 </script>
 
 <template>
   <Layout
-    :header-type="'basic'"
-    :header-title="cardInfo?.name || '카드 상세'"
+    :header-type="'setting'"
+    :header-title="cardInfo?.localCurrencyName || '카드 상세'"
     :is-bottom-nav="false"
-    :showLeftIcon="true"
+    :show-left-icon="true"
+    :show-right-icon="true"
   >
     <template #content>
       <!-- 카드 잔액 / 혜택 -->
       <div class="p-[3rem]">
         <div class="flex justify-between items-center mb-[2rem]">
           <div>
-            <!-- 카드명 + 툴팁 -->
             <div class="flex items-center gap-2 relative">
-              <p class="Body00 text-Black-2">{{ cardInfo?.name }}</p>
+              <p class="Body00 text-Black-2">{{ cardInfo?.localCurrencyName }}</p>
               <tooltip
                 position="top"
                 align="start"
-                :message="`이번달 ${cardInfo?.name}의 ${cardInfo?.benefit_type}은 ${cardInfo?.percentage}% 입니다.`"
+                :message="`이번달 ${cardInfo?.localCurrencyName}의 ${cardInfo?.benefitType}은 ${cardInfo?.percentage}% 입니다.`"
               />
             </div>
-            <!-- 잔액 -->
-            <p class="Head0 text-Black-2">{{ cardInfo?.balance.toLocaleString() }} 원</p>
+            <p class="Head0 text-Black-2">{{ cardInfo?.balance?.toLocaleString() }} 원</p>
             <div class="flex items-center gap-2 relative">
               <p class="Body04 text-Gray-5">충전 최대 한도 :</p>
-              <p class="Body01">{{ cardInfo?.maximum.toLocaleString() }}원</p>
+              <p class="Body01">{{ cardInfo?.maximum?.toLocaleString() }}원</p>
             </div>
           </div>
 
           <div
-            class="relative w-[10rem] aspect-[1000/1586] rounded-xl bg-cover bg-center border border-Gray-3"
-            :style="{ backgroundImage: `url('/images/sample-card.png')` }"
-          ></div>
+            class="relative w-[10rem] aspect-[1000/1586] rounded-xl border border-Gray-2 bg-white overflow-hidden"
+          >
+            <img
+              v-if="cardInfo?.backgroundImageUrl"
+              :src="`https://danji.cloud${cardInfo.backgroundImageUrl}`"
+              alt="카드 이미지"
+              class="absolute top-1/2 left-1/2 object-cover transform -translate-x-1/2 -translate-y-1/2 rotate-90 scale-[1.58]"
+            />
+          </div>
         </div>
 
         <!-- 박스 -->
         <div class="bg-Gray-1 rounded-xl p-[1.4rem] Body00 text-Black-2">
           <div class="flex justify-between mb-[1.2rem] text-Gray-7">
             <span>{{ boxLabel }} 충전한 금액:</span>
-            <span>{{ chargedAmount.toLocaleString() }}원</span>
+            <span>{{ aggregateCharge.toLocaleString() }}원</span>
           </div>
           <div class="flex justify-between mb-[1.2rem] text-Gray-7">
             <span>{{ boxLabel }} 받은 혜택:</span>
-            <span class="text-Blue-0">{{ cardInfo?.benefit.toLocaleString() }}원</span>
+            <span class="text-Blue-0">{{ aggregateIncentive.toLocaleString() }}원</span>
           </div>
           <div class="flex justify-between text-Gray-7">
             <span>{{ boxLabel }} 충전 가능 금액:</span>
@@ -200,7 +178,14 @@ const boxLabel = computed(() => {
       </div>
 
       <!-- 거래 내역 리스트 -->
-      <card-history-item-list :histories="transaction" @month-change="handleMonthChange" />
+      <card-history-item-list
+        v-if="cardId"
+        :walletId="cardId"
+        :transactions="transactions"
+        :filter="filter"
+        :isLoading="isLoading"
+        @update:filter="handleFilterUpdate"
+      />
     </template>
   </Layout>
 </template>
