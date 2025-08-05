@@ -7,9 +7,7 @@ import type { localcurrencyResponseDtoType } from '@/types/local/localTypes'
 import type { AxiosResponse } from 'axios'
 import { computed, type Ref } from 'vue'
 
-export const getLocalCurrencies = async (
-  query: localcurrencyListRequestDtoType,
-): Promise<localcurrencyResponseDtoType[]> => {
+export const getLocalCurrencies = async (query: localcurrencyListRequestDtoType) => {
   const response: AxiosResponse<ApiResponse<localcurrencyResponseDtoType[]>> = await get(
     '/api/local-currencies',
     { params: query },

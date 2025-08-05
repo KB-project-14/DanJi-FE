@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import { useScrollLock } from '@vueuse/core'
 import axios from 'axios'
@@ -9,6 +9,7 @@ import MapFilters from '@/components/map/MapFilters.vue'
 import KakaoMapContainer from '@/components/map/KaKaoMapContainer.vue'
 import LocalStoreListModal from '@/components/map/LocalStoreListModal.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
+import useLocalSelector from '@/composables/local/useLocalSelector'
 
 import type { LocalStore } from '@/types/types'
 
@@ -75,8 +76,6 @@ const fetchLocalData = async (): Promise<LocalStore[]> => {
   try {
     const response = await axios.get('/api/local/store')
     localStores.value = response.data.data.localStores
-
-    console.log(`가맹점 데이터 로드 완료: ${localStores.value.length}개`)
     return localStores.value
   } catch (err) {
     const errorMessage = '가맹점 데이터를 불러오는데 실패했습니다.'
@@ -86,9 +85,12 @@ const fetchLocalData = async (): Promise<LocalStore[]> => {
 }
 
 const selectedFilter = ref<string>('전체')
-const selectedRegion = ref<string>('강원도')
-const selectedCity = ref<string>('강릉')
+const { selectedRegion, selectedCity, setLocal, resetSelection } = useLocalSelector()
 const isFilterModalVisible = ref<boolean>(false)
+const storeCategories = computed(() => {
+  const categories = Array.from(new Set(localStores.value.map((store) => store.category)))
+  return ['전체', ...categories]
+})
 
 /**
  * 선택된 필터에 따라 가맹점을 필터링
@@ -111,35 +113,19 @@ const handleFilterChipClick = (): void => {
  * 필터 모달 확인 핸들러
  */
 const handleFilterModalConfirm = (region: string, city: string): void => {
-  selectedRegion.value = region
-  selectedCity.value = city
+  setLocal(region, city)
   isFilterModalVisible.value = false
   foldLocalStoreModal.value = false
 
   // TODO: 지역별 가맹점 필터링 로직 추가
 }
 
-const handleCurrentLocationBtnClick = (): void => {
+/**
+ * 현재 위치 버튼 클릭 핸들러
+ */
+const handleCurrencLocationBtnClick = () => {
+  resetSelection()
   foldLocalStoreModal.value = true
-
-  // 이미 위치 정보가 있으면 현재 위치로 이동 로직 실행
-  if (userCurrentLatitude.value !== 37.5665 || userCurrentLongitude.value !== 126.978) {
-    console.log('현재 위치로 이동:', {
-      lat: userCurrentLatitude.value,
-      lng: userCurrentLongitude.value,
-    })
-    // TODO: 지도 이동 로직 추가
-  } else {
-    // 위치 정보가 없으면 새로 가져오기
-    getUserLocation()
-      .then(() => {
-        console.log('위치 가져오기 완료, 지도 이동 실행')
-        // TODO: 지도 이동 로직 추가
-      })
-      .catch((error) => {
-        console.error('위치 가져오기 실패:', error)
-      })
-  }
 }
 
 onMounted(async () => {
@@ -161,7 +147,8 @@ onMounted(async () => {
         <!-- Filters Section -->
         <map-filters
           :selected-filter="selectedFilter"
-          :selected-city="selectedCity"
+          :selected-city="selectedCity !== '' ? selectedCity : selectedRegion"
+          :filter-options="storeCategories"
           :fold-local-store-modal="foldLocalStoreModal"
           @filter-chip-click="handleFilterChipClick"
           @update:selected-filter="selectedFilter = $event"
@@ -173,14 +160,14 @@ onMounted(async () => {
             :user-latitude="userCurrentLatitude"
             :user-longitude="userCurrentLongitude"
             :filtered-stores="filteredStores"
-            @current-location-click="handleCurrentLocationBtnClick"
+            @current-location="handleCurrencLocationBtnClick"
           />
 
           <!-- Modals -->
           <local-store-list-modal
             class="absolute bottom-[7rem] z-[300]"
             v-model:is-modal-fold="foldLocalStoreModal"
-            :local-store-list="localStores"
+            :local-store-list="filteredStores"
           />
 
           <local-filter-modal
@@ -188,7 +175,6 @@ onMounted(async () => {
             :is-visible="isFilterModalVisible"
             v-model:initial-region="selectedRegion"
             v-model:initial-city="selectedCity"
-            @close="handleFilterChipClick"
             @confirm="handleFilterModalConfirm"
           />
         </div>
