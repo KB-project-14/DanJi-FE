@@ -25,3 +25,21 @@ export const LOCAL_KEYS = {
   all: ['locals'] as const,
   detail: ['local_currrencies'] as const,
 }
+
+// 회원가입 페이지 쿼리 키
+export const SIGNUP_KEYS = {
+  all: ['signup'] as const,
+  create: () => [...SIGNUP_KEYS.all, 'create'] as const,
+}
+
+// 로그인 페이지 쿼리 키
+export const LOGIN_KEYS = {
+  all: ['login'] as const,
+  auth: () => [...LOGIN_KEYS.all, 'auth'] as const,
+}
+
+// 결제 비밀번호 페이지 쿼리 키
+export const PAYMENT_PIN_KEYS = {
+  all: ['payment-pin'] as const,
+  verify: () => [...PAYMENT_PIN_KEYS.all, 'verify'] as const,
+}
