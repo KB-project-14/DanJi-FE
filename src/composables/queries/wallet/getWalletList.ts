@@ -7,8 +7,7 @@ import type { ApiResponse } from '@/types/wallet/ApiResponse'
 import { WALLET_KEYS } from '@/constants/QueryKey'
 
 // 토큰 값 넣어주세요
-const ACCESS_TOKEN =
-  'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAiLCJpYXQiOjE3NTQwMTE1NDMsImV4cCI6MzMyOTAwMTE1NDMsInVzZXJuYW1lIjoidGVzdGVyIiwicm9sZSI6IlJPTEVfQURNSU4ifQ.6016EI8NsaegS1Zl0y1FwbzoEBTBX5TY6hKKSgK1LtI'
+// const ACCESS_TOKEN =
 
 export const getWalletList = async (
   walletType: 'CASH' | 'LOCAL',
@@ -18,12 +17,12 @@ export const getWalletList = async (
     {
       params: {
         // memberId 값 넣고 주석 해제
-        memberId: ' 00000000-0000-0000-0000-000000000000',
+        // memberId: '',
         walletType,
       },
       headers: {
         // 위에 ACCESS_TOKEN 넣고 주석 해제
-        Authorization: ACCESS_TOKEN,
+        // Authorization: ACCESS_TOKEN,
       },
     },
   )
