@@ -100,7 +100,7 @@ export function provideBadgeCollection(): BadgeCollection {
 
   const badgeCount = computed(() => currentBadges.value.length)
 
-  const changeCategory = (newCategory: BadgeCategoryType) => {
+  const changeCategory = (newCategory: BadgeType) => {
     category.value = newCategory
     showBadgeDetail.value = false
     selectedBadge.value = null
