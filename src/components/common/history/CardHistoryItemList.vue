@@ -6,11 +6,12 @@ import { ChevronDown } from 'lucide-vue-next'
 import CardHistoryItem from './CardHistoryItem.vue'
 import TransactionFilterModal from '../modal/TransactionFilterModal.vue'
 import type { FilterType } from '@/types/wallet/FilterType'
+import type { Transaction } from '@/types/transaction/TransactionType'
 
 // Props - 부모에서 데이터와 필터를 받음
 const props = defineProps<{
   walletId: string
-  transactions: any[] // 거래내역 데이터
+  transactions: Transaction[] // 거래내역 데이터
   filter: FilterType // 현재 필터 상태
   isLoading?: boolean
 }>()

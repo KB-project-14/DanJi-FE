@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { startOfMonth, format } from 'date-fns'
 
@@ -10,6 +10,7 @@ import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 import useGetWalletList from '@/composables/queries/wallet/getWalletList'
 import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
 import type { FilterType } from '@/types/wallet/FilterType'
+import type { Transaction } from '@/types/transaction/TransactionType'
 
 // 라우트에서 카드 ID
 const route = useRoute()
@@ -30,17 +31,19 @@ const filter = ref<FilterType>({
 })
 
 // API 쿼리 파라미터
-const queryParams = computed(() => ({
-  startDate: filter.value.startDate ? format(filter.value.startDate, 'yyyy-MM-dd') : '',
-  lastDate: filter.value.endDate ? format(filter.value.endDate, 'yyyy-MM-dd') : '',
-  direction:
-    filter.value.type === '입금만'
-      ? 'INCOME'
-      : filter.value.type === '출금만'
-        ? 'EXPENSE'
-        : undefined,
-  sortOrder: filter.value.order === '최신순' ? 'DESC' : 'ASC',
-}))
+const queryParams = computed(
+  (): WalletTransactionParams => ({
+    startDate: filter.value.startDate ? format(filter.value.startDate, 'yyyy-MM-dd') : '',
+    lastDate: filter.value.endDate ? format(filter.value.endDate, 'yyyy-MM-dd') : '',
+    direction:
+      filter.value.type === '입금만'
+        ? 'INCOME'
+        : filter.value.type === '출금만'
+          ? 'EXPENSE'
+          : undefined,
+    sortOrder: filter.value.order === '최신순' ? 'DESC' : 'ASC',
+  }),
+)
 
 // 거래내역 API 호출 (부모에서만 실행)
 const { data: transactionsData, isLoading } = useGetWalletTransaction(
@@ -49,8 +52,57 @@ const { data: transactionsData, isLoading } = useGetWalletTransaction(
   computed(() => !!cardId),
 )
 
-// 거래내역 + 집계값
-const transactions = computed(() => transactionsData.value?.transactions ?? [])
+// 디버깅용 - API 요청 파라미터 확인
+watch(
+  [queryParams, transactionsData],
+  ([params, data]) => {
+    console.log('🔍 API 요청 파라미터:', params)
+    console.log('📦 API 응답 데이터:', data)
+    console.log('📋 거래내역 개수:', data?.transactions?.length || 0)
+  },
+  { immediate: true },
+)
+
+// 거래내역 + 집계값 (필터링 적용)
+const transactions = computed(() => {
+  let filtered: Transaction[] = transactionsData.value?.transactions ?? []
+
+  // 날짜 필터링
+  if (filter.value.startDate && filter.value.endDate) {
+    const startDate = new Date(filter.value.startDate)
+    const endDate = new Date(filter.value.endDate)
+    startDate.setHours(0, 0, 0, 0)
+    endDate.setHours(23, 59, 59, 999)
+
+    filtered = filtered.filter((transaction: Transaction) => {
+      const transactionDate = new Date(transaction.createdAt)
+      return transactionDate >= startDate && transactionDate <= endDate
+    })
+  }
+
+  // 거래 유형 필터링
+  if (filter.value.type === '입금만') {
+    filtered = filtered.filter((transaction: Transaction) => transaction.direction === 'INCOME')
+  } else if (filter.value.type === '출금만') {
+    filtered = filtered.filter((transaction: Transaction) => transaction.direction === 'EXPENSE')
+  }
+
+  // 정렬
+  if (filter.value.order === '최신순') {
+    filtered.sort(
+      (a: Transaction, b: Transaction) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+  } else {
+    filtered.sort(
+      (a: Transaction, b: Transaction) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    )
+  }
+
+  console.log('🔧 클라이언트 필터링 결과:', filtered.length, '개')
+  return filtered
+})
 const aggregateCharge = computed(() => transactionsData.value?.aggregateCharge ?? 0)
 const aggregateIncentive = computed(() => transactionsData.value?.aggregateIncentive ?? 0)
 
