@@ -140,7 +140,7 @@ watch(() => props.isModalFold, resetToInitialPosition)
     <div class="overflow-y-auto scrollbar-hide" :style="{ maxHeight: 'calc(90vh - 8rem)' }">
       <local-store-item
         v-for="localStore in localStoreList"
-        :key="localStore.name"
+        :key="localStore.availableMerchantId"
         :local-store="localStore"
       />
 
