@@ -55,6 +55,15 @@ export default {
           DEFAULT: '#F3F4F7',
         },
       },
+      keyframes: {
+        'fade-in-scale': {
+          '0%': { transform: 'scale(0)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+      },
+      animation: {
+        'fade-in-scale': 'fade-in-scale 0.25s ease-out forwards',
+      },
     },
   },
   plugins: [],
