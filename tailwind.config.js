@@ -60,9 +60,14 @@ export default {
           '0%': { transform: 'scale(0)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
+        'fade-out-scale': {
+          '0%': { transform: 'scale(1)', opacity: '1' },
+          '100%': { transform: 'scale(0)', opacity: '0' },
+        },
       },
       animation: {
         'fade-in-scale': 'fade-in-scale 0.25s ease-out forwards',
+        'fade-out-scale': 'fade-out-scale 0.25s ease-in forwards',
       },
     },
   },
