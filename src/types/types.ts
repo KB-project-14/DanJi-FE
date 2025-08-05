@@ -21,7 +21,7 @@ export interface ApiResponse<T = Record<string, object>> {
 export type BottomNaviType = 'wallet' | 'map' | 'qr' | 'badge' | 'my'
 
 // 공통 레이아웃에서 사용하는 헤더 타입
-export type HeaderType = 'basic' | 'main' | 'pay' | 'setting'
+export type HeaderType = 'basic' | 'main' | 'pay' | 'setting' | 'none'
 
 // 레이아웃 컴포넌트에서 사용하는 공통 타입
 export interface BaseLayoutProps {
@@ -45,6 +45,7 @@ export type LayoutProps =
   | ({ headerType: 'basic' | 'setting' } & HeaderWithTitle & BaseLayoutProps)
   | ({ headerType: 'main' } & BaseLayoutProps)
   | ({ headerType: 'pay' } & PayHeaderProps & BaseLayoutProps)
+  | ({ headerType: 'none' } & BaseLayoutProps)
 
 //가맹점 정보 타입
 export interface LocalStore {
