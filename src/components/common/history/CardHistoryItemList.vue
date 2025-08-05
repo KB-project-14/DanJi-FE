@@ -77,10 +77,7 @@ const filterText = computed(() => {
     <div class="flex items-center justify-between bg-Gray-1 p-[1rem]">
       <!-- 월 네비게이션 (왼쪽) -->
       <div class="flex items-center gap-3">
-        <button
-          class="p-1 rounded-full hover:bg-Gray-2 transition-colors"
-          @click="changeMonth('prev')"
-        >
+        <button class="p-1 rounded-full" @click="changeMonth('prev')">
           <ChevronLeft class="w-[1.6rem] h-[1.6rem] text-Gray-6" />
         </button>
 
@@ -88,10 +85,7 @@ const filterText = computed(() => {
           {{ monthText }}
         </span>
 
-        <button
-          class="p-1 rounded-full hover:bg-Gray-2 transition-colors"
-          @click="changeMonth('next')"
-        >
+        <button class="p-1 rounded-full" @click="changeMonth('next')">
           <ChevronRight class="w-[1.6rem] h-[1.6rem] text-Gray-6" />
         </button>
       </div>
@@ -104,7 +98,7 @@ const filterText = computed(() => {
     </div>
 
     <!-- 필터 모달 -->
-    <TransactionFilterModal
+    <transaction-filter-modal
       v-if="isFilterOpen"
       :modelValue="filter"
       @update:modelValue="handleFilterUpdate"
@@ -122,7 +116,7 @@ const filterText = computed(() => {
 
       <!-- 거래 내역 있을 때 -->
       <template v-else-if="histories.length > 0">
-        <CardHistoryItem
+        <card-history-item
           v-for="(history, index) in histories"
           :key="`transaction-${index}-${history.createdAt}`"
           :comment="history.comment"

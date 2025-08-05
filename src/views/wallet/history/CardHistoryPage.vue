@@ -170,7 +170,7 @@ const handleFilterUpdate = (newFilter: FilterType) => {
       </div>
 
       <!-- 거래 내역 리스트 -->
-      <CardHistoryItemList
+      <card-history-item-list
         v-if="cardId"
         :walletId="cardId"
         :transactions="transactions"
