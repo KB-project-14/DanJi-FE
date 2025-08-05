@@ -18,13 +18,5 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
-    // 서버 주소 연동
-    proxy: {
-      '/api': {
-        target: 'https://danji.cloud',
-        changeOrigin: true,
-        secure: process.env.NODE_ENV !== 'development' ? true : false,
-      },
-    },
   },
 })
