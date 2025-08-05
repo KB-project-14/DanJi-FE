@@ -26,3 +26,9 @@ export interface localcurrencyResponseDtoType {
   maximum: number
   percentage: number
 }
+
+//TODO:: walletType을 나중에 지갑 쪽 타입이랑 합치기
+export interface localCardCreateRequestDtoType {
+  localCurrencyId: string
+  walletType: 'LOCAL'
+}

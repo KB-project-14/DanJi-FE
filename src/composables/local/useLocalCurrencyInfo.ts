@@ -25,6 +25,9 @@ export default function useLocalCurrencyInfo(
   // 지역화폐 이름
   const localCurrencyName = computed(() => primaryLocalCurrency.value?.name || '')
 
+  // 지역화폐 id
+  const localCurrencyId = computed(() => primaryLocalCurrency.value?.localCurrencyId || '')
+
   // 혜택 정보 (타입, 퍼센테이지, 최대 충전 가능 금액)
   const benefitInfo = computed(() => {
     const currency = primaryLocalCurrency.value
@@ -50,6 +53,7 @@ export default function useLocalCurrencyInfo(
   return {
     localCurrencies,
     localCurrencyName,
+    localCurrencyId,
     benefitInfo,
     benefitDescription,
   }
