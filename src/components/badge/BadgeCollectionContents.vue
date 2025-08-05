@@ -11,7 +11,7 @@ const currentBadges = computed(() => (category.value === '지역' ? regionBadges
 const badgeCount = computed(() => currentBadges.value.length)
 </script>
 <template>
-  <div class="flex-1 overflow-y-auto flex flex-col items-center w-full h-full">
+  <div class="flex-1 overflow-y-auto flex flex-col items-center w-full h-[35.2rem]">
     <!-- 상단 정보 -->
     <div class="flex justify-between w-[31.7rem] mb-[2rem] Body01">
       <span>내가 모은 뱃지를 확인해보세요</span>

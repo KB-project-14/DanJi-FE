@@ -4,7 +4,7 @@ import { useBadgeCollection } from '@/composables/badge/useBadgeCollection'
 const { selectedBadge } = useBadgeCollection()
 </script>
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col w-full h-[32.3rem] justify-center items-center">
     <!-- 뱃지 코멘트 -->
     <div class="flex flex-col justify-center items-center mb-[0.5rem] Body02 text-Gray-4">
       <span>{{ selectedBadge.comment }}</span>
@@ -19,7 +19,7 @@ const { selectedBadge } = useBadgeCollection()
       />
     </div>
     <div
-      :key="selectedBadge.id"
+      :key="selectedBadge.badge_id"
       class="relative flex flex-col justify-center items-center w-[31.7rem] h-[9.7rem] mb-[2.5rem] text-Gray-8 Head03 border-solid border-[0.2rem] border-Gray-1 rounded-[1.6rem]"
     >
       <span class="absolute top-[-13%] bg-White-0">{{ selectedBadge.name }}</span>

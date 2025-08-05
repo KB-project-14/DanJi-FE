@@ -8,7 +8,7 @@ const { category, changeCategory } = useBadgeCollection()
     <button
       @click="changeCategory('지역')"
       :class="[
-        'w-full rounded-tl-[1rem] transition-colors',
+        'w-full h-[2.9rem] rounded-tl-[1rem] transition-colors',
         category === '지역' ? 'bg-Yellow-0' : 'bg-Yellow-0/20',
       ]"
     >
@@ -17,7 +17,7 @@ const { category, changeCategory } = useBadgeCollection()
     <button
       @click="changeCategory('스페셜')"
       :class="[
-        'w-full rounded-tr-[1rem] transition-colors',
+        'w-full h-[2.9rem] rounded-tr-[1rem] transition-colors',
         category === '스페셜' ? 'bg-Yellow-0' : 'bg-Yellow-0/20',
       ]"
     >
