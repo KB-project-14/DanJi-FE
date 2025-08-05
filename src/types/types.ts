@@ -48,10 +48,15 @@ export type LayoutProps =
 
 //가맹점 정보 타입
 export interface LocalStore {
-  id: number
+  createdAt: string
+  updatedAt: string
+  availableMerchantId: string
   name: string
   address: string
-  latitude: string
-  longitude: string
+  latitude: number
+  longitude: number
   category: string
+  localCurrencyId: string
+  localCurrencyName: string
+  distance: number
 }
