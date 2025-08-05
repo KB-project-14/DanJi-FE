@@ -28,8 +28,6 @@ const backgroundStyle = computed(() => {
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
   }
 })
-console.log('backgroundImageUrl 값:', props.backgroundImageUrl)
-console.log('backgroundStyle 결과:', backgroundStyle.value)
 </script>
 
 <template>
