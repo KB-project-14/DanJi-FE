@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import { useScrollLock } from '@vueuse/core'
 import axios from 'axios'
@@ -9,6 +9,7 @@ import MapFilters from '@/components/map/MapFilters.vue'
 import KakaoMapContainer from '@/components/map/KaKaoMapContainer.vue'
 import LocalStoreListModal from '@/components/map/LocalStoreListModal.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
+import useLocalSelector from '@/composables/local/useLocalSelector'
 
 import type { LocalStore } from '@/types/types'
 
@@ -84,9 +85,12 @@ const fetchLocalData = async (): Promise<LocalStore[]> => {
 }
 
 const selectedFilter = ref<string>('전체')
-const selectedRegion = ref<string>('강원도')
-const selectedCity = ref<string>('강릉')
+const { selectedRegion, selectedCity, setLocal, resetSelection } = useLocalSelector()
 const isFilterModalVisible = ref<boolean>(false)
+const storeCategories = computed(() => {
+  const categories = Array.from(new Set(localStores.value.map((store) => store.category)))
+  return ['전체', ...categories]
+})
 
 /**
  * 선택된 필터에 따라 가맹점을 필터링
@@ -109,12 +113,19 @@ const handleFilterChipClick = (): void => {
  * 필터 모달 확인 핸들러
  */
 const handleFilterModalConfirm = (region: string, city: string): void => {
-  selectedRegion.value = region
-  selectedCity.value = city
+  setLocal(region, city)
   isFilterModalVisible.value = false
   foldLocalStoreModal.value = false
 
   // TODO: 지역별 가맹점 필터링 로직 추가
+}
+
+/**
+ * 현재 위치 버튼 클릭 핸들러
+ */
+const handleCurrencLocationBtnClick = () => {
+  resetSelection()
+  foldLocalStoreModal.value = true
 }
 
 onMounted(async () => {
@@ -136,7 +147,8 @@ onMounted(async () => {
         <!-- Filters Section -->
         <map-filters
           :selected-filter="selectedFilter"
-          :selected-city="selectedCity"
+          :selected-city="selectedCity !== '' ? selectedCity : selectedRegion"
+          :filter-options="storeCategories"
           :fold-local-store-modal="foldLocalStoreModal"
           @filter-chip-click="handleFilterChipClick"
           @update:selected-filter="selectedFilter = $event"
@@ -148,6 +160,7 @@ onMounted(async () => {
             :user-latitude="userCurrentLatitude"
             :user-longitude="userCurrentLongitude"
             :filtered-stores="filteredStores"
+            @current-location="handleCurrencLocationBtnClick"
           />
 
           <!-- Modals -->
@@ -162,7 +175,6 @@ onMounted(async () => {
             :is-visible="isFilterModalVisible"
             v-model:initial-region="selectedRegion"
             v-model:initial-city="selectedCity"
-            @close="handleFilterChipClick"
             @confirm="handleFilterModalConfirm"
           />
         </div>

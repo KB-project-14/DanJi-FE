@@ -17,7 +17,12 @@ interface Props {
   filteredStores: LocalStore[]
 }
 
+interface Emit {
+  (e: 'current-location'): void
+}
+
 defineProps<Props>()
+const emit = defineEmits<Emit>()
 
 const mapLevel = ref(3)
 const map = ref<kakao.maps.Map>()
@@ -112,7 +117,12 @@ const selectedStore = ref<string>()
 
     <!-- Current Location Button -->
     <button
-      @click="panTo(userLatitude, userLongitude)"
+      @click="
+        () => {
+          panTo(userLatitude, userLongitude)
+          emit('current-location')
+        }
+      "
       class="absolute bottom-[9rem] right-[1.6rem] z-[200] p-[1.5rem] bg-White-0 rounded-full shadow-lg"
       aria-label="현재 위치로 이동"
     >
