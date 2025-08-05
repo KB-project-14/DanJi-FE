@@ -78,7 +78,7 @@ const filterText = computed(() => {
       class="flex items-center bg-Gray-1 p-[1rem]"
       :class="filter.period === '직접 설정' ? 'justify-end' : 'justify-between'"
     >
-      <!-- 월 네비게이션 (왼쪽) - 직접 설정이 아닐 때만 표시 -->
+      <!-- 월 네비게이션 (왼쪽)  -->
       <div v-if="filter.period !== '직접 설정'" class="flex items-center gap-3">
         <button class="p-1 rounded-full" @click="changeMonth('prev')">
           <ChevronLeft class="w-[1.6rem] h-[1.6rem] text-Gray-6" />

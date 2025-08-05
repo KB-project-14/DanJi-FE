@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { Menu } from 'lucide-vue-next'
 
-// 부모에서 bgColorClass를 무조건 내려주므로 기본값만 설정
 const props = withDefaults(
   defineProps<{
-    name: string
+    name: string | null
     balance: number
     bgColorClass: string
     showMenu?: boolean
