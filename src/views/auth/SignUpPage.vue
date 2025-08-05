@@ -49,17 +49,17 @@ function onNext(): void {
           <label class="text-[16px] font-semibold text-black mb-[-30px] mt-[10px] ml-[5px]">
             이름
           </label>
-          <DanjiInput v-model="name" placeholder="이름을 입력해주세요." />
+          <danji-input v-model="name" placeholder="이름을 입력해주세요." />
 
           <label class="text-[16px] font-semibold text-black mb-[-30px] mt-[10px] ml-[5px]">
             아이디
           </label>
-          <DanjiInput v-model="username" placeholder="아이디를 입력해주세요." />
+          <danji-input v-model="username" placeholder="아이디를 입력해주세요." />
 
           <label class="text-[16px] font-semibold text-black mb-[-30px] mt-[10px] ml-[5px]">
             비밀번호
           </label>
-          <DanjiInput v-model="password" type="password" placeholder="비밀번호를 입력해주세요." />
+          <danji-input v-model="password" type="password" placeholder="비밀번호를 입력해주세요." />
         </div>
 
         <!-- 버튼 -->

@@ -26,10 +26,9 @@ async function onLogin() {
     }
 
     const response: LoginResponse = await login(loginData)
-    const { accessToken, refreshToken } = response
+    const { accessToken } = response
 
     localStorage.setItem('ACCESS_TOKEN', accessToken)
-    localStorage.setItem('REFRESH_TOKEN', refreshToken)
 
     router.push('/home')
   } catch (err: unknown) {
@@ -99,7 +98,7 @@ async function onLogin() {
           <!-- 회원가입 링크 -->
           <router-link
             to="/signup"
-            class="flex items-center justify-end text-[13px] text-[#c7c7c7] mt-[4px] mb-[-20px] mr-[10px]"
+            class="flex items-center justify-end text-[1.3rem] text-[#c7c7c7] mt-[0.4rem] mb-[-2rem] mr-[1rem]"
           >
             단지의 첫 지갑을 만들어볼까요?
             <span class="mx-[4px]"></span>

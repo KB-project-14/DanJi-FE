@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { post } from '@/api/api'
 import type {
   LoginRequest,
   LoginResponse,
@@ -8,25 +8,20 @@ import type {
   SetPinResponse,
 } from '@/types/auth'
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-  withCredentials: true,
-})
-
 // 로그인
 export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
-  const { data } = await api.post<LoginResponse>('/api/auth/login', payload)
+  const { data } = await post<LoginResponse>('/api/auth/login', payload)
   return data
 }
 
 // 회원가입
 export const signUp = async (payload: SignUpRequest): Promise<SignUpResponse> => {
-  const { data } = await api.post<SignUpResponse>('/api/members', payload)
+  const { data } = await post<SignUpResponse>('/api/auth/signup', payload)
   return data
 }
 
 // PIN 설정
 export const setPin = async (payload: SetPinRequest): Promise<SetPinResponse> => {
-  const { data } = await api.post<SetPinResponse>('/api/auth/pin', payload)
+  const { data } = await post<SetPinResponse>('/api/auth/pin', payload)
   return data
 }
