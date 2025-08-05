@@ -34,6 +34,7 @@
     "pinia": "^3.0.3",
     "qrcode.vue": "^3.6.0",
     "swiper": "^11.2.10",
+    "tailwind-scrollbar-hide": "^4.0.0",
     "vue": "^3.5.17",
     "vue-datepicker-next": "^1.0.3",
     "vue-router": "^4.5.1",
