@@ -1,5 +1,3 @@
-export type BadgeCategoryType = '지역' | '스페셜'
-
 export type BadgeType = 'NORMAL' | 'SPECIAL'
 
 export type Badge = {
