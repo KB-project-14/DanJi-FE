@@ -11,6 +11,7 @@ import useGetWalletList from '@/composables/queries/wallet/getWalletList'
 import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
 import type { FilterType } from '@/types/wallet/FilterType'
 import type { Transaction, WalletTransactionParams } from '@/types/transaction/TransactionType'
+import { ShowerHeadIcon } from 'lucide-vue-next'
 
 // 라우트에서 카드 ID
 const route = useRoute()
@@ -121,10 +122,11 @@ const handleFilterUpdate = (newFilter: FilterType) => {
 
 <template>
   <Layout
-    :header-type="'basic'"
+    :header-type="'setting'"
     :header-title="cardInfo?.localCurrencyName || '카드 상세'"
     :is-bottom-nav="false"
-    :showLeftIcon="true"
+    :show-left-icon="true"
+    :show-right-icon="true"
   >
     <template #content>
       <!-- 카드 잔액 / 혜택 -->
