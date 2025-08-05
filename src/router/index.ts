@@ -94,7 +94,7 @@ const routes = [
     component: ExchangeCompletePage,
   },
   {
-    path: '/wallet/card/create/:region/:city',
+    path: '/wallet/card/create/:id',
     name: 'LocalCardCreateDetail',
     component: LocalCardCreateDetailPage,
   },
