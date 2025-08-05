@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { Menu } from 'lucide-vue-next'
 
-defineProps<{
-  name: string
-  balance: number
-  bgColorClass?: string
-  showMenu?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    name: string | null
+    balance: number
+    bgColorClass: string
+    showMenu?: boolean
+  }>(),
+  {
+    showMenu: false,
+  },
+)
 
 const emit = defineEmits<{
   (e: 'toggle-drag'): void
@@ -16,18 +21,17 @@ const emit = defineEmits<{
 <template>
   <div
     class="flex items-center justify-between px-[1.5rem] py-[1.4rem] rounded-xl shadow-sm"
-    :class="bgColorClass"
+    :class="props.bgColorClass"
   >
     <!-- 지역화폐카드 이름 -->
-    <div class="Body00 text-Black2">{{ name }}</div>
+    <div class="Body00 text-Black2">{{ props.name }}</div>
 
-    <!-- 지역화폐카드 잔액 -->
-    <div class="Head02 text-Black2">잔액 {{ balance.toLocaleString() }}원</div>
+    <!-- 지역화폐카드 잔액 + 햄버거 -->
 
-    <!-- 햄버거 (순서변경) -->
-    <div class="text-Black2 w-[4rem] flex justify-end">
+    <div class="flex items-center gap-2 text-Black2">
+      <div class="Body00">{{ (props.balance ?? 0).toLocaleString() }}원</div>
       <Menu
-        v-if="showMenu"
+        v-if="props.showMenu"
         class="drag-handle cursor-grab w-[2rem] h-[2rem]"
         @click.stop="emit('toggle-drag')"
       />

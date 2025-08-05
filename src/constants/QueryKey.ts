@@ -20,6 +20,14 @@ export const PAY_KEYS = {
   all: ['pay'] as const,
 }
 
+// 메인 페이지 쿼리 키
+export const WALLET_KEYS = {
+  all: ['wallets'] as const,
+  list: (type: 'CASH' | 'LOCAL') => [...WALLET_KEYS.all, 'list', type] as const,
+  detail: (walletId: string) => [...WALLET_KEYS.all, 'detail', walletId] as const,
+  transactions: (walletId: string) => [...WALLET_KEYS.all, 'transactions', walletId] as const,
+}
+
 //지역, 지역화폐 관련 쿼리 키
 export const LOCAL_KEYS = {
   all: ['locals'] as const,
