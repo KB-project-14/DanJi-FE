@@ -14,8 +14,10 @@ export const getWalletList = async (
     params: { walletType },
   })
 
-  return response.data.data ?? []
+  // walletType 필터링
+  return (response.data?.data ?? []).filter((w) => w.walletType === walletType)
 }
+
 const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
   const { data } = useQuery<WalletResponseDtoType[]>({
     queryKey: WALLET_KEYS.list(walletType),

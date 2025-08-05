@@ -1,23 +1,31 @@
 import { useQuery } from '@tanstack/vue-query'
-import axios from 'axios'
 import { computed, unref, type MaybeRef, type ComputedRef } from 'vue'
-import type { WalletTransactionParams } from '@/types/transaction/TransactionType'
+import { get } from '@/api/api'
+import type { AxiosResponse } from 'axios'
+import type { ApiResponse } from '@/types/wallet/ApiResponse'
+import type { WalletTransactionParams, Transaction } from '@/types/transaction/TransactionType'
 
-// 토큰 값 넣어주세요
-// const ACCESS_TOKEN =
-
-export const getWalletTransaction = async (walletId: string, params: WalletTransactionParams) => {
-  const response = await axios.get(`/api/wallets/${walletId}/transactions`, {
-    params,
-    headers: {
-      // 위에 ACCESS_TOKEN 넣고 주석 해제
-      // Authorization: ACCESS_TOKEN,
+/**
+ * 특정 지갑의 거래내역 조회
+ */
+export const getWalletTransaction = async (
+  walletId: string,
+  params: WalletTransactionParams,
+): Promise<Transaction[]> => {
+  // get 함수는 ApiResponse<T> 반환하므로 data.data 접근
+  const response: AxiosResponse<ApiResponse<Transaction[]>> = await get(
+    `/api/wallets/${walletId}/transactions`,
+    {
+      params,
     },
-  })
+  )
 
-  return response.data.data
+  return response.data?.data ?? []
 }
 
+/**
+ * Vue Query 훅
+ */
 export const useGetWalletTransaction = (
   walletId: string,
   params: MaybeRef<WalletTransactionParams> | ComputedRef<WalletTransactionParams>,
@@ -39,7 +47,8 @@ export const useGetWalletTransaction = (
   })
 
   return {
-    data: computed(() => query.data.value ?? null),
+    // 항상 배열로 반환되게 처리
+    data: computed(() => query.data.value ?? []),
     isLoading: query.isLoading,
     error: query.error,
   }
