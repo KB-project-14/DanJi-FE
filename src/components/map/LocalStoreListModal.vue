@@ -131,18 +131,20 @@ watch(() => props.isModalFold, resetToInitialPosition)
     <!-- 헤더 -->
     <div class="flex justify-between items-center mx-[2rem]">
       <span class="Head02 text-Black-1">가맹점 리스트</span>
-      <span class="Body01 text-Gray-4">{{ props.isModalFold ? '내 위치' : '지도 위치' }} 기준</span>
+      <span class="Body01 text-Gray-4">{{ isModalFold ? '내 위치' : '지도 위치' }} 기준</span>
     </div>
 
     <hr class="mt-[1.4rem] border-t border-Gray-0" />
 
     <!-- 리스트 -->
-    <div class="overflow-y-auto" :style="{ maxHeight: 'calc(90vh - 8rem)' }">
+    <div class="overflow-y-auto scrollbar-hide" :style="{ maxHeight: 'calc(90vh - 8rem)' }">
       <local-store-item
         v-for="localStore in localStoreList"
-        :key="localStore.id"
+        :key="localStore.availableMerchantId"
         :local-store="localStore"
       />
+
+      <div class="h-[15rem]"></div>
     </div>
   </div>
 </template>
