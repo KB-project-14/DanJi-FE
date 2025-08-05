@@ -7,13 +7,11 @@ import { WALLET_KEYS } from '@/constants/QueryKey'
 export const getWalletList = async (
   walletType: 'CASH' | 'LOCAL',
 ): Promise<WalletResponseDtoType[]> => {
-  // get은 ApiResponse<WalletResponseDtoType[]> 반환
   const response = await get<WalletResponseDtoType[]>('/api/wallets', {
     params: { walletType },
   })
 
-  // response.data가 배열일 때만 필터링
-  const wallets = Array.isArray(response.data) ? response.data : []
+  const wallets = response.data.data ?? []
 
   return wallets.filter((w) => w.walletType === walletType)
 }
