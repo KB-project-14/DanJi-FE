@@ -1,21 +1,16 @@
 <script setup lang="ts">
-interface SpecialBadgeProps {
-  badges: Array<{
-    id: number
-    name: string
-    images: string
-  }>
-}
+import { useBadgeCollection } from '@/composables/badge/useBadgeCollection'
 
-const props = defineProps<SpecialBadgeProps>()
+const { currentBadges, handleBadgeClick } = useBadgeCollection()
 </script>
 <template>
   <!-- 뱃지 리스트 아이템 -->
   <div class="flex w-full h-full justify-center items-start flex-wrap gap-[1.3rem]">
     <div
-      v-for="badge in props.badges"
+      v-for="badge in currentBadges"
       :key="badge.id"
       class="flex flex-col justify-center items-center"
+      @click="handleBadgeClick(badge)"
     >
       <img
         :key="badge.id"
