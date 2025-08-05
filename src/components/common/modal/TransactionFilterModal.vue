@@ -15,7 +15,7 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-// 로컬 상태 (모달 내에서만 사용)
+// 로컬 상태 - 모달 내에서만 사용
 const period = ref<'이번달' | '지난달' | '직접 설정'>(props.modelValue.period as any)
 const type = ref(props.modelValue.type)
 const order = ref(props.modelValue.order)
@@ -34,7 +34,7 @@ const selectPeriod = (label: '이번달' | '지난달' | '직접 설정') => {
 
   if (label === '이번달') {
     startDate.value = startOfMonth(today)
-    endDate.value = today // 오늘까지만
+    endDate.value = today
   } else if (label === '지난달') {
     const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
     startDate.value = startOfMonth(lastMonth)
@@ -84,10 +84,6 @@ const confirmFilter = () => {
     startDate: startDate.value,
     endDate: endDate.value,
   }
-
-  // 디버깅용 로그
-  console.log('필터 확인:', filterValue)
-
   emit('update:modelValue', filterValue)
   emit('close')
 }

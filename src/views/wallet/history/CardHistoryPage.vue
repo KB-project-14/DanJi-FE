@@ -10,7 +10,7 @@ import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 import useGetWalletList from '@/composables/queries/wallet/getWalletList'
 import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
 import type { FilterType } from '@/types/wallet/FilterType'
-import type { Transaction } from '@/types/transaction/TransactionType'
+import type { Transaction, WalletTransactionParams } from '@/types/transaction/TransactionType'
 
 // 라우트에서 카드 ID
 const route = useRoute()
@@ -31,20 +31,27 @@ const filter = ref<FilterType>({
 })
 
 // API 쿼리 파라미터
-const queryParams = computed(
-  (): WalletTransactionParams => ({
-    startDate: filter.value.startDate ? format(filter.value.startDate, 'yyyy-MM-dd') : '',
-    lastDate: filter.value.endDate ? format(filter.value.endDate, 'yyyy-MM-dd') : '',
-    direction:
-      filter.value.type === '입금만'
-        ? 'INCOME'
-        : filter.value.type === '출금만'
-          ? 'EXPENSE'
-          : undefined,
+const queryParams = computed((): WalletTransactionParams => {
+  const params: WalletTransactionParams = {
     sortOrder: filter.value.order === '최신순' ? 'DESC' : 'ASC',
-  }),
-)
+  }
 
+  if (filter.value.startDate) {
+    params.startDate = format(filter.value.startDate, 'yyyy-MM-dd')
+  }
+
+  if (filter.value.endDate) {
+    params.lastDate = format(filter.value.endDate, 'yyyy-MM-dd')
+  }
+
+  if (filter.value.type === '입금만') {
+    params.direction = 'INCOME'
+  } else if (filter.value.type === '출금만') {
+    params.direction = 'EXPENSE'
+  }
+
+  return params
+})
 // 거래내역 API 호출 (부모에서만 실행)
 const { data: transactionsData, isLoading } = useGetWalletTransaction(
   cardId,
@@ -53,15 +60,7 @@ const { data: transactionsData, isLoading } = useGetWalletTransaction(
 )
 
 // 디버깅용 - API 요청 파라미터 확인
-watch(
-  [queryParams, transactionsData],
-  ([params, data]) => {
-    console.log('🔍 API 요청 파라미터:', params)
-    console.log('📦 API 응답 데이터:', data)
-    console.log('📋 거래내역 개수:', data?.transactions?.length || 0)
-  },
-  { immediate: true },
-)
+watch([queryParams, transactionsData], ([params, data]) => {}, { immediate: true })
 
 // 거래내역 + 집계값 (필터링 적용)
 const transactions = computed(() => {
@@ -100,7 +99,6 @@ const transactions = computed(() => {
     )
   }
 
-  console.log('🔧 클라이언트 필터링 결과:', filtered.length, '개')
   return filtered
 })
 const aggregateCharge = computed(() => transactionsData.value?.aggregateCharge ?? 0)

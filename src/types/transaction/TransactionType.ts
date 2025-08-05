@@ -19,3 +19,10 @@ export interface TransactionResponse {
   aggregateCharge: number
   aggregateIncentive: number
 }
+
+export interface WalletTransactionParams {
+  startDate?: string
+  lastDate?: string
+  direction?: 'INCOME' | 'EXPENSE'
+  sortOrder?: 'DESC' | 'ASC'
+}

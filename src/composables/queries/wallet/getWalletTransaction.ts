@@ -1,17 +1,10 @@
 import { useQuery } from '@tanstack/vue-query'
 import axios from 'axios'
 import { computed, unref, type MaybeRef, type ComputedRef } from 'vue'
+import type { WalletTransactionParams } from '@/types/transaction/TransactionType'
 
 const ACCESS_TOKEN =
   'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAiLCJpYXQiOjE3NTQwMTE1NDMsImV4cCI6MzMyOTAwMTE1NDMsInVzZXJuYW1lIjoidGVzdGVyIiwicm9sZSI6IlJPTEVfQURNSU4ifQ.6016EI8NsaegS1Zl0y1FwbzoEBTBX5TY6hKKSgK1LtI'
-
-// 타입 정의 추가
-export interface WalletTransactionParams {
-  startDate: string
-  lastDate: string
-  direction?: 'INCOME' | 'EXPENSE'
-  sortOrder?: 'ASC' | 'DESC'
-}
 
 export const getWalletTransaction = async (walletId: string, params: WalletTransactionParams) => {
   const response = await axios.get(`/api/wallets/${walletId}/transactions`, {

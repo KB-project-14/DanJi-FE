@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { format } from 'date-fns'
-import { ChevronDown } from 'lucide-vue-next'
+import { format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns'
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 import CardHistoryItem from './CardHistoryItem.vue'
 import TransactionFilterModal from '../modal/TransactionFilterModal.vue'
 import type { FilterType } from '@/types/wallet/FilterType'
 import type { Transaction } from '@/types/transaction/TransactionType'
 
-// Props - 부모에서 데이터와 필터를 받음
 const props = defineProps<{
   walletId: string
   transactions: Transaction[] // 거래내역 데이터
@@ -21,13 +20,39 @@ const emit = defineEmits<{
   (e: 'update:filter', value: FilterType): void
 }>()
 
-// 거래내역 (props에서 받은 데이터 사용)
+// 거래내역
 const histories = computed(() => props.transactions ?? [])
 
 // 모달 상태
 const isFilterOpen = ref(false)
 const openFilter = () => (isFilterOpen.value = true)
 const closeFilter = () => (isFilterOpen.value = false)
+
+// 현재 선택된 월 (필터의 startDate 기준)
+const currentMonth = computed(() => {
+  return props.filter.startDate || new Date()
+})
+
+// 월 표시 텍스트
+const monthText = computed(() => {
+  const month = currentMonth.value
+  return `${month.getMonth() + 1}월`
+})
+
+// 월 변경 핸들러
+const changeMonth = (direction: 'prev' | 'next') => {
+  const currentDate = currentMonth.value
+  const newDate = direction === 'prev' ? subMonths(currentDate, 1) : addMonths(currentDate, 1)
+
+  const newFilter: FilterType = {
+    ...props.filter,
+    period: '이번달', // 월 변경 시 기본값으로 설정
+    startDate: startOfMonth(newDate),
+    endDate: endOfMonth(newDate),
+  }
+
+  emit('update:filter', newFilter)
+}
 
 // 필터 업데이트 핸들러
 const handleFilterUpdate = (newFilter: FilterType) => {
@@ -48,8 +73,30 @@ const filterText = computed(() => {
 
 <template>
   <div class="flex flex-col">
-    <!-- 필터 버튼 -->
-    <div class="flex items-center justify-end bg-Gray-1 p-[1rem]">
+    <!-- 상단 필터/월 선택 영역 -->
+    <div class="flex items-center justify-between bg-Gray-1 p-[1rem]">
+      <!-- 월 네비게이션 (왼쪽) -->
+      <div class="flex items-center gap-3">
+        <button
+          class="p-1 rounded-full hover:bg-Gray-2 transition-colors"
+          @click="changeMonth('prev')"
+        >
+          <ChevronLeft class="w-[1.6rem] h-[1.6rem] text-Gray-6" />
+        </button>
+
+        <span class="Head02 text-Black-2 min-w-[3rem] text-center">
+          {{ monthText }}
+        </span>
+
+        <button
+          class="p-1 rounded-full hover:bg-Gray-2 transition-colors"
+          @click="changeMonth('next')"
+        >
+          <ChevronRight class="w-[1.6rem] h-[1.6rem] text-Gray-6" />
+        </button>
+      </div>
+
+      <!-- 필터 버튼 (오른쪽) -->
       <button class="flex items-center gap-1 Body02 text-Gray-5" @click="openFilter">
         {{ filterText }}
         <ChevronDown class="w-[1.4rem] h-[1.4rem]" />
@@ -77,7 +124,7 @@ const filterText = computed(() => {
       <template v-else-if="histories.length > 0">
         <CardHistoryItem
           v-for="(history, index) in histories"
-          :key="`${history.id || index}-${history.createdAt}`"
+          :key="`transaction-${index}-${history.createdAt}`"
           :comment="history.comment"
           :amount="history.amount"
           :afterBalance="history.afterBalance"
