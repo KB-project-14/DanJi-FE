@@ -66,7 +66,7 @@ const goExchange = () => {
             @click-card="goCardHistory"
             @slide-change="currentIndex = $event"
           />
-          <NoCardSection v-else />
+          <no-card-section v-else />
         </div>
 
         <!-- 충전/환전 -->
