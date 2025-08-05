@@ -3,14 +3,48 @@ import { ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
 import { Lock, User, ChevronRight } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
+import { login } from '@/api/auth'
+import type { LoginRequest, LoginResponse } from '@/types/auth'
+import axios from 'axios'
 
+const router = useRouter()
 const username = ref('')
 const password = ref('')
+const isLoading = ref(false)
+const errorMessage = ref('')
 
-function onLogin() {
-  console.log('로그인 시도:', username.value, password.value)
+async function onLogin() {
+  if (isLoading.value) return
+  isLoading.value = true
+  errorMessage.value = ''
+
+  try {
+    const loginData: LoginRequest = {
+      username: username.value,
+      password: password.value,
+    }
+
+    const response: LoginResponse = await login(loginData)
+    const { accessToken } = response
+
+    localStorage.setItem('ACCESS_TOKEN', accessToken)
+
+    router.push('/home')
+  } catch (err: unknown) {
+    console.error('로그인 오류:', err)
+
+    if (axios.isAxiosError(err)) {
+      errorMessage.value = err.response?.data?.message || '로그인에 실패했습니다.'
+    } else if (err instanceof Error) {
+      errorMessage.value = err.message
+    } else {
+      errorMessage.value = '알 수 없는 오류가 발생했습니다.'
+    }
+  }
 }
 </script>
+
 <template>
   <Layout header-type="basic" :is-bottom-nav="false" :show-left-icon="false">
     <template #content>
@@ -64,12 +98,12 @@ function onLogin() {
           <!-- 회원가입 링크 -->
           <router-link
             to="/signup"
-            class="flex items-center justify-end gap-[-10px] text-[13px] text-[#c7c7c7] mt-[4px] mb-[-20px] mr-[10px] ml-[-10px]"
+            class="flex items-center justify-end text-[1.3rem] text-[#c7c7c7] mt-[0.4rem] mb-[-2rem] mr-[1rem]"
           >
             단지의 첫 지갑을 만들어볼까요?
-            <span class="w-[6px] inline-block"></span>
+            <span class="mx-[4px]"></span>
             <strong class="font-normal">회원가입</strong>
-            <ChevronRight class="w-[14px] h-[14px] stroke-[2.5] text-[#c7c7c7] translate-x-[8px]" />
+            <ChevronRight class="w-[14px] h-[14px] stroke-[2.5] text-[#c7c7c7]" />
           </router-link>
         </div>
 
