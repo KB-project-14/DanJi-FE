@@ -53,3 +53,8 @@ export const PAYMENT_PIN_KEYS = {
   all: ['payment-pin'] as const,
   verify: () => [...PAYMENT_PIN_KEYS.all, 'verify'] as const,
 }
+
+// 충전, 환전, 환불 쿼리 키
+export const TRANSACTION_TRANSFER_KEYS = {
+  all: ['transfer'] as const,
+}
