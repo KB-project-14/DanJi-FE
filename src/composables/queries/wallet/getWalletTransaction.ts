@@ -20,7 +20,7 @@ export const getWalletTransaction = async (
     },
   )
 
-  return response.data?.data ?? []
+  return response.data.data ?? { transactions: [], aggregateCharge: 0, aggregateIncentive: 0 }
 }
 
 /**
