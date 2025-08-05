@@ -80,7 +80,7 @@ const selectedStore = ref<string>()
       <!-- Store Markers -->
       <kakao-map-custom-overlay
         v-for="store in filteredStores"
-        :key="store.localCurrencyId"
+        :key="store.name"
         :lat="store.latitude"
         :lng="store.longitude"
         :title="store.name"

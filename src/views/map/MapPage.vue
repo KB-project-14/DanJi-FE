@@ -167,7 +167,7 @@ onMounted(async () => {
           <local-store-list-modal
             class="absolute bottom-[7rem] z-[300]"
             v-model:is-modal-fold="foldLocalStoreModal"
-            :local-store-list="localStores"
+            :local-store-list="filteredStores"
           />
 
           <local-filter-modal
