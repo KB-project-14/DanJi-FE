@@ -2,12 +2,10 @@ import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
 import axios from 'axios'
 import type { AxiosResponse } from 'axios'
+
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 import type { ApiResponse } from '@/types/wallet/ApiResponse'
 import { WALLET_KEYS } from '@/constants/QueryKey'
-
-// 토큰 값 넣어주세요
-// const ACCESS_TOKEN =
 
 export const getWalletList = async (
   walletType: 'CASH' | 'LOCAL',
@@ -16,13 +14,7 @@ export const getWalletList = async (
     '/api/wallets',
     {
       params: {
-        // memberId 값 넣고 주석 해제
-        // memberId: '',
         walletType,
-      },
-      headers: {
-        // 위에 ACCESS_TOKEN 넣고 주석 해제
-        // Authorization: ACCESS_TOKEN,
       },
     },
   )
