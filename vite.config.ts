@@ -23,7 +23,7 @@ export default defineConfig({
       '/api': {
         target: 'https://danji.cloud',
         changeOrigin: true,
-        secure: false,
+        secure: process.env.NODE_ENV !== 'development' ? true : false,
       },
     },
   },
