@@ -2,21 +2,19 @@ import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
 import { get } from '@/api/api'
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
-import type { ApiResponse } from '@/types/wallet/ApiResponse'
 import { WALLET_KEYS } from '@/constants/QueryKey'
 
 export const getWalletList = async (
   walletType: 'CASH' | 'LOCAL',
 ): Promise<WalletResponseDtoType[]> => {
-  // get 호출 시 ApiResponse 구조가 바로 반환됨
-  const response = await get<ApiResponse<WalletResponseDtoType[]>>('/api/wallets', {
+  // get은 ApiResponse<WalletResponseDtoType[]> 반환
+  const response = await get<WalletResponseDtoType[]>('/api/wallets', {
     params: { walletType },
   })
 
-  // ApiResponse의 data 필드 접근
-  const wallets = response.data ?? []
+  // response.data가 배열일 때만 필터링
+  const wallets = Array.isArray(response.data) ? response.data : []
 
-  // 필터링 후 반환
   return wallets.filter((w) => w.walletType === walletType)
 }
 
