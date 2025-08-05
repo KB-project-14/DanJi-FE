@@ -26,3 +26,26 @@ export interface WalletTransactionParams {
   direction?: 'INCOME' | 'EXPENSE'
   sortOrder?: 'DESC' | 'ASC'
 }
+
+export interface TransferRequestDTO {
+  amount: number
+  fromWalletId: string
+  toWalletId: string
+  transactionLogging: boolean
+  type: TransactionType
+}
+
+export interface TransferResponseDTO {
+  transactionId: string
+  ownerWalletId: string
+  fromWalletId: string
+  toWalletId: string
+  amount: number
+  beforeBalance: number
+  afterBalance: number
+  comment: string
+  direction: TransactionDirection
+  type: TransactionType
+  createdAt: string
+  updatedAt: string
+}
