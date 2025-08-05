@@ -147,9 +147,15 @@ const handleFilterUpdate = (newFilter: FilterType) => {
           </div>
 
           <div
-            class="relative w-[10rem] aspect-[1000/1586] rounded-xl bg-cover bg-center border border-Gray-3"
-            :style="{ backgroundImage: `url('/images/sample-card.png')` }"
-          ></div>
+            class="relative w-[10rem] aspect-[1000/1586] rounded-xl border border-Gray-2 bg-white overflow-hidden"
+          >
+            <img
+              v-if="cardInfo?.backgroundImageUrl"
+              :src="`https://danji.cloud${cardInfo.backgroundImageUrl}`"
+              alt="카드 이미지"
+              class="absolute top-1/2 left-1/2 object-cover transform -translate-x-1/2 -translate-y-1/2 rotate-90 scale-[1.58]"
+            />
+          </div>
         </div>
 
         <!-- 박스 -->
