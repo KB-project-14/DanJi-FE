@@ -16,17 +16,17 @@ export const getWalletList = async (
 
   return response.data.data ?? []
 }
-
 const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
   const { data } = useQuery<WalletResponseDtoType[]>({
     queryKey: WALLET_KEYS.list(walletType),
     queryFn: () => getWalletList(walletType),
-    staleTime: 1000 * 60, // 1분 캐시
+    staleTime: 1000 * 60,
     refetchOnMount: true,
     refetchOnWindowFocus: false,
   })
 
-  return computed(() => data.value ?? [])
+  // data.value가 undefined일 때도 [] 반환
+  return computed(() => (data.value ?? []) as WalletResponseDtoType[])
 }
 
 export default useGetWalletList
