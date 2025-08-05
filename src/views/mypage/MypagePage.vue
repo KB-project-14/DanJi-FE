@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import profile from '@/assets/icons/profile.svg'
 import rightArrow from '@/assets/icons/right-arrow.svg'
+import useGetMember from '@/composables/queries/member/useGetMember'
 
-// 사용자 정보 (추후 API나 store에서 가져올 데이터)
-const user = ref({
-  name: '김단지',
-  id: '123456',
-})
+const member = useGetMember();
 
 // 메뉴 아이템들을 배열로 관리
 const menuItems = [
@@ -38,8 +34,8 @@ const menuItems = [
             :src="profile"
             alt="마이페이지-프로필-사진"
           />
-          <span class="Head01 text-Black-2">{{ user.name }}님</span>
-          <span class="Body02 text-Black-0/50">ID{{ user.id }}</span>
+          <span class="Head01 text-Black-2">{{ member?.name }} 님</span>
+          <span class="Body02 text-Black-0/50">ID : {{ member?.username }}</span>
         </section>
 
         <!-- 메뉴 섹션 -->
