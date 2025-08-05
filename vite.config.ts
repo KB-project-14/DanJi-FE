@@ -18,9 +18,5 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
-<<<<<<< Updated upstream
-=======
-    // 서버 주소 연동
->>>>>>> Stashed changes
   },
 })
