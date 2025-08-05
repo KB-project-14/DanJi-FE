@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { KakaoMap, KakaoMapMarker, type KakaoMapMarkerImage } from 'vue3-kakao-maps'
+import {
+  KakaoMap,
+  KakaoMapMarker,
+  KakaoMapCustomOverlay,
+  type KakaoMapMarkerImage,
+} from 'vue3-kakao-maps'
 import { Plus, Minus, Crosshair } from 'lucide-vue-next'
 import currentLocationIcon from '@/assets/icons/current-location-marker.svg'
 import type { LocalStore } from '@/types/types'
+import LocalStoreMarker from './LocalStoreMarker.vue'
 
 interface Props {
   userLatitude: number
@@ -42,6 +48,8 @@ const zoomIn = () => {
 const zoomOut = () => {
   mapLevel.value = Math.min(MAX_ZOOM_LEVEL, mapLevel.value + 1)
 }
+
+const selectedStore = ref<string>()
 </script>
 
 <template>
@@ -65,13 +73,20 @@ const zoomOut = () => {
       />
 
       <!-- Store Markers -->
-      <kakao-map-marker
+      <kakao-map-custom-overlay
         v-for="store in filteredStores"
-        :key="store.id"
-        :lat="parseFloat(store.latitude)"
-        :lng="parseFloat(store.longitude)"
+        :key="store.localCurrencyId"
+        :lat="store.latitude"
+        :lng="store.longitude"
         :title="store.name"
-      />
+      >
+        <local-store-marker
+          :local-currency-id="store.localCurrencyId"
+          :is-selected="store.name === selectedStore"
+          :store-name="store.name"
+          @click="selectedStore = store.name"
+        />
+      </kakao-map-custom-overlay>
     </kakao-map>
 
     <!-- Map Controls -->
