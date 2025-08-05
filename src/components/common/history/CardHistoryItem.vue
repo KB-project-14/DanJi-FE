@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
 
-defineProps<{
+const props = defineProps<{
   comment: string
   amount: number
   afterBalance: number
@@ -33,9 +33,9 @@ const formatDateTime = (dateString: string) => {
   <div class="flex flex-col py-[1.6rem] border-b border-Gray-1">
     <!-- 상호명 + 결제 금액 -->
     <div class="flex justify-between pb-[0.5rem] items-center">
-      <span class="Head02 text-Black2">{{ comment }}</span>
-      <span :class="['Head02', getAmountColor(direction)]">
-        {{ getDisplayText(direction, type) }} {{ (amount ?? 0).toLocaleString() }} 원
+      <span class="Head02 text-Black-2">{{ props.comment }}</span>
+      <span :class="['Head02', getAmountColor(props.direction)]">
+        {{ getDisplayText(props.direction, props.type) }} {{ props.amount.toLocaleString() }} 원
       </span>
     </div>
 

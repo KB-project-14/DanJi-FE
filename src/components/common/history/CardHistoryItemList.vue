@@ -1,127 +1,82 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { startOfMonth, endOfMonth, subMonths, addMonths, format } from 'date-fns'
-import { ChevronRight, ChevronLeft, ChevronDown } from 'lucide-vue-next'
+import { format } from 'date-fns'
+import { ChevronDown } from 'lucide-vue-next'
 
 import CardHistoryItem from './CardHistoryItem.vue'
 import TransactionFilterModal from '../modal/TransactionFilterModal.vue'
+import type { FilterType } from '@/types/wallet/FilterType'
 
+// Props - 부모에서 데이터와 필터를 받음
 const props = defineProps<{
-  histories: {
-    comment: string
-    amount: number
-    afterBalance: number
-    direction: 'INCOME' | 'EXPENSE'
-    type: 'CHARGE' | 'REFUND' | 'CONVERT' | 'PAYMENT'
-    createdAt: string
-  }[]
+  walletId: string
+  transactions: any[] // 거래내역 데이터
+  filter: FilterType // 현재 필터 상태
+  isLoading?: boolean
 }>()
 
-// 필터 상태
-const appliedFilter = ref({
-  period: '이번달',
-  type: '전체',
-  order: '최신순',
-  startDate: null as Date | null,
-  endDate: null as Date | null,
-})
+// Emits
+const emit = defineEmits<{
+  (e: 'update:filter', value: FilterType): void
+}>()
 
-// 월 이동 상태
-const currentMonthDate = ref(new Date())
+// 거래내역 (props에서 받은 데이터 사용)
+const histories = computed(() => props.transactions ?? [])
 
-// 월 이동 함수
-const prevMonth = () => (currentMonthDate.value = subMonths(currentMonthDate.value, 1))
-const nextMonth = () => (currentMonthDate.value = addMonths(currentMonthDate.value, 1))
-
-// 월 표기
-const displayMonth = computed(() => format(currentMonthDate.value, 'M월'))
-
-// 필터 모달
+// 모달 상태
 const isFilterOpen = ref(false)
 const openFilter = () => (isFilterOpen.value = true)
 const closeFilter = () => (isFilterOpen.value = false)
-const applyFilter = (filter: typeof appliedFilter.value) => {
-  appliedFilter.value = filter
 
-  if (filter.period === '이번달') {
-    currentMonthDate.value = new Date()
-  } else if (filter.period === '지난달') {
-    currentMonthDate.value = subMonths(new Date(), 1)
-  }
+// 필터 업데이트 핸들러
+const handleFilterUpdate = (newFilter: FilterType) => {
+  emit('update:filter', newFilter)
 }
 
-// 필터링된 데이터
-const filteredHistories = computed(() => {
-  let list = [...props.histories]
-
-  const start = startOfMonth(currentMonthDate.value).getTime()
-  const end = endOfMonth(currentMonthDate.value).getTime()
-
-  list = list.filter((h) => {
-    const historyDate = new Date(h.createdAt).getTime()
-    return historyDate >= start && historyDate <= end
-  })
-
-  if (appliedFilter.value.type === '입금만') {
-    list = list.filter((h) => h.direction === 'INCOME')
-  } else if (appliedFilter.value.type === '출금만') {
-    list = list.filter((h) => h.direction === 'EXPENSE')
-  }
-
-  list.sort((a, b) => {
-    const dateA = new Date(a.createdAt).getTime()
-    const dateB = new Date(b.createdAt).getTime()
-    return appliedFilter.value.order === '최신순' ? dateB - dateA : dateA - dateB
-  })
-
-  return list
-})
-
 // 날짜 포맷
-const formatDate = (date: Date) => format(date, 'yyyy.MM.dd')
+const formatDate = (date: Date | null) => (date ? format(date, 'yyyy.MM.dd') : '')
+
+// 필터 텍스트 표시
+const filterText = computed(() => {
+  if (props.filter.period === '직접 설정' && props.filter.startDate && props.filter.endDate) {
+    return `${formatDate(props.filter.startDate)} ~ ${formatDate(props.filter.endDate)} · ${props.filter.type} · ${props.filter.order}`
+  }
+  return `${props.filter.period} · ${props.filter.type} · ${props.filter.order}`
+})
 </script>
 
 <template>
   <div class="flex flex-col">
-    <div class="flex items-center justify-between bg-Gray-1 p-[1rem]">
-      <!-- 월 이동 -->
-      <div v-if="appliedFilter.period !== '직접 설정'" class="flex items-center gap-2">
-        <button class="px-[0.2rem] text-Gray-5" @click="prevMonth"><ChevronLeft /></button>
-        <span class="Body00">{{ displayMonth }}</span>
-        <button class="px-[0.2rem] text-Gray-5" @click="nextMonth"><ChevronRight /></button>
-      </div>
-
-      <!-- 필터 버튼 -->
-      <button class="flex items-center gap-1 Body02 text-Gray-5 ml-auto" @click="openFilter">
-        <template
-          v-if="
-            appliedFilter.period === '직접 설정' && appliedFilter.startDate && appliedFilter.endDate
-          "
-        >
-          {{ formatDate(appliedFilter.startDate) }} ~ {{ formatDate(appliedFilter.endDate) }}
-          {{ appliedFilter.type }} · {{ appliedFilter.order }}
-        </template>
-        <template v-else>
-          {{ appliedFilter.period }} · {{ appliedFilter.type }} · {{ appliedFilter.order }}
-        </template>
+    <!-- 필터 버튼 -->
+    <div class="flex items-center justify-end bg-Gray-1 p-[1rem]">
+      <button class="flex items-center gap-1 Body02 text-Gray-5" @click="openFilter">
+        {{ filterText }}
         <ChevronDown class="w-[1.4rem] h-[1.4rem]" />
       </button>
     </div>
 
     <!-- 필터 모달 -->
-    <transaction-filter-modal
+    <TransactionFilterModal
       v-if="isFilterOpen"
-      :initial-filter="appliedFilter"
+      :modelValue="filter"
+      @update:modelValue="handleFilterUpdate"
       @close="closeFilter"
-      @confirm="applyFilter"
     />
 
     <!-- 거래 내역 리스트 -->
     <div class="p-[1rem] pl-[2rem] pr-[2rem]">
-      <template v-if="filteredHistories.length > 0">
-        <card-history-item
-          v-for="(history, index) in filteredHistories"
-          :key="index"
+      <!-- 로딩 상태 -->
+      <template v-if="isLoading">
+        <div class="flex flex-col items-center justify-center py-8 text-Gray-5 Body02">
+          <p>로딩 중...</p>
+        </div>
+      </template>
+
+      <!-- 거래 내역 있을 때 -->
+      <template v-else-if="histories.length > 0">
+        <CardHistoryItem
+          v-for="(history, index) in histories"
+          :key="`${history.id || index}-${history.createdAt}`"
           :comment="history.comment"
           :amount="history.amount"
           :afterBalance="history.afterBalance"
@@ -130,6 +85,8 @@ const formatDate = (date: Date) => format(date, 'yyyy.MM.dd')
           :createdAt="history.createdAt"
         />
       </template>
+
+      <!-- 거래 내역 없을 때 -->
       <template v-else>
         <div class="flex flex-col items-center justify-center py-8 text-Gray-5 Body02">
           <p>이용 내역이 없습니다.</p>

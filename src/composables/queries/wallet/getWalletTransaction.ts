@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/vue-query'
 import axios from 'axios'
-import { computed } from 'vue'
+import { computed, unref, type MaybeRef } from 'vue'
 
 const ACCESS_TOKEN =
   'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAiLCJpYXQiOjE3NTQwMTE1NDMsImV4cCI6MzMyOTAwMTE1NDMsInVzZXJuYW1lIjoidGVzdGVyIiwicm9sZSI6IlJPTEVfQURNSU4ifQ.6016EI8NsaegS1Zl0y1FwbzoEBTBX5TY6hKKSgK1LtI'
@@ -14,35 +14,47 @@ export const getWalletTransaction = async (
     sortOrder?: 'ASC' | 'DESC'
   },
 ) => {
+  console.log('[API 호출]', `/api/wallets/${walletId}/transactions`, params)
+
   const response = await axios.get(`/api/wallets/${walletId}/transactions`, {
     params,
     headers: {
       Authorization: ACCESS_TOKEN,
     },
   })
+
+  console.log('[API 응답]', response.data)
   return response.data.data
-  // aggregateCharge = 내가 충전한 금액
-  // aggregateIncentive = 내가 받은 혜택
-  // transactions = 거래 내역
 }
 
 export const useGetWalletTransaction = (
   walletId: string,
-  params: {
+  params: MaybeRef<{
     startDate: string
     lastDate: string
     direction?: 'INCOME' | 'EXPENSE'
     sortOrder?: 'ASC' | 'DESC'
-  },
+  }>,
+  enabled?: MaybeRef<boolean>,
 ) => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['wallet-transactions', walletId, params],
-    queryFn: () => getWalletTransaction(walletId, params),
+  const resolvedParams = computed(() => unref(params))
+
+  const query = useQuery({
+    queryKey: [
+      'wallet-transactions',
+      walletId,
+      resolvedParams.value.startDate,
+      resolvedParams.value.lastDate,
+      resolvedParams.value.direction,
+      resolvedParams.value.sortOrder,
+    ],
+    queryFn: () => getWalletTransaction(walletId, resolvedParams.value),
+    enabled: enabled ? unref(enabled) : true,
   })
 
   return {
-    data: computed(() => data.value ?? null),
-    isLoading: computed(() => isLoading.value),
-    error: computed(() => error.value),
+    data: computed(() => query.data.value ?? null),
+    isLoading: query.isLoading,
+    error: query.error,
   }
 }

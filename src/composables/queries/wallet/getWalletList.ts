@@ -32,18 +32,13 @@ export const getWalletList = async (
 }
 
 const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
-  const { data, isLoading, isError, error } = useQuery<WalletResponseDtoType[]>({
+  const { data } = useQuery<WalletResponseDtoType[]>({
     queryKey: WALLET_KEYS.list(walletType),
     queryFn: () => getWalletList(walletType),
     // 목 데이터 사용 중이라 최신내용 필요하여 1분 설정
     // staleTime: 1000 * 60,
   })
 
-  return {
-    data: computed(() => data.value ?? []),
-    isLoading,
-    isError,
-    error,
-  }
+  return computed(() => data.value ?? [])
 }
 export default useGetWalletList

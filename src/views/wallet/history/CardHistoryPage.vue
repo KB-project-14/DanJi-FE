@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { startOfMonth, endOfMonth, format } from 'date-fns'
+import { startOfMonth, format } from 'date-fns'
 
 import Layout from '@/components/layout/Layout.vue'
 import CardHistoryItemList from '@/components/common/history/CardHistoryItemList.vue'
 import Tooltip from '@/components/common/tooltip/Tooltip.vue'
-import TransactionFilterModal from '@/components/common/modal/TransactionFilterModal.vue'
 
 import useGetWalletList from '@/composables/queries/wallet/getWalletList'
 import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
@@ -20,38 +19,20 @@ const cardId = route.params.id as string
 const localWallets = useGetWalletList('LOCAL')
 const cardInfo = computed(() => (localWallets.value ?? []).find((c) => c.walletId === cardId))
 
-// === 필터 상태 ===
+// 필터 상태 (부모에서 관리)
 const today = new Date()
-
 const filter = ref<FilterType>({
   period: '이번달',
   type: '전체',
   order: '최신순',
   startDate: startOfMonth(today),
-  endDate: endOfMonth(today),
+  endDate: today,
 })
 
-// 모달 열림 상태
-const showFilterModal = ref(false)
-const openFilterModal = () => (showFilterModal.value = true)
-const closeFilterModal = () => (showFilterModal.value = false)
-
-// 필터 확인 시 업데이트
-const handleFilterConfirm = (newFilter: FilterType) => {
-  filter.value = newFilter
-  closeFilterModal()
-}
-
-// === API 호출용 파라미터 ===
-const startDate = computed(() =>
-  format(filter.value.startDate ?? startOfMonth(today), 'yyyy-MM-dd'),
-)
-const lastDate = computed(() => format(filter.value.endDate ?? endOfMonth(today), 'yyyy-MM-dd'))
-
-// 거래내역 API 호출
-const transactionsData = useGetWalletTransaction(cardId, {
-  startDate: startDate.value,
-  lastDate: lastDate.value,
+// API 쿼리 파라미터
+const queryParams = computed(() => ({
+  startDate: filter.value.startDate ? format(filter.value.startDate, 'yyyy-MM-dd') : '',
+  lastDate: filter.value.endDate ? format(filter.value.endDate, 'yyyy-MM-dd') : '',
   direction:
     filter.value.type === '입금만'
       ? 'INCOME'
@@ -59,7 +40,14 @@ const transactionsData = useGetWalletTransaction(cardId, {
         ? 'EXPENSE'
         : undefined,
   sortOrder: filter.value.order === '최신순' ? 'DESC' : 'ASC',
-})
+}))
+
+// 거래내역 API 호출 (부모에서만 실행)
+const { data: transactionsData, isLoading } = useGetWalletTransaction(
+  cardId,
+  queryParams,
+  computed(() => !!cardId),
+)
 
 // 거래내역 + 집계값
 const transactions = computed(() => transactionsData.value?.transactions ?? [])
@@ -72,13 +60,13 @@ const availableAmount = computed(() => {
   return Math.max(0, max - aggregateCharge.value)
 })
 
-// 박스 라벨
-const boxLabel = computed(() => {
-  if (filter.value.period === '직접 설정' && filter.value.startDate && filter.value.endDate) {
-    return '설정기간에'
-  }
-  return `${(filter.value.startDate?.getMonth() ?? today.getMonth()) + 1}월`
-})
+// 박스 라벨 (항상 이번달 기준)
+const boxLabel = `${today.getMonth() + 1}월`
+
+// 필터 업데이트 핸들러
+const handleFilterUpdate = (newFilter: FilterType) => {
+  filter.value = newFilter
+}
 </script>
 
 <template>
@@ -132,14 +120,13 @@ const boxLabel = computed(() => {
       </div>
 
       <!-- 거래 내역 리스트 -->
-      <card-history-item-list :histories="transactions" />
-
-      <!-- 필터 모달 -->
-      <transaction-filter-modal
-        v-if="showFilterModal"
-        :initial-filter="filter"
-        @confirm="handleFilterConfirm"
-        @close="closeFilterModal"
+      <CardHistoryItemList
+        v-if="cardId"
+        :walletId="cardId"
+        :transactions="transactions"
+        :filter="filter"
+        :isLoading="isLoading"
+        @update:filter="handleFilterUpdate"
       />
     </template>
   </Layout>
