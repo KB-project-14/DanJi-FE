@@ -1,6 +1,6 @@
 import { ref, computed, provide, inject, readonly } from 'vue'
 import type { InjectionKey } from 'vue'
-import type { BadgeType, Badge, BadgeCollection } from '@/types/badge'
+import type { BadgeType, Badge, BadgeCollection } from '@/types/badge/badgeTypes'
 
 const BADGE_COLLECTION_KEY: InjectionKey<BadgeCollection> = Symbol('badge-collection')
 
