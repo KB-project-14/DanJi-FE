@@ -1,0 +1,22 @@
+//가맹점 정보 타입
+export interface LocalStoreQueryParams {
+  category?: string
+  latitude?: number
+  longitude?: number
+  localCurrencyName?: string
+  name?: string
+}
+
+export interface LocalStoreResponseDTO {
+  createdAt: string
+  updatedAt: string
+  availableMerchantId: string
+  name: string
+  address: string
+  latitude: number
+  longitude: number
+  category: string
+  localCurrencyId: string
+  localCurrencyName: string
+  distance: number
+}

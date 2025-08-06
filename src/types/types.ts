@@ -46,18 +46,3 @@ export type LayoutProps =
   | ({ headerType: 'main' } & BaseLayoutProps)
   | ({ headerType: 'pay' } & PayHeaderProps & BaseLayoutProps)
   | ({ headerType: 'none' } & BaseLayoutProps)
-
-//가맹점 정보 타입
-export interface LocalStore {
-  createdAt: string
-  updatedAt: string
-  availableMerchantId: string
-  name: string
-  address: string
-  latitude: number
-  longitude: number
-  category: string
-  localCurrencyId: string
-  localCurrencyName: string
-  distance: number
-}
