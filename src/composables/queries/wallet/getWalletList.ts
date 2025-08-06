@@ -1,19 +1,21 @@
 import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
 import { get } from '@/api/api'
+import type { ApiResponse } from '@/types/types'
+
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 import { WALLET_KEYS } from '@/constants/QueryKey'
 
 export const getWalletList = async (
   walletType: 'CASH' | 'LOCAL',
 ): Promise<WalletResponseDtoType[]> => {
-  const response = await get<WalletResponseDtoType[]>('/api/wallets', {
+  const response = await get<ApiResponse<WalletResponseDtoType[]>>('/api/wallets', {
     params: { walletType },
   })
 
-  const wallets = response.data.data ?? []
-
-  return wallets.filter((w) => w.walletType === walletType)
+  return (response.data.data ?? []).filter(
+    (w) => w.walletType === walletType,
+  ) as WalletResponseDtoType[]
 }
 
 const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
