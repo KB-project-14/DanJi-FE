@@ -51,12 +51,18 @@ onMounted(() => {
   <div class="flex flex-col gap-4 max-w-full overflow-hidden">
     <!-- 순서 바꾸기 버튼 -->
     <div class="flex items-center justify-between">
-      <div class="Body04 text-Black-2">
+      <div class="Body04 text-Black-2" :class="{ 'opacity-0': currentIndex >= sortedCards.length }">
         나의 카드
         <span class="text-Gray-7"> {{ currentIndex + 1 }} / {{ sortedCards.length }} 개 </span>
       </div>
 
-      <button class="pr-20 Body04 text-Gray-4 underline" @click="orderCardPage">순서 바꾸기</button>
+      <button
+        class="pr-20 Body04 text-Gray-4 text-right underline"
+        :class="{ 'opacity-0': currentIndex >= sortedCards.length }"
+        @click="orderCardPage"
+      >
+        순서 바꾸기
+      </button>
     </div>
 
     <!-- 카드 슬라이더 -->
@@ -84,7 +90,7 @@ onMounted(() => {
         </SwiperSlide>
 
         <!-- NoCard 컴포넌트 추가 -->
-        <SwiperSlide class="!w-[275px] shrink-0">
+        <SwiperSlide class="!w-[275px] shrink-0 mr-[4rem]">
           <no-card class="w-full" />
         </SwiperSlide>
       </Swiper>
@@ -92,7 +98,7 @@ onMounted(() => {
 
     <!-- 혜택 안내 -->
     <div class="w-full text-right pr-20 Body04 text-Gray-4">
-      <span v-if="sortedCards.length">
+      <span v-if="sortedCards.length" :class="{ 'opacity-0': currentIndex >= sortedCards.length }">
         <!-- 카드 이름 -->
         {{ sortedCards[currentIndex]?.localCurrencyName }} 카드 혜택 :
         <!-- 인센티브 종류 -->
@@ -100,7 +106,6 @@ onMounted(() => {
         <!-- 몇 % 인지 -->
         {{ sortedCards[currentIndex]?.percentage }}%
       </span>
-      <div v-else-if="currentIndex >= sortedCards.length"></div>
     </div>
   </div>
 </template>
