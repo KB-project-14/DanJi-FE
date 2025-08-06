@@ -219,10 +219,10 @@ const handleCharge = () => {
 
               <!-- 캐쉬백 안내 -->
               <p
-                v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '캐쉬백'"
+                v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '캐시백'"
                 class="text-Red-0 Body04"
               >
-                캐쉬백 {{ incentive.toLocaleString() }}원은 다음 달에 지급됩니다.
+                캐시백 {{ incentive.toLocaleString() }}원은 다음 달에 지급됩니다.
               </p>
             </div>
           </section>
