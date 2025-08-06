@@ -6,7 +6,7 @@ export interface localResponseDtoType {
   updatedAt: string | null
 }
 
-export type BenefitType = 'CASHBACK' | 'DISCOUNT_CHARGE' | 'DISCOUNT' | 'BONUS_CHARGE'
+export type BenefitType = 'CASHBACK' | 'DISCOUNT_CHARGE' | 'DISCOUNT' | 'BONUS_CHARGE' | 'INCENTIVE'
 
 export interface localcurrencyListRequestDtoType {
   benefitType: BenefitType | null
