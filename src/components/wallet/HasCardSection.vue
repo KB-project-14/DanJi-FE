@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import { ref, computed, onMounted, nextTick, defineProps, defineEmits } from 'vue'
 import UserCard from '@/components/common/card/UserCard.vue'
+import NoCard from '../common/card/NoCard.vue'
 
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 
@@ -28,8 +29,10 @@ const sortedCards = computed(() =>
 )
 
 const currentIndex = ref(0)
-
 const swiperEl = ref<any>(null)
+
+// 전체 슬라이드 개수 (카드 + NoCard)
+const totalSlides = computed(() => sortedCards.value.length + 1)
 
 const onSlideChange = (swiper: any) => {
   currentIndex.value = swiper.activeIndex
@@ -79,6 +82,11 @@ onMounted(() => {
             class="w-full"
           />
         </SwiperSlide>
+
+        <!-- NoCard 컴포넌트 추가 -->
+        <SwiperSlide class="!w-[275px] shrink-0">
+          <no-card class="w-full" />
+        </SwiperSlide>
       </Swiper>
     </div>
 
@@ -92,6 +100,7 @@ onMounted(() => {
         <!-- 몇 % 인지 -->
         {{ sortedCards[currentIndex]?.percentage }}%
       </span>
+      <div v-else-if="currentIndex >= sortedCards.length"></div>
     </div>
   </div>
 </template>
