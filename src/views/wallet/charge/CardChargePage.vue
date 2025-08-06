@@ -38,11 +38,6 @@ const formattedAmount = computed(() => {
   return amount.value ? amount.value.toLocaleString() + '원' : ''
 })
 
-// 100원 단위 유효성 체크
-const isHundredUnit = computed(() => {
-  return amount.value !== null ? amount.value % 100 === 0 : true
-})
-
 // input 입력 시 숫자만 저장
 const handleInput = (e: Event) => {
   const target = e.target as HTMLInputElement
@@ -71,14 +66,14 @@ const incentive = computed(() =>
 )
 
 // 실제 결제 금액 (통합지갑에서 빠질 금액)
-const actualCharge = computed(() => (amount.value ? amount.value + fee.value : 0))
+const actualCharge = computed(() => (amount.value ? Math.floor(amount.value + fee.value) : 0))
 
 // 충전 후 지역화폐 잔액
 const localCurrencyAfterCharge = computed(() => {
   return localWalletInfo.value.balance + amount.value + incentive.value
 })
 
-// 현재 통합지갑 잔액 (200,000 가정)
+// 현재 통합지갑 잔액
 const walletCurrentBalance = ref(cashWalletInfo.value.balance)
 
 // 충전 후 통합지갑 잔액
@@ -88,50 +83,38 @@ const walletAfterCharge = computed(() => {
 })
 
 // 버튼 활성화 여부
-const isDisabled = computed(() => !amount.value || amount.value < 10000 || !isHundredUnit.value)
+const isDisabled = computed(() => !amount.value || !validateChargeAmount())
 
 // 금액 버튼 클릭 시
 const setAmount = (val: number) => {
   amount.value += val
 }
 
-// 유효성 검증
+// 유효성 검증 (월 충전 최대 금액을 초과 여부)
 const validateChargeAmount = () => {
-  if (!isHundredUnit.value) {
-    return '100원 단위로 입력해주세요.'
-  }
-  if (!amount.value || amount.value < 10000) {
-    return '최소 10,000원 이상 입력해야 합니다.'
-  }
-  return null
+  const isChargeLimitValid = actualCharge.value <= (localWalletInfo.value.maximum ?? 0)
+  return isChargeLimitValid
 }
 
 // 충전 처리 로직
 const processCharge = () => {
-  // 소수점 없이
-  const totalCost = Math.floor(amount.value + fee.value)
+  const isCashWalletBalanceValid = actualCharge.value <= walletCurrentBalance.value
 
   // 통합지갑 잔액 부족 시
-  if (totalCost > walletCurrentBalance.value) {
-    return { success: false, totalCost }
+  if (!isCashWalletBalanceValid) {
+    return { success: false }
   }
 
   // 성공 시 잔액 업데이트
   // cardInfo.value.balance += amount.value + incentive.value
   // walletCurrentBalance.value -= totalCost
   // amount.value = 0
-  postCharge(totalCost)
+  postCharge(amount.value + incentive.value)
 
-  return { success: true, totalCost }
+  return { success: true }
 }
 
 const handleCharge = () => {
-  const errorMsg = validateChargeAmount()
-  if (errorMsg) {
-    alert(errorMsg)
-    return
-  }
-
   // 충전 처리
   const result = processCharge()
 
@@ -157,10 +140,7 @@ const handleCharge = () => {
         <div class="flex-1 overflow-y-auto">
           <!-- 충전 금액 섹션 -->
           <section class="mb-[1.8rem] rounded-xl border border-Gray-2 bg-white p-[1.6rem]">
-            <h2 class="mb-[1.2rem] Head02">
-              충전할 금액
-              <span class="text-Gray-4 Body04">(최소 10,000원 이상 / 100원 단위 충전 가능)</span>
-            </h2>
+            <h2 class="mb-[1.2rem] Head02">충전할 금액</h2>
 
             <!-- 금액 버튼 -->
             <div class="flex gap-[0.8rem] mb-[1.2rem] Body03">
@@ -196,8 +176,8 @@ const handleCharge = () => {
                 @blur="handleBlur"
               />
               <!-- 경고 문구 -->
-              <p v-if="amount && !isHundredUnit" class="mt-[0.4rem] text-Red-0 Body04">
-                100원 단위로 입력해주세요.
+              <p v-if="!validateChargeAmount()" class="mt-[0.4rem] text-Red-0 Body04">
+                지역화폐 월 충전 최대 한도를 초과했습니다.
               </p>
             </div>
 
