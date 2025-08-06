@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+
 import Layout from '@/components/layout/Layout.vue'
 import { ChevronRight, Wallet } from 'lucide-vue-next'
 import CardDeleteModal from '@/components/common/modal/CardDeleteModal.vue'
 
 import useDeleteWallet from '@/composables/queries/wallet/deleteWallet'
 
-const { mutate: deleteWallet } = useDeleteWallet()
+const router = useRouter()
+const route = useRoute()
 
-// 예: 버튼 클릭 시 호출
-const handleDelete = (walletId: string) => {
-  if (confirm('정말 삭제하시겠습니까?')) {
-    deleteWallet(walletId)
-  }
-}
+const walletId = route.params.walletId as string
+const { mutate: deleteWallet } = useDeleteWallet()
 
 const showDeleteModal = ref(false)
 
@@ -23,8 +22,22 @@ const goToCardRemove = () => {
 
 // 해지
 const handleCardDelete = () => {
-  console.log('카드 해지 API 호출')
-  showDeleteModal.value = false
+  if (!walletId) {
+    console.error('walletId 없음!')
+    return
+  }
+
+  // 삭제 API
+  deleteWallet(walletId, {
+    onSuccess: () => {
+      showDeleteModal.value = false
+      router.push('/home')
+    },
+    onError: (error) => {
+      console.error('카드 해지 실패:', error)
+      alert('카드 해지 중 오류가 발생했습니다.')
+    },
+  })
 }
 </script>
 
