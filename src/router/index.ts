@@ -83,6 +83,7 @@ const routes = [
   },
   {
     path: '/card/setting/:walletId',
+    name: 'CardSetting',
     component: CardSettingPage,
   },
   {

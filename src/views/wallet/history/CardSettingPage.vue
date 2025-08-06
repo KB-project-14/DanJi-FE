@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
-import { ChevronRight } from 'lucide-vue-next'
+import { ChevronRight, Wallet } from 'lucide-vue-next'
 import CardDeleteModal from '@/components/common/modal/CardDeleteModal.vue'
 
 import useDeleteWallet from '@/composables/queries/wallet/deleteWallet'
