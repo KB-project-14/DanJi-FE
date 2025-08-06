@@ -13,9 +13,11 @@ export const getWalletList = async (
     params: { walletType },
   })
 
-  return (response.data.data ?? []).filter(
-    (w) => w.walletType === walletType,
-  ) as WalletResponseDtoType[]
+  // 배열만 분리
+  const wallets = response.data ?? []
+
+  // filter 사용 시 타입 지정
+  return wallets.filter((w: WalletResponseDtoType) => w.walletType === walletType)
 }
 
 const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
