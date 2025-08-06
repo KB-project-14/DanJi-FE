@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { HandCoins } from 'lucide-vue-next'
+import type { BenefitType } from '@/types/local/localTypes'
+import { benefitTypeTextMap } from '@/utils/benefit'
 
 const props = defineProps<{
   balance: number
@@ -11,6 +13,7 @@ const props = defineProps<{
   modelValue: number | null
   mode?: 'region' | 'cash' // 지역→지역인지, 지역→현금인지 구분
   fromCardName: string
+  benefitType: BenefitType
 }>()
 
 const emit = defineEmits<{
@@ -43,7 +46,9 @@ const handleSelect = () => {
 // 혜택 문구 (지역→지역에서만 사용)
 const selectedCardBenefit = computed(() => {
   const card = sortedCards.find((c) => c.name === selectedCard.value)
-  return card ? `${card.name} 혜택 : 인센티브 ${card.percentage}%` : ''
+  return card
+    ? `${card.name} 혜택 : ${benefitTypeTextMap[props.benefitType]} ${card.percentage}%`
+    : ''
 })
 </script>
 

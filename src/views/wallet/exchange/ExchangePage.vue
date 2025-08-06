@@ -11,48 +11,28 @@ import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import ExchangeCardConfirmModal from '@/components/wallet/modal/ExchangeCardConfirmModal.vue'
 import ExchangCashConfirmModal from '@/components/wallet/modal/ExchangCashConfirmModal.vue'
 import { calculateExchangeRegionToRegion, calculateExchangeRegionToCash } from '@/utils/exchange'
+import useGetWalletList from '@/composables/queries/wallet/getWalletList'
+import type { BenefitType } from '@/types/local/localTypes'
+import type { TransferRequestDTO } from '@/types/transaction/TransactionType'
+import { TRANSACTION_TYPE } from '@/constants/Transaction'
+import usePostTransfer from '@/composables/queries/transaction/usePostTransfer'
 const route = useRoute()
-const cardId = Number(route.params.id)
+const cardId = route.params.id as string
+const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
+const cardList = useGetWalletList('LOCAL')
+const { mutate } = usePostTransfer()
 
-// 더미 카드 데이터
-const cards = [
-  {
-    id: 1,
-    name: '동백전',
-    balance: 32000,
-    backgroundImageUrl: '/',
-    order: 3,
-    benefit_type: '캐시백',
-    percentage: 7,
-  },
-  {
-    id: 2,
-    name: '서울Pay',
-    balance: 50000000,
-    backgroundImageUrl: '/',
-    order: 1,
-    benefit_type: '캐시백',
-    percentage: 10,
-  },
-  {
-    id: 3,
-    name: '강원상품권',
-    balance: 110000,
-    backgroundImageUrl: '/',
-    order: 2,
-    benefit_type: '인센티브',
-    percentage: 10,
-  },
-  {
-    id: 4,
-    name: '부산Pay',
-    balance: 25000,
-    backgroundImageUrl: '/',
-    order: 4,
-    benefit_type: '인센티브',
-    percentage: 10,
-  },
-]
+const postExchange = (cost: number, toWalletId: string) => {
+  const requestBody: TransferRequestDTO = {
+    amount: cost,
+    fromWalletId: cardId,
+    toWalletId: toWalletId,
+    transactionLogging: true,
+    type: TRANSACTION_TYPE.CONVERT,
+  }
+
+  mutate(requestBody)
+}
 
 // 더미 거래 데이터
 const transactions = [
@@ -63,7 +43,7 @@ const transactions = [
 ]
 
 // 선택된 from 카드
-const selectedCard = computed(() => cards.find((c) => c.id === cardId) || null)
+const selectedCard = computed(() => cardList.value.find((c) => c.walletId === cardId) || null)
 
 // 이번 달 충전 금액
 const chargedAmountThisMonth = computed(() => {
@@ -102,13 +82,14 @@ const selectedToCard = ref('')
 // To 카드 데이터
 const selectedToCardData = computed(() => {
   return (
-    cards.find((c) => c.name === selectedToCard.value) || {
-      name: '',
+    cardList.value.find((c) => c.localCurrencyName === selectedToCard.value) || {
+      localCurrencyName: '',
       balance: 0,
       percentage: 0,
       chargedAmount: 0,
       incentiveAmount: 0,
       transactions: [],
+      benefitType: 'INCENTIVE' as BenefitType,
     }
   )
 })
@@ -144,13 +125,19 @@ const closeModal = () => {
   showModal.value = false
 }
 
-const confirmExchange = () => {
+const confirmExchange = (isConvert: boolean) => {
   console.log('환전 확정!', {
     amount: exchangeInput.value,
-    from: selectedCard.value?.name,
+    from: selectedCard.value?.localCurrencyName,
     to: selectedToCard.value,
   })
   showModal.value = false
+
+  if (isConvert) {
+    postExchange(exchangeInput.value ?? 0, selectedToCard.value)
+  } else {
+    postExchange(exchangeInput.value ?? 0, CASH_WALLET_ID)
+  }
 }
 </script>
 
@@ -187,8 +174,9 @@ const confirmExchange = () => {
               :percentage="selectedCard.percentage"
               :chargedAmount="chargedAmountThisMonth"
               :incentiveAmount="incentiveAmount"
-              :cardName="selectedCard.name"
-              :fromCardName="selectedCard.name"
+              :cardName="selectedCard.localCurrencyName"
+              :fromCardName="selectedCard.localCurrencyName"
+              :benefit-type="selectedToCardData.benefitType"
             />
 
             <!-- 지역 → 현금 -->
@@ -199,7 +187,7 @@ const confirmExchange = () => {
               :balance="selectedCard.balance"
               :chargedAmount="chargedAmountThisMonth"
               :incentiveAmount="incentiveAmount"
-              :cardName="selectedCard.name"
+              :cardName="selectedCard.localCurrencyName"
               :percentage="selectedCard.percentage"
             />
           </div>
@@ -219,22 +207,31 @@ const confirmExchange = () => {
           <!-- 지역 → 지역 모달 -->
           <exchange-card-confirm-modal
             v-if="showModal && activeTab === 0 && selectedCard && exchangeResult"
-            :from-card="{ name: selectedCard.name, percentage: selectedCard.percentage }"
-            :to-card="{ name: selectedToCardData.name, percentage: selectedToCardData.percentage }"
+            :from-card="{
+              name: selectedCard.localCurrencyName,
+              percentage: selectedCard.percentage,
+            }"
+            :to-card="{
+              name: selectedToCardData.localCurrencyName,
+              percentage: selectedToCardData.percentage,
+            }"
             :total-amount="exchangeInput || 0"
             :result="exchangeResult"
             @close="closeModal"
-            @confirm="confirmExchange"
+            @confirm="confirmExchange(true)"
           />
 
           <!-- 지역 → 현금 모달 -->
           <exchang-cash-confirm-modal
             v-if="showModal && selectedCard && activeTab === 1 && exchangeResult"
-            :from-card="{ name: selectedCard.name, percentage: selectedCard.percentage }"
+            :from-card="{
+              name: selectedCard.localCurrencyName,
+              percentage: selectedCard.percentage,
+            }"
             :total-amount="exchangeInput || 0"
             :result="exchangeResult"
             @close="closeModal"
-            @confirm="confirmExchange"
+            @confirm="confirmExchange(false)"
           />
         </div>
       </div>
