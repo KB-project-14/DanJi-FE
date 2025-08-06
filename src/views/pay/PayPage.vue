@@ -11,6 +11,8 @@ import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 
 import { useRouter } from 'vue-router'
 import PayInfoModal from '@/components/common/modal/PayInfoModal.vue'
+import type { payRequestDtoType } from '@/types/pay/payTypes'
+import usePostPayment from '@/composables/queries/payment/usePostPayment'
 
 const router = useRouter()
 
@@ -22,9 +24,23 @@ const showLocalFailModal = ref(false)
 const showCashFailModal = ref(false)
 const showInfoModal = ref(false)
 
+// 지갑 단건조회 GET 추가 예정
+
 const localBalance = ref(50000) // 실제로는 API에서 가져온 지역화폐 잔액
 const paymentAmount = ref(600000) // 전체 결제요금 임시 설정 (6만원)
 const localPaymentAmount = ref(paymentAmount) // 지역화폐로 결제할 금액
+
+const { mutate: makePayment, data, isPending, error, isSuccess } = usePostPayment()
+
+// 임시로 지정한 post body 내용들
+const paymentData = computed((): payRequestDtoType => {
+  return {
+    paymentMethod: selectedPayment.value,
+    totalAmount: paymentAmount.value,
+    localCurrencyAmount: selectedPayment.value === 'local' ? localPaymentAmount.value : 0,
+    cashAmount: selectedPayment.value === 'cash' ? paymentAmount.value : paymentAmount.value - localPaymentAmount.value,
+  }
+})
 
 // 결제 방식 선택 함수 (라디오 버튼처럼 동작)
 const selectPayment = (type: PaymentType) => {
@@ -94,6 +110,7 @@ const isPayDisabled = computed(() => {
 
 const handleInfoConfirm = () => {
   showInfoModal.value = false
+   makePayment(paymentData.value)
   router.push('/pay-complete')
 }
 </script>

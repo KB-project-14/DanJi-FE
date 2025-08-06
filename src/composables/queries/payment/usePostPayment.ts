@@ -11,7 +11,7 @@ export const postPayment = async (payInfo: payRequestDtoType) => {
 const usePostPayment = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: postPayment,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [PAY_KEYS] })
@@ -21,6 +21,8 @@ const usePostPayment = () => {
       // 라우팅 연결 예정
     }
   })
+
+  return mutation
 }
 
 export default usePostPayment
