@@ -11,10 +11,12 @@ const props = withDefaults(
     title: string
     showLeftIcon?: boolean
     showRightIcon?: boolean
+    walletId?: string
   }>(),
   {
     showLeftIcon: false,
     showRightIcon: false,
+    walletId: '',
   },
 )
 
@@ -28,7 +30,11 @@ const onLeftClick = () => emits('left-click')
 // SettingHeader에서 설정 아이콘 클릭 시
 const onRightClick = () => {
   emits('right-click')
-  router.push('/card/setting')
+  if (props.walletId) {
+    router.push(`/card/setting/${props.walletId}`)
+  } else {
+    console.error('walletId가 전달되지 않았습니다.')
+  }
 }
 </script>
 

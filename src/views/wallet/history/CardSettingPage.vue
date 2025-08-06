@@ -4,11 +4,18 @@ import Layout from '@/components/layout/Layout.vue'
 import { ChevronRight } from 'lucide-vue-next'
 import CardDeleteModal from '@/components/common/modal/CardDeleteModal.vue'
 
-const showDeleteModal = ref(false)
+import useDeleteWallet from '@/composables/queries/wallet/deleteWallet'
 
-const goToPasswordChange = () => {
-  // 비밀번호 수정 페이지 이동
+const { mutate: deleteWallet } = useDeleteWallet()
+
+// 예: 버튼 클릭 시 호출
+const handleDelete = (walletId: string) => {
+  if (confirm('정말 삭제하시겠습니까?')) {
+    deleteWallet(walletId)
+  }
 }
+
+const showDeleteModal = ref(false)
 
 const goToCardRemove = () => {
   showDeleteModal.value = true
@@ -30,15 +37,6 @@ const handleCardDelete = () => {
   >
     <template #content>
       <div class="flex flex-col bg-White-1">
-        <!-- 비밀번호 수정 -->
-        <div
-          class="flex justify-between items-center py-[2rem] px-[2.4rem] cursor-pointer"
-          @click="goToPasswordChange"
-        >
-          <span class="Body00 text-Black-1">비밀번호 수정</span>
-          <ChevronRight class="w-[1.2rem] h-[1.2rem] text-Gray-5" />
-        </div>
-
         <!-- 카드 해지 -->
         <div
           class="flex justify-between items-center py-[2rem] px-[2.4rem] cursor-pointer"
