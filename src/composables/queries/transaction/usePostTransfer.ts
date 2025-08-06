@@ -1,5 +1,5 @@
 import { post } from '@/api/api'
-import { TRANSACTION_TRANSFER_KEYS } from '@/constants/QueryKey'
+import { WALLET_KEYS } from '@/constants/QueryKey'
 import type { TransferRequestDTO, TransferResponseDTO } from '@/types/transaction/TransactionType'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
@@ -13,9 +13,8 @@ export default function usePostTransfer() {
 
   return useMutation({
     mutationFn: postTransfer,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: TRANSACTION_TRANSFER_KEYS.all })
-      console.log(data)
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: WALLET_KEYS.all })
     },
   })
 }
