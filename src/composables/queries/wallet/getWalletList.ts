@@ -12,7 +12,8 @@ export const getWalletList = async (
     params: { walletType },
   })
 
-  const wallets = response.data?.data ?? []
+  // 구조 파악 후 적절히 수정
+  const wallets = response.data?.data ?? [] // 또는 올바른 경로
 
   return wallets.filter((w: WalletResponseDtoType) => w.walletType === walletType)
 }
