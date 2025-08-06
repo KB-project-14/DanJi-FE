@@ -1,21 +1,34 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
+import usePostTransfer from '@/composables/queries/transaction/usePostTransfer'
+import type { TransferRequestDTO } from '@/types/transaction/TransactionType'
+import { TRANSACTION_TYPE } from '@/constants/Transaction'
+import useGetWallet from '@/composables/queries/wallet/useGetWallet'
+import { benefitTypeTextMap } from '@/utils/benefit'
 
 const router = useRouter()
+const route = useRoute()
 
-// 지역화폐 정보 - 추후 API 연동 예정
-const cardInfo = ref({
-  name: '동백전',
-  balance: 1000,
-  benefit: 10000,
-  maximum: 500000,
-  chargedThisMonth: 100000,
-  benefit_type: '인센티브',
-  percentage: 10,
-})
+const { mutate } = usePostTransfer()
+const routeWalletId = route.params.id as string
+const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
+const cashWalletInfo = useGetWallet(CASH_WALLET_ID)
+const localWalletInfo = useGetWallet(routeWalletId)
+
+const postCharge = (cost: number) => {
+  const requestBody: TransferRequestDTO = {
+    amount: cost,
+    fromWalletId: CASH_WALLET_ID,
+    toWalletId: routeWalletId,
+    transactionLogging: true,
+    type: TRANSACTION_TYPE.CHARGE,
+  }
+
+  mutate(requestBody)
+}
 
 // 충전할 금액
 const amount = ref<number>(0)
@@ -54,7 +67,7 @@ const fee = computed(() => (amount.value ? amount.value * 0.01 : 0))
 
 // 인센티브
 const incentive = computed(() =>
-  amount.value > 0 ? amount.value * (cardInfo.value.percentage / 100) : 0,
+  amount.value > 0 ? amount.value * (localWalletInfo.value.percentage / 100) : 0,
 )
 
 // 실제 결제 금액 (통합지갑에서 빠질 금액)
@@ -62,11 +75,11 @@ const actualCharge = computed(() => (amount.value ? amount.value + fee.value : 0
 
 // 충전 후 지역화폐 잔액
 const localCurrencyAfterCharge = computed(() => {
-  return cardInfo.value.balance + amount.value + incentive.value
+  return localWalletInfo.value.balance + amount.value + incentive.value
 })
 
 // 현재 통합지갑 잔액 (200,000 가정)
-const walletCurrentBalance = ref(200000) // API 값으로 교체 예정
+const walletCurrentBalance = ref(cashWalletInfo.value.balance)
 
 // 충전 후 통합지갑 잔액
 const walletAfterCharge = computed(() => {
@@ -104,9 +117,10 @@ const processCharge = () => {
   }
 
   // 성공 시 잔액 업데이트
-  cardInfo.value.balance += amount.value + incentive.value
-  walletCurrentBalance.value -= totalCost
-  amount.value = 0
+  // cardInfo.value.balance += amount.value + incentive.value
+  // walletCurrentBalance.value -= totalCost
+  // amount.value = 0
+  postCharge(totalCost)
 
   return { success: true, totalCost }
 }
@@ -193,8 +207,9 @@ const handleCharge = () => {
                 예상 수수료(1%):
                 <span class="text-Yellow-0">{{ fee.toLocaleString() }}원</span>
               </p>
-              <p>
-                {{ cardInfo.name }} 인센티브({{ cardInfo.percentage }}%):
+              <p v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '인센티브'">
+                {{ localWalletInfo.localCurrencyName }}
+                인센티브({{ localWalletInfo.percentage }}%):
                 <span class="text-Yellow-0">{{ incentive.toLocaleString() }}원</span>
               </p>
               <p>
@@ -227,7 +242,10 @@ const handleCharge = () => {
               </p>
 
               <!-- 캐쉬백 안내 -->
-              <p v-if="cardInfo.benefit_type === '캐쉬백'" class="text-Red-0 Body04">
+              <p
+                v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '캐쉬백'"
+                class="text-Red-0 Body04"
+              >
                 캐쉬백 {{ incentive.toLocaleString() }}원은 다음 달에 지급됩니다.
               </p>
             </div>
