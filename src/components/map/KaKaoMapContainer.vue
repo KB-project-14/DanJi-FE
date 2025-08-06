@@ -29,6 +29,10 @@ const map = ref<kakao.maps.Map>()
 
 const onLoadKakaoMap = (mapRef: kakao.maps.Map) => {
   map.value = mapRef
+  ;(window as any).kakao.maps.event.addListener(mapRef, 'zoom_changed', () => {
+    const newLevel = mapRef.getLevel()
+    mapLevel.value = newLevel
+  })
 }
 
 const panTo = (lat: number, lon: number) => {
@@ -93,6 +97,7 @@ defineExpose({
           :local-currency-id="store.localCurrencyId"
           :is-selected="store.name === selectedStore"
           :store-name="store.name"
+          :map-level="mapLevel"
           @click="selectedStore = store.name"
         />
       </kakao-map-custom-overlay>
