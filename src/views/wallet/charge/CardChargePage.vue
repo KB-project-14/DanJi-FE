@@ -105,10 +105,6 @@ const processCharge = () => {
     return { success: false }
   }
 
-  // 성공 시 잔액 업데이트
-  // cardInfo.value.balance += amount.value + incentive.value
-  // walletCurrentBalance.value -= totalCost
-  // amount.value = 0
   postCharge(amount.value + incentive.value)
 
   return { success: true }
