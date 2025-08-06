@@ -8,13 +8,13 @@ import {
 } from 'vue3-kakao-maps'
 import { Plus, Minus, Crosshair } from 'lucide-vue-next'
 import currentLocationIcon from '@/assets/icons/current-location-marker.svg'
-import type { LocalStore } from '@/types/types'
+import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
 import LocalStoreMarker from './LocalStoreMarker.vue'
 
 interface Props {
   userLatitude: number
   userLongitude: number
-  filteredStores: LocalStore[]
+  filteredStores: LocalStoreResponseDTO[]
 }
 
 interface Emit {
@@ -55,6 +55,10 @@ const zoomOut = () => {
 }
 
 const selectedStore = ref<string>()
+
+defineExpose({
+  panTo,
+})
 </script>
 
 <template>
