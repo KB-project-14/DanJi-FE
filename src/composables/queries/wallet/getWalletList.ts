@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
 import { get } from '@/api/api'
-import type { ApiResponse } from '@/types/types'
 
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 import { WALLET_KEYS } from '@/constants/QueryKey'
@@ -9,17 +8,14 @@ import { WALLET_KEYS } from '@/constants/QueryKey'
 export const getWalletList = async (
   walletType: 'CASH' | 'LOCAL',
 ): Promise<WalletResponseDtoType[]> => {
-  const response = await get<ApiResponse<WalletResponseDtoType[]>>('/api/wallets', {
+  const response = await get<WalletResponseDtoType[]>('/api/wallets', {
     params: { walletType },
   })
 
-  // 배열만 분리
-  const wallets = response.data ?? []
+  const wallets = response.data?.data ?? []
 
-  // filter 사용 시 타입 지정
   return wallets.filter((w: WalletResponseDtoType) => w.walletType === walletType)
 }
-
 const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
   const { data } = useQuery<WalletResponseDtoType[]>({
     queryKey: WALLET_KEYS.list(walletType),
