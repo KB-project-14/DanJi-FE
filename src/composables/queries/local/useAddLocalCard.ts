@@ -1,4 +1,4 @@
-import { LOCAL_KEYS } from '@/constants/QueryKey'
+import { WALLET_KEYS } from '@/constants/QueryKey'
 import type { localCardCreateRequestDtoType } from '@/types/local/localTypes'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { post } from '@/api/api'
@@ -14,7 +14,7 @@ export default function useAddLocalCard() {
   return useMutation({
     mutationFn: addLocalCard,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: LOCAL_KEYS.details })
+      queryClient.invalidateQueries({ queryKey: WALLET_KEYS.all })
     },
   })
 }
