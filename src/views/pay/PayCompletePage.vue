@@ -17,13 +17,12 @@ onMounted(() => {
   } else if (state?.status === 'failed') {
     paySuccess.value = false
   } else {
-    // 직접 pay-complete에 접근하면 홈으로 리디렉션
     router.push('/home')
   }
 })
 
 const onClickWallet = () => {
-  router.push('/wallet/view')
+  router.push('/home')
 }
 </script>
 <template>
@@ -36,11 +35,13 @@ const onClickWallet = () => {
         <!-- 결제 실패 -->
         <PayFail v-else-if="paySuccess === false" />
 
-        <!-- (null 상태)초기 상태 또는 로딩 상태 -->
+        <!-- (null)초기 상태 또는 로딩 상태 -->
         <div v-else class="flex items-center justify-center">
           <span class="Head03">결제 처리 중...</span>
         </div>
-        <DanjiButton class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]"
+        <DanjiButton
+          class="absolute bottom-0 w-[34.3rem] h-[5.8rem] mb-[3rem]"
+          @click="onClickWallet"
           >지갑으로 가기</DanjiButton
         >
       </div>

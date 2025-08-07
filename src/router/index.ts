@@ -24,6 +24,7 @@ import PaymentPin from '@/views/auth/PaymentPinPage.vue'
 import BadgePage from '@/views/badge/BadgePage.vue'
 import LocalCardCreateSuccessPage from '@/views/wallet/create/LocalCardCreateSuccessPage.vue'
 import { Component } from 'lucide-vue-next'
+import PayPinPage from '@/views/pay/PayPinPage.vue'
 
 const routes = [
   {
@@ -126,6 +127,7 @@ const routes = [
     component: SignUpPage,
   },
   { path: '/payment-pin', name: 'PaymentPin', component: PaymentPin },
+  { path: '/pay-pin', name: 'PayPin', component: PayPinPage },
 ]
 
 const router = createRouter({

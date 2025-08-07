@@ -6,8 +6,6 @@ const emit = defineEmits<{
 }>()
 
 const onRightClick = () => {
-  console.log('1️⃣ PayHeader: XCircle 클릭됨')
-
   emit('right-click')
 }
 </script>

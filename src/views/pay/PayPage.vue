@@ -40,7 +40,7 @@ const paymentData = computed((): payRequestDtoType => {
     localWalletId: '74695305-1379-4FBE-A780-8ECB56FAB441', //추후 pinia에서 전역 값 가져오기
     merchantAmount: paymentAmount.value,
     type: selectedPayment.value === 'local' ? 'LOCAL_CURRENCY' : 'GENERAL',
-    walletPin: '0000', // 임시 비번 설정
+    walletPin: '',
   }
 })
 
@@ -113,23 +113,12 @@ const isPayDisabled = computed(() => {
 const handleInfoConfirm = async () => {
   showInfoModal.value = false
 
-  try {
-    const result = await makePayment(paymentData.value)
-
-    router.push({
-      path: '/pay-complete',
-      state: {
-        status: 'success',
-      },
-    })
-  } catch (error) {
-    router.push({
-      path: '/pay-complete',
-      state: {
-        status: 'failed',
-      },
-    })
-  }
+  router.push({
+    path: '/pay-pin',
+    state: {
+      paymentData: JSON.stringify(paymentData.value),
+    },
+  })
 }
 </script>
 <template>
