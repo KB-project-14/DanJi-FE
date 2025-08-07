@@ -14,7 +14,7 @@ export const instance: AxiosInstance = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`,
+    Authorization: `Bearer ${import.meta.env.VITE_DEV_ACCESS_TOKEN}`,
   },
 })
 

@@ -1,0 +1,6 @@
+export const TRANSACTION_TYPE = {
+  CHARGE: 'CHARGE',
+  REFUND: 'REFUND',
+  CONVERT: 'CONVERT',
+  PAYMENT: 'PAYMENT',
+} as const

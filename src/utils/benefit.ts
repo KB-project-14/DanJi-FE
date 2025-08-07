@@ -4,5 +4,5 @@ export const benefitTypeTextMap: Record<BenefitType, string> = {
   CASHBACK: '캐시백',
   DISCOUNT_CHARGE: '할인 충전',
   DISCOUNT: '할인',
-  BONUS_CHARGE: '인센티브',
+  INCENTIVE: '인센티브',
 }
