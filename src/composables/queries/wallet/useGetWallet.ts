@@ -23,7 +23,7 @@ const useGetWallet = (walletId: string) => {
         walletType: 'LOCAL',
         localCurrencyId: '',
         localCurrencyName: '',
-        benefitType: 'BONUS_CHARGE',
+        benefitType: 'INCENTIVE',
         percentage: 0,
         balance: 0,
         displayOrder: 0,
