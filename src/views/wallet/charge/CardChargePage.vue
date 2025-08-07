@@ -1,21 +1,39 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
+import usePostTransfer from '@/composables/queries/transaction/usePostTransfer'
+import type { TransferRequestDTO } from '@/types/transaction/TransactionType'
+import { TRANSACTION_TYPE } from '@/constants/Transaction'
+import useGetWallet from '@/composables/queries/wallet/useGetWallet'
+import { benefitTypeTextMap } from '@/utils/benefit'
 
 const router = useRouter()
+const route = useRoute()
 
-// 지역화폐 정보 - 추후 API 연동 예정
-const cardInfo = ref({
-  name: '동백전',
-  balance: 1000,
-  benefit: 10000,
-  maximum: 500000,
-  chargedThisMonth: 100000,
-  benefit_type: '인센티브',
-  percentage: 10,
-})
+const { mutate } = usePostTransfer()
+const routeWalletId = route.params.id as string
+const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
+const cashWalletInfo = useGetWallet(CASH_WALLET_ID)
+const localWalletInfo = useGetWallet(routeWalletId)
+
+const postCharge = (cost: number): Promise<{ success: boolean }> => {
+  const requestBody: TransferRequestDTO = {
+    amount: cost,
+    fromWalletId: CASH_WALLET_ID,
+    toWalletId: routeWalletId,
+    transactionLogging: true,
+    type: TRANSACTION_TYPE.CHARGE,
+  }
+
+  return new Promise((resolve) => {
+    mutate(requestBody, {
+      onSuccess: () => resolve({ success: true }),
+      onError: () => resolve({ success: false }),
+    })
+  })
+}
 
 // 충전할 금액
 const amount = ref<number>(0)
@@ -23,11 +41,6 @@ const amount = ref<number>(0)
 // 금액 포맷 (콤마 + 원)
 const formattedAmount = computed(() => {
   return amount.value ? amount.value.toLocaleString() + '원' : ''
-})
-
-// 100원 단위 유효성 체크
-const isHundredUnit = computed(() => {
-  return amount.value !== null ? amount.value % 100 === 0 : true
 })
 
 // input 입력 시 숫자만 저장
@@ -54,19 +67,19 @@ const fee = computed(() => (amount.value ? amount.value * 0.01 : 0))
 
 // 인센티브
 const incentive = computed(() =>
-  amount.value > 0 ? amount.value * (cardInfo.value.percentage / 100) : 0,
+  amount.value > 0 ? amount.value * (localWalletInfo.value.percentage / 100) : 0,
 )
 
 // 실제 결제 금액 (통합지갑에서 빠질 금액)
-const actualCharge = computed(() => (amount.value ? amount.value + fee.value : 0))
+const actualCharge = computed(() => (amount.value ? Math.floor(amount.value + fee.value) : 0))
 
 // 충전 후 지역화폐 잔액
 const localCurrencyAfterCharge = computed(() => {
-  return cardInfo.value.balance + amount.value + incentive.value
+  return localWalletInfo.value.balance + amount.value + incentive.value
 })
 
-// 현재 통합지갑 잔액 (200,000 가정)
-const walletCurrentBalance = ref(200000) // API 값으로 교체 예정
+// 현재 통합지갑 잔액
+const walletCurrentBalance = computed(() => cashWalletInfo.value.balance)
 
 // 충전 후 통합지갑 잔액
 const walletAfterCharge = computed(() => {
@@ -75,51 +88,28 @@ const walletAfterCharge = computed(() => {
 })
 
 // 버튼 활성화 여부
-const isDisabled = computed(() => !amount.value || amount.value < 10000 || !isHundredUnit.value)
+const isDisabled = computed(() => !amount.value)
 
 // 금액 버튼 클릭 시
 const setAmount = (val: number) => {
   amount.value += val
 }
 
-// 유효성 검증
-const validateChargeAmount = () => {
-  if (!isHundredUnit.value) {
-    return '100원 단위로 입력해주세요.'
-  }
-  if (!amount.value || amount.value < 10000) {
-    return '최소 10,000원 이상 입력해야 합니다.'
-  }
-  return null
-}
-
 // 충전 처리 로직
 const processCharge = () => {
-  // 소수점 없이
-  const totalCost = Math.floor(amount.value + fee.value)
+  const isCashWalletBalanceValid = actualCharge.value <= walletCurrentBalance.value
 
   // 통합지갑 잔액 부족 시
-  if (totalCost > walletCurrentBalance.value) {
-    return { success: false, totalCost }
+  if (!isCashWalletBalanceValid) {
+    return { success: false }
   }
 
-  // 성공 시 잔액 업데이트
-  cardInfo.value.balance += amount.value + incentive.value
-  walletCurrentBalance.value -= totalCost
-  amount.value = 0
-
-  return { success: true, totalCost }
+  return postCharge(amount.value + incentive.value)
 }
 
-const handleCharge = () => {
-  const errorMsg = validateChargeAmount()
-  if (errorMsg) {
-    alert(errorMsg)
-    return
-  }
-
+const handleCharge = async () => {
   // 충전 처리
-  const result = processCharge()
+  const result = await processCharge()
 
   router.push({
     name: 'ChargeCompletePage',
@@ -143,10 +133,7 @@ const handleCharge = () => {
         <div class="flex-1 overflow-y-auto">
           <!-- 충전 금액 섹션 -->
           <section class="mb-[1.8rem] rounded-xl border border-Gray-2 bg-white p-[1.6rem]">
-            <h2 class="mb-[1.2rem] Head02">
-              충전할 금액
-              <span class="text-Gray-4 Body04">(최소 10,000원 이상 / 100원 단위 충전 가능)</span>
-            </h2>
+            <h2 class="mb-[1.2rem] Head02">충전할 금액</h2>
 
             <!-- 금액 버튼 -->
             <div class="flex gap-[0.8rem] mb-[1.2rem] Body03">
@@ -181,10 +168,6 @@ const handleCharge = () => {
                 @focus="handleFocus"
                 @blur="handleBlur"
               />
-              <!-- 경고 문구 -->
-              <p v-if="amount && !isHundredUnit" class="mt-[0.4rem] text-Red-0 Body04">
-                100원 단위로 입력해주세요.
-              </p>
             </div>
 
             <!-- 혜택 계산 -->
@@ -193,8 +176,9 @@ const handleCharge = () => {
                 예상 수수료(1%):
                 <span class="text-Yellow-0">{{ fee.toLocaleString() }}원</span>
               </p>
-              <p>
-                {{ cardInfo.name }} 인센티브({{ cardInfo.percentage }}%):
+              <p v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '인센티브'">
+                {{ localWalletInfo.localCurrencyName }}
+                인센티브({{ localWalletInfo.percentage }}%):
                 <span class="text-Yellow-0">{{ incentive.toLocaleString() }}원</span>
               </p>
               <p>
@@ -227,8 +211,11 @@ const handleCharge = () => {
               </p>
 
               <!-- 캐쉬백 안내 -->
-              <p v-if="cardInfo.benefit_type === '캐쉬백'" class="text-Red-0 Body04">
-                캐쉬백 {{ incentive.toLocaleString() }}원은 다음 달에 지급됩니다.
+              <p
+                v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '캐시백'"
+                class="text-Red-0 Body04"
+              >
+                캐시백 {{ incentive.toLocaleString() }}원은 다음 달에 지급됩니다.
               </p>
             </div>
           </section>
