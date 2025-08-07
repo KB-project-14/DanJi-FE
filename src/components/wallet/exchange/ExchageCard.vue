@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { format } from 'date-fns'
 import { HandCoins } from 'lucide-vue-next'
 import type { BenefitType } from '@/types/local/localTypes'
 import { benefitTypeTextMap } from '@/utils/benefit'
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
+
+// 충전/인센티브 금액 알기위해 날짜 받기
+const currentMonthLabel = format(new Date(), 'M월')
 
 const props = defineProps<{
   balance: number
@@ -59,9 +63,9 @@ const selectedCardBenefit = computed(() => {
 
     <!-- 내가 충전한 금액 / 인센티브 -->
     <div class="Body03 text-Gray-6">
-      내가 충전한 금액:
+      {{ currentMonthLabel }} 충전한 금액:
       <span class="text-Yellow-1">{{ props.chargedAmount.toLocaleString() }}원</span><br />
-      내가 받은 인센티브({{ props.percentage }}%):
+      {{ currentMonthLabel }} 받은 인센티브({{ props.percentage }}%):
       <span class="text-Yellow-1">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 

@@ -51,9 +51,11 @@ onMounted(() => {
   <div class="flex flex-col gap-4 max-w-full overflow-hidden">
     <!-- 순서 바꾸기 버튼 -->
     <div class="flex items-center justify-between">
-      <div class="Body04 text-Black-2" :class="{ 'opacity-0': currentIndex >= sortedCards.length }">
+      <div class="Body04 text-Black-2">
         나의 카드
-        <span class="text-Gray-7"> {{ currentIndex + 1 }} / {{ sortedCards.length }} 개 </span>
+        <span class="text-Gray-7" :class="{ 'opacity-0': currentIndex >= sortedCards.length }">
+          {{ currentIndex + 1 }} / {{ sortedCards.length }} 개
+        </span>
       </div>
 
       <button

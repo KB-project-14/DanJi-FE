@@ -172,9 +172,14 @@ const handleCharge = async () => {
 
             <!-- 혜택 계산 -->
             <div class="space-y-[0.4rem] mt-[1.2rem] Body03">
-              <p>
-                예상 수수료(1%):
-                <span class="text-Yellow-0">{{ fee.toLocaleString() }}원</span>
+              <p
+                class="flex items-center gap-2 Body03 text-Yellow-1 transition-all duration-300"
+                :class="{ 'border-t border-Gray-3 pt-[0.8rem] mt-[0.4rem]': amount }"
+              >
+                <span :class="{ 'line-through text-Yellow-0': amount, 'text-Yellow-0': !amount }">
+                  예상 수수료(1%): {{ fee.toLocaleString() }}원
+                </span>
+                <span v-if="amount" class="text-Red-0">수수료 면제 대상입니다!</span>
               </p>
               <p v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '인센티브'">
                 {{ localWalletInfo.localCurrencyName }}

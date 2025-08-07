@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { ref, computed } from 'vue'
+import { format } from 'date-fns'
 import { CircleAlert } from 'lucide-vue-next'
 
 import Layout from '@/components/layout/Layout.vue'
@@ -12,92 +13,57 @@ import ExchangeCardConfirmModal from '@/components/wallet/modal/ExchangeCardConf
 import ExchangCashConfirmModal from '@/components/wallet/modal/ExchangCashConfirmModal.vue'
 import { calculateExchangeRegionToRegion, calculateExchangeRegionToCash } from '@/utils/exchange'
 import useGetWalletList from '@/composables/queries/wallet/getWalletList'
+import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
 import type { BenefitType } from '@/types/local/localTypes'
-import type { TransactionType, TransferRequestDTO } from '@/types/transaction/TransactionType'
+import type {
+  TransactionType,
+  TransferRequestDTO,
+  WalletTransactionParams,
+} from '@/types/transaction/TransactionType'
 import { TRANSACTION_TYPE } from '@/constants/Transaction'
 import usePostTransfer from '@/composables/queries/transaction/usePostTransfer'
 import router from '@/router'
+
 const route = useRoute()
 const cardId = route.params.id as string
-const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
+
+// 카드 리스트
 const cardList = useGetWalletList('LOCAL')
-const { mutate } = usePostTransfer()
+const cashWallets = useGetWalletList('CASH')
 
-const postExchange = (cost: number, toWalletId: string, type: TransactionType) => {
-  const requestBody: TransferRequestDTO = {
-    amount: cost,
-    fromWalletId: cardId,
-    toWalletId: toWalletId,
-    transactionLogging: true,
-    type: type,
-  }
+// 선택된 카드
+const selectedCard = computed(() => cardList.value.find((c) => c.walletId === cardId) || null)
+const CASH_WALLET_ID = computed(() => cashWallets.value?.[0]?.walletId || '')
 
-  mutate(requestBody, {
-    onSuccess: () => {
-      router.push({
-        name: 'ExchangeCompletePage',
-        query: {
-          success: 'true',
-        },
-      })
-    },
-    onError: () => {
-      router.push({
-        name: 'ExchangeCompletePage',
-        query: {
-          success: 'false',
-        },
-      })
-    },
-  })
+// 이번 달 1일 ~ 오늘 날짜
+const today = new Date()
+const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1)
+const params: WalletTransactionParams = {
+  startDate: format(thisMonthStart, 'yyyy-MM-dd'),
+  lastDate: format(today, 'yyyy-MM-dd'),
+  direction: undefined,
+  sortOrder: 'DESC',
 }
 
-// 더미 거래 데이터
-const transactions = [
-  { type: 'charge', amount: 100000, date: '2025-07-01' },
-  { type: 'charge', amount: 10000, date: '2025-07-10' },
-  { type: 'payment', amount: 2000, date: '2025-07-15' },
-  { type: 'refund', amount: 1000, date: '2025-07-20' },
-]
+// 거래내역 불러오기
+const { data: transactionSummary } = useGetWalletTransaction(
+  cardId,
+  params,
+  computed(() => !!selectedCard.value),
+)
 
-// 선택된 from 카드
-const selectedCard = computed(() => cardList.value.find((c) => c.walletId === cardId) || null)
+// 인센티브 및 충전 금액
+const chargedAmountThisMonth = computed(() => transactionSummary.value?.aggregateCharge ?? 0)
+const incentiveAmount = computed(() => transactionSummary.value?.aggregateIncentive ?? 0)
 
-// 이번 달 충전 금액
-const chargedAmountThisMonth = computed(() => {
-  const now = new Date()
-  const currentYear = now.getFullYear()
-  const currentMonth = now.getMonth() + 1
-
-  return transactions
-    .filter((t) => {
-      const transactionDate = new Date(t.date)
-      return (
-        t.type === 'charge' &&
-        transactionDate.getFullYear() === currentYear &&
-        transactionDate.getMonth() + 1 === currentMonth
-      )
-    })
-    .reduce((sum, t) => sum + t.amount, 0)
-})
-// 인센티브 금액
-const incentiveAmount = computed(() => {
-  if (!selectedCard.value) return 0
-  return Math.floor(chargedAmountThisMonth.value * (selectedCard.value.percentage / 100))
-})
-
-// 탭
+// 탭 및 입력값 등
+const { mutate } = usePostTransfer()
 const activeTab = ref(0)
 const tabs = ['지역 → 지역', '지역 → 현금']
 const handleTabChange = (index: number) => (activeTab.value = index)
 
-// 환전 금액 입력값
 const exchangeInput = ref<number | null>(null)
-
-// 선택된 To 카드
 const selectedToCard = ref('')
-
-// To 카드 데이터
 const selectedToCardData = computed(() => {
   return (
     cardList.value.find((c) => c.localCurrencyName === selectedToCard.value) || {
@@ -115,7 +81,6 @@ const selectedToCardData = computed(() => {
 
 const exchangeResult = computed(() => {
   if (!selectedCard.value || !exchangeInput.value) return null
-
   if (activeTab.value === 0) {
     return calculateExchangeRegionToRegion(
       selectedCard.value.percentage,
@@ -127,7 +92,6 @@ const exchangeResult = computed(() => {
   }
 })
 
-// 버튼 활성화 여부
 const isButtonEnabled = computed(() => {
   if (!exchangeInput.value || exchangeInput.value <= 0) return false
   if (exchangeInput.value > (selectedCard.value?.balance || 0)) return false
@@ -135,7 +99,6 @@ const isButtonEnabled = computed(() => {
   return true
 })
 
-// 모달 상태
 const showModal = ref(false)
 const openModal = () => {
   if (isButtonEnabled.value) showModal.value = true
@@ -144,18 +107,26 @@ const closeModal = () => {
   showModal.value = false
 }
 
+const postExchange = (cost: number, toWalletId: string, type: TransactionType) => {
+  const requestBody: TransferRequestDTO = {
+    amount: cost,
+    fromWalletId: cardId,
+    toWalletId,
+    transactionLogging: true,
+    type,
+  }
+
+  mutate(requestBody, {
+    onSuccess: () => router.push({ name: 'ExchangeCompletePage', query: { success: 'true' } }),
+    onError: () => router.push({ name: 'ExchangeCompletePage', query: { success: 'false' } }),
+  })
+}
+
 const confirmExchange = (isConvert: boolean) => {
   showModal.value = false
-
-  if (isConvert) {
-    postExchange(
-      exchangeInput.value ?? 0,
-      selectedToCardData.value.walletId,
-      TRANSACTION_TYPE.CONVERT,
-    )
-  } else {
-    postExchange(exchangeInput.value ?? 0, CASH_WALLET_ID, TRANSACTION_TYPE.REFUND)
-  }
+  const toWalletId = isConvert ? selectedToCardData.value.walletId : CASH_WALLET_ID.value
+  const type = isConvert ? TRANSACTION_TYPE.CONVERT : TRANSACTION_TYPE.REFUND
+  postExchange(exchangeInput.value || 0, toWalletId, type)
 }
 </script>
 
