@@ -109,10 +109,10 @@ const saveOrder = async () => {
 
 <template>
   <Layout
-    :header-type="'setting'"
+    :header-type="'basic'"
     :header-title="'설정'"
     :show-left-icon="true"
-    :show-right-icon="true"
+    :show-right-icon="false"
     :is-bottom-nav="false"
   >
     <template #content>
