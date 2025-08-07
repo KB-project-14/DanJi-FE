@@ -27,7 +27,17 @@ const postCharge = (cost: number) => {
     type: TRANSACTION_TYPE.CHARGE,
   }
 
-  mutate(requestBody)
+  const responseStatus = { success: false }
+  mutate(requestBody, {
+    onSuccess: () => {
+      responseStatus.success = true
+    },
+    onError: () => {
+      responseStatus.success = false
+    },
+  })
+
+  return responseStatus
 }
 
 // 충전할 금액
@@ -83,17 +93,11 @@ const walletAfterCharge = computed(() => {
 })
 
 // 버튼 활성화 여부
-const isDisabled = computed(() => !amount.value || !validateChargeAmount())
+const isDisabled = computed(() => !amount.value)
 
 // 금액 버튼 클릭 시
 const setAmount = (val: number) => {
   amount.value += val
-}
-
-// 유효성 검증 (월 충전 최대 금액을 초과 여부)
-const validateChargeAmount = () => {
-  const isChargeLimitValid = actualCharge.value <= (localWalletInfo.value.maximum ?? 0)
-  return isChargeLimitValid
 }
 
 // 충전 처리 로직
@@ -105,9 +109,7 @@ const processCharge = () => {
     return { success: false }
   }
 
-  postCharge(amount.value + incentive.value)
-
-  return { success: true }
+  return postCharge(amount.value + incentive.value)
 }
 
 const handleCharge = () => {
@@ -171,10 +173,6 @@ const handleCharge = () => {
                 @focus="handleFocus"
                 @blur="handleBlur"
               />
-              <!-- 경고 문구 -->
-              <p v-if="!validateChargeAmount()" class="mt-[0.4rem] text-Red-0 Body04">
-                지역화폐 월 충전 최대 한도를 초과했습니다.
-              </p>
             </div>
 
             <!-- 혜택 계산 -->
