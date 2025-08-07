@@ -36,6 +36,11 @@ export const LOCAL_KEYS = {
   details: ['local_currrency', 'create'],
 }
 
+export const LOCAL_STORE_KEYS = {
+  all: ['local_stores'] as const,
+  byLocation: (lat: number, lng: number) => [...LOCAL_STORE_KEYS.all, lat, lng] as const,
+}
+
 // 회원가입 페이지 쿼리 키
 export const SIGNUP_KEYS = {
   all: ['signup'] as const,

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { MapPin } from 'lucide-vue-next'
 import LocalStoreCategoryChip from './LocalStoreCategoryChip.vue'
-import type { LocalStore } from '@/types/types'
+import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
 
 const props = defineProps<{
-  localStore: LocalStore
+  localStore: LocalStoreResponseDTO
 }>()
 </script>
 

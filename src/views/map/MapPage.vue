@@ -2,7 +2,6 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import { useScrollLock } from '@vueuse/core'
-import axios from 'axios'
 
 import MapHeader from '@/components/map/MapHeader.vue'
 import MapFilters from '@/components/map/MapFilters.vue'
@@ -11,15 +10,20 @@ import LocalStoreListModal from '@/components/map/LocalStoreListModal.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
 import useLocalSelector from '@/composables/local/useLocalSelector'
 
-import type { LocalStore } from '@/types/types'
+import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
+import useGetLocalStores from '@/composables/queries/local/useGetLocalStores'
+import { LOCAL_COORDINATES } from '@/constants/LocalCenterCoordinates'
 
 const isLocked = useScrollLock(document.body)
 isLocked.value = true
 
 const foldLocalStoreModal = ref<boolean>(true)
 
+const mapRef = ref<InstanceType<typeof KakaoMapContainer> | null>(null)
 const userCurrentLatitude = ref<number>(37.5665)
 const userCurrentLongitude = ref<number>(126.978)
+const mapLatitude = ref<number>(37.5665)
+const mapLongitude = ref<number>(126.978)
 
 const getUserLocation = (): Promise<{ lat: number; lng: number }> => {
   return new Promise((resolve, reject) => {
@@ -70,32 +74,25 @@ const getUserLocation = (): Promise<{ lat: number; lng: number }> => {
   })
 }
 
-const localStores = ref<LocalStore[]>([])
-
-const fetchLocalData = async (): Promise<LocalStore[]> => {
-  try {
-    const response = await axios.get('/api/local/store')
-    localStores.value = response.data.data.localStores
-    return localStores.value
-  } catch (err) {
-    const errorMessage = '가맹점 데이터를 불러오는데 실패했습니다.'
-    console.error('가맹점 데이터 로드 실패:', err)
-    throw new Error(errorMessage)
-  }
-}
+const { data } = useGetLocalStores(mapLatitude, mapLongitude)
+const localStores = computed(() => data.value ?? [])
 
 const selectedFilter = ref<string>('전체')
 const { selectedRegion, selectedCity, setLocal, resetSelection } = useLocalSelector()
 const isFilterModalVisible = ref<boolean>(false)
 const storeCategories = computed(() => {
-  const categories = Array.from(new Set(localStores.value.map((store) => store.category)))
+  const categories = Array.from(
+    new Set(localStores.value.map((store) => store.category).filter(Boolean)),
+  )
+
+  if (categories.length === 0) return []
   return ['전체', ...categories]
 })
 
 /**
  * 선택된 필터에 따라 가맹점을 필터링
  */
-const filteredStores = computed((): LocalStore[] => {
+const filteredStores = computed((): LocalStoreResponseDTO[] => {
   if (selectedFilter.value === '전체') {
     return localStores.value
   }
@@ -117,7 +114,12 @@ const handleFilterModalConfirm = (region: string, city: string): void => {
   isFilterModalVisible.value = false
   foldLocalStoreModal.value = false
 
-  // TODO: 지역별 가맹점 필터링 로직 추가
+  const key = city || region
+  const localCoordinates = LOCAL_COORDINATES[key].center
+  console.log(localCoordinates)
+  mapLatitude.value = localCoordinates.lat
+  mapLongitude.value = localCoordinates.lng
+  mapRef.value?.panTo(localCoordinates.lat, localCoordinates.lng)
 }
 
 /**
@@ -126,11 +128,29 @@ const handleFilterModalConfirm = (region: string, city: string): void => {
 const handleCurrencLocationBtnClick = () => {
   resetSelection()
   foldLocalStoreModal.value = true
+
+  mapLatitude.value = userCurrentLatitude.value
+  mapLongitude.value = userCurrentLongitude.value
+}
+
+/**
+ * 이 지역 재검색 버튼 클릭 핸들러
+ */
+const handleResearchBtnClick = () => {
+  if (!mapRef.value) return
+
+  const center = mapRef.value.getMapCenterCoordinates()
+  if (center) {
+    mapLatitude.value = center?.getLat()!
+    mapLongitude.value = center?.getLng()!
+  }
 }
 
 onMounted(async () => {
   try {
-    await Promise.all([fetchLocalData(), getUserLocation()])
+    await getUserLocation()
+    mapLatitude.value = userCurrentLatitude.value
+    mapLongitude.value = userCurrentLongitude.value
   } catch (error) {
     console.error('초기화 중 오류 발생:', error)
   }
@@ -140,7 +160,7 @@ onMounted(async () => {
 <template>
   <Layout header-type="none" :is-bottom-nav="foldLocalStoreModal">
     <template #content>
-      <div class="flex flex-col h-full">
+      <div class="flex flex-col h-full bg-White-1">
         <!-- Header Section -->
         <map-header />
 
@@ -157,10 +177,12 @@ onMounted(async () => {
         <!-- Map Section -->
         <div class="flex-1 overflow-hidden relative mt-[2.2rem]">
           <kakao-map-container
+            ref="mapRef"
             :user-latitude="userCurrentLatitude"
             :user-longitude="userCurrentLongitude"
             :filtered-stores="filteredStores"
             @current-location="handleCurrencLocationBtnClick"
+            @research="handleResearchBtnClick"
           />
 
           <!-- Modals -->

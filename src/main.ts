@@ -16,7 +16,7 @@ import router from './router'
 //   await worker.start({ onUnhandledRequest: 'bypass' })
 // }
 
-useKakao(import.meta.env.VITE_KAKAO_APP_API_KEY)
+useKakao(import.meta.env.VITE_KAKAO_APP_API_KEY, ['clusterer'])
 const app = createApp(App)
 
 app.use(VueQueryPlugin, {
