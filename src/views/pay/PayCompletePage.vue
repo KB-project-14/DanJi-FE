@@ -1,15 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import PaySuccess from '@/components/pay/PaySuccess.vue'
 import PayFail from '@/components/pay/PayFail.vue'
+import { useRouter } from 'vue-router'
 
-const paySuccess = ref<boolean | null>(null) // null: 초기상태, true: 성공, false: 실패
+const router = useRouter()
+const paySuccess = ref<boolean | null>(null)
 
-const handlePayment = () => {
-  // 추후 API 호출 결과로 렌더링
-  paySuccess.value = true // 예시(성공)
+onMounted(() => {
+  const state = history.state
+
+  if (state?.status === 'success') {
+    paySuccess.value = true
+  } else if (state?.status === 'failed') {
+    paySuccess.value = false
+  } else {
+    // 직접 pay-complete에 접근하면 홈으로 리디렉션
+    router.push('/home')
+  }
+})
+
+const onClickWallet = () => {
+  router.push('/wallet/view')
 }
 </script>
 <template>
