@@ -88,7 +88,9 @@ const walletAfterCharge = computed(() => {
 })
 
 // 버튼 활성화 여부
-const isDisabled = computed(() => !amount.value)
+const isDisabled = computed(() => {
+  return !amount.value || walletAfterCharge.value < 0
+})
 
 // 금액 버튼 클릭 시
 const setAmount = (val: number) => {
@@ -172,9 +174,14 @@ const handleCharge = async () => {
 
             <!-- 혜택 계산 -->
             <div class="space-y-[0.4rem] mt-[1.2rem] Body03">
-              <p>
-                예상 수수료(1%):
-                <span class="text-Yellow-0">{{ fee.toLocaleString() }}원</span>
+              <p
+                class="flex items-center gap-2 Body03 text-Yellow-1 transition-all duration-300"
+                :class="{ 'border-t border-Gray-3 pt-[0.8rem] mt-[0.4rem]': amount }"
+              >
+                <span :class="{ 'line-through text-Yellow-0': amount, 'text-Yellow-0': !amount }">
+                  예상 수수료(1%): {{ fee.toLocaleString() }}원
+                </span>
+                <span v-if="amount" class="text-Red-0">수수료 면제 대상입니다!</span>
               </p>
               <p v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '인센티브'">
                 {{ localWalletInfo.localCurrencyName }}
@@ -209,7 +216,9 @@ const handleCharge = async () => {
                 <span>충전 후 통합지갑 잔액:</span>
                 <span>{{ walletAfterCharge.toLocaleString() }}원</span>
               </p>
-
+              <p v-if="walletAfterCharge < 0" class="mt-[0.8rem] text-Red-0 text-right Body04">
+                통합지갑 잔액이 부족하여 충전할 수 없습니다.
+              </p>
               <!-- 캐쉬백 안내 -->
               <p
                 v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '캐시백'"
@@ -221,8 +230,8 @@ const handleCharge = async () => {
           </section>
         </div>
 
-        <!-- 하단 버튼 -->
-        <div class="pt-[1rem]">
+        <!-- 하단 버튼: 항상 하단 고정 -->
+        <div class="sticky bottom-0 px-[1.6rem] pb-[1.6rem] bg-Background">
           <danji-button
             variant="large"
             class="w-full whitespace-nowrap text-center"
