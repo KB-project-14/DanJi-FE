@@ -138,7 +138,7 @@ const isSingleStore = computed(() => props.cluster.stores.length === 1)
     <!-- 매장명/클러스터 정보 표시 (줌 레벨에 따라) -->
     <div
       v-if="mapLevel <= 4"
-      class="Body03 text-center leading-tight truncate mt-[0.2rem]"
+      class="bg-White-1/50 Body03 text-center leading-tight truncate mt-[0.2rem]"
       :class="{ 'font-semibold': isSelected }"
     >
       <span v-if="isSingleStore">{{ displayText }}</span>
