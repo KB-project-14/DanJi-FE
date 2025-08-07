@@ -28,7 +28,7 @@ const onLeftClick = () => emits('left-click')
 
 const onRightClick = () => {
   emits('right-click')
-  const walletId = route.params.walletId as string
+  const walletId = route.path.split('/').pop()
   if (walletId) {
     router.push(`/card/setting/${walletId}`)
   } else {
