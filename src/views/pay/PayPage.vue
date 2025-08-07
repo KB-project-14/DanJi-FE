@@ -30,15 +30,17 @@ const localBalance = ref(50000) // 실제로는 API에서 가져온 지역화폐
 const paymentAmount = ref(600000) // 전체 결제요금 임시 설정 (6만원)
 const localPaymentAmount = ref(paymentAmount) // 지역화폐로 결제할 금액
 
-const { mutate: makePayment, data, isPending, error, isSuccess } = usePostPayment()
+const { makePayment, data, isPending, error, isSuccess } = usePostPayment()
 
 // 임시로 지정한 post body 내용들
 const paymentData = computed((): payRequestDtoType => {
   return {
-    paymentMethod: selectedPayment.value,
-    totalAmount: paymentAmount.value,
-    localCurrencyAmount: selectedPayment.value === 'local' ? localPaymentAmount.value : 0,
-    cashAmount: selectedPayment.value === 'cash' ? paymentAmount.value : paymentAmount.value - localPaymentAmount.value,
+    availableMerchantId: '12DF8BC1-30A4-4608-A33D-50CC939C4430', // 임시로 가맹점 ID 설정(고정)
+    inputAmount: localPaymentAmount.value,
+    localWalletId: '74695305-1379-4FBE-A780-8ECB56FAB441', //추후 pinia에서 전역 값 가져오기
+    merchantAmount: paymentAmount.value,
+    type: selectedPayment.value === 'local' ? 'LOCAL_CURRENCY' : 'GENERAL',
+    walletPin: '0000', // 임시 비번 설정
   }
 })
 
@@ -108,10 +110,26 @@ const isPayDisabled = computed(() => {
   return false
 })
 
-const handleInfoConfirm = () => {
+const handleInfoConfirm = async () => {
   showInfoModal.value = false
-   makePayment(paymentData.value)
-  router.push('/pay-complete')
+
+  try {
+    const result = await makePayment(paymentData.value)
+
+    router.push({
+      path: '/pay-complete',
+      state: {
+        status: 'success',
+      },
+    })
+  } catch (error) {
+    router.push({
+      path: '/pay-complete',
+      state: {
+        status: 'failed',
+      },
+    })
+  }
 }
 </script>
 <template>
