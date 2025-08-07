@@ -17,6 +17,8 @@ import { ShowerHeadIcon } from 'lucide-vue-next'
 const route = useRoute()
 const cardId = route.params.id as string
 
+const walletId = route.params.walletId as string
+
 // 카드 정보
 const localWallets = useGetWalletList('LOCAL')
 const cardInfo = computed(() => (localWallets.value ?? []).find((c) => c.walletId === cardId))
