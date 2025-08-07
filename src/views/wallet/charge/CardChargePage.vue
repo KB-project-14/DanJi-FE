@@ -18,7 +18,7 @@ const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
 const cashWalletInfo = useGetWallet(CASH_WALLET_ID)
 const localWalletInfo = useGetWallet(routeWalletId)
 
-const postCharge = (cost: number) => {
+const postCharge = (cost: number): Promise<{ success: boolean }> => {
   const requestBody: TransferRequestDTO = {
     amount: cost,
     fromWalletId: CASH_WALLET_ID,
@@ -27,17 +27,12 @@ const postCharge = (cost: number) => {
     type: TRANSACTION_TYPE.CHARGE,
   }
 
-  const responseStatus = { success: false }
-  mutate(requestBody, {
-    onSuccess: () => {
-      responseStatus.success = true
-    },
-    onError: () => {
-      responseStatus.success = false
-    },
+  return new Promise((resolve) => {
+    mutate(requestBody, {
+      onSuccess: () => resolve({ success: true }),
+      onError: () => resolve({ success: false }),
+    })
   })
-
-  return responseStatus
 }
 
 // 충전할 금액
@@ -112,13 +107,13 @@ const processCharge = () => {
   return postCharge(amount.value + incentive.value)
 }
 
-const handleCharge = () => {
+const handleCharge = async () => {
   // 충전 처리
-  const result = processCharge()
+  const result = await processCharge()
 
   router.push({
     name: 'ChargeCompletePage',
-    query: { success: result.success ? 'true' : 'false' },
+    query: { success: result ? 'true' : 'false' },
   })
 }
 </script>
