@@ -22,6 +22,7 @@ interface WalletCard {
   balance: number
   displayOrder: number
   bgColorClass: string
+  walletType: 'CASH' | 'LOCAL'
 }
 
 // 색상 배열
@@ -78,9 +79,7 @@ const saveOrder = async () => {
     // 백엔드 로직에 따라 2부터 순서 반영
     displayOrder: index + 2,
   }))
-  walletOrderList.forEach((item) => {
-    const wallet = cards.value.find((w) => w.walletId === item.walletId)
-  })
+
   try {
     await updateWalletOrder(walletOrderList)
 
