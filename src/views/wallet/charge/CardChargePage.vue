@@ -216,7 +216,9 @@ const handleCharge = async () => {
                 <span>충전 후 통합지갑 잔액:</span>
                 <span>{{ walletAfterCharge.toLocaleString() }}원</span>
               </p>
-
+              <p v-if="walletAfterCharge < 0" class="mt-[0.8rem] text-Red-0 text-center Body03">
+                통합지갑 잔액이 부족하여 충전할 수 없습니다.
+              </p>
               <!-- 캐쉬백 안내 -->
               <p
                 v-if="benefitTypeTextMap[localWalletInfo.benefitType] === '캐시백'"
