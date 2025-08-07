@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onBeforeUnmount, nextTick } from 'vue'
 import DanjiChip from '@/components/common/chip/DanjiChip.vue'
 import Layout from '@/components/layout/Layout.vue'
 import VueQr from 'qrcode.vue'
@@ -126,28 +126,29 @@ const gradientEndColor = ref('#38bdf8')
 <template>
   <layout :header-type="'pay'" :is-bottom-nav="false">
     <template #content>
-      <div class="w-full h-full bg-Gray-0">
-        <section class="relative z-20 flex items-center justify-center pt-[1.6rem] col gap-[1rem]">
-          <danji-chip
-            class="w-[14.9rem] h-[4.6rem] text-Head04"
-            :is-icon="false"
-            :is-active="selectedPayment === 'field'"
-            @click="selectPayment('field')"
-          >
-            현장결제</danji-chip
-          >
-          <danji-chip
-            class="w-[14.9rem] h-[4.6rem] text-Head04"
-            :is-icon="false"
-            :is-active="selectedPayment === 'qr'"
-            @click="selectPayment('qr')"
-          >
-            QR스캔</danji-chip
-          >
-        </section>
-
+      <div class="w-full h-full bg-Gray-0 overflow-hidden">
         <!-- QR / 현장결제 전환 -->
-        <div class="absolute inset-0 flex items-center justify-center">
+        <div class="w-full h-full flex flex-col items-center justify-center">
+          <section
+            class="absolute top-[8.9rem] z-20 flex items-center justify-center mt-[1.6rem] col gap-[1rem]"
+          >
+            <danji-chip
+              class="w-[14.9rem] h-[4.6rem] text-Head04"
+              :is-icon="false"
+              :is-active="selectedPayment === 'field'"
+              @click="selectPayment('field')"
+            >
+              현장결제</danji-chip
+            >
+            <danji-chip
+              class="w-[14.9rem] h-[4.6rem] text-Head04"
+              :is-icon="false"
+              :is-active="selectedPayment === 'qr'"
+              @click="selectPayment('qr')"
+            >
+              QR스캔</danji-chip
+            >
+          </section>
           <!-- 현장결제 QR 생성-->
           <div
             v-if="selectedPayment === 'field'"
@@ -171,7 +172,7 @@ const gradientEndColor = ref('#38bdf8')
           <!-- QR스캔 선택 시 -->
           <div
             v-show="selectedPayment === 'qr'"
-            class="absolute inset-0 flex flex-col items-center w-full h-full z-10 pt-[6rem]"
+            class="relative flex flex-col items-center w-full h-full"
           >
             <video
               ref="videoRef"
