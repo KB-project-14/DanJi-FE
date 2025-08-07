@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { format } from 'date-fns'
 import { calculateExchangeRegionToCash } from '@/utils/exchange'
 import { HandCoins } from 'lucide-vue-next'
+
+const currentMonthLabel = format(new Date(), 'M월')
 
 const props = defineProps<{
   balance: number
@@ -41,9 +44,9 @@ const excludedIncentive = computed(() => {
 
     <!-- 내가 충전한 금액 / 인센티브 -->
     <div class="Body03 text-Gray-6">
-      내가 충전한 금액:
+      {{ currentMonthLabel }} 충전한 금액:
       <span class="text-Yellow-1">{{ props.chargedAmount.toLocaleString() }}원</span><br />
-      내가 받은 인센티브:
+      {{ currentMonthLabel }} 받은 인센티브({{ props.percentage }}%):
       <span class="text-Yellow-1">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 
