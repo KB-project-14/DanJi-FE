@@ -81,7 +81,11 @@ const selectedFilter = ref<string>('전체')
 const { selectedRegion, selectedCity, setLocal, resetSelection } = useLocalSelector()
 const isFilterModalVisible = ref<boolean>(false)
 const storeCategories = computed(() => {
-  const categories = Array.from(new Set(localStores.value.map((store) => store.category)))
+  const categories = Array.from(
+    new Set(localStores.value.map((store) => store.category).filter(Boolean)),
+  )
+
+  if (categories.length === 0) return []
   return ['전체', ...categories]
 })
 
