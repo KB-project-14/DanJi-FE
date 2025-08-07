@@ -3,12 +3,12 @@
 // 추후 백엔드 수정사항에 맞게 변경 예정
 export interface ApiError {
   code: string
-  message: string
-  method: string
   errors: Array<{
     field: string
     reason: string
   }>
+  message: string
+  // method: string
 }
 
 export interface ApiResponse<T = Record<string, object>> {
