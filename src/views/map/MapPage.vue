@@ -133,6 +133,9 @@ const handleCurrencLocationBtnClick = () => {
   mapLongitude.value = userCurrentLongitude.value
 }
 
+/**
+ * 이 지역 재검색 버튼 클릭 핸들러
+ */
 const handleResearchBtnClick = () => {
   if (!mapRef.value) return
 
