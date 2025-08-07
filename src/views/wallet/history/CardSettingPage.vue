@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+
 import Layout from '@/components/layout/Layout.vue'
-import { ChevronRight } from 'lucide-vue-next'
+import { ChevronRight, Wallet } from 'lucide-vue-next'
 import CardDeleteModal from '@/components/common/modal/CardDeleteModal.vue'
 
-const showDeleteModal = ref(false)
+import useDeleteWallet from '@/composables/queries/wallet/deleteWallet'
 
-const goToPasswordChange = () => {
-  // 비밀번호 수정 페이지 이동
-}
+const router = useRouter()
+const route = useRoute()
+
+const walletId = route.params.walletId as string
+const { mutate: deleteWallet } = useDeleteWallet()
+
+const showDeleteModal = ref(false)
 
 const goToCardRemove = () => {
   showDeleteModal.value = true
@@ -16,8 +22,22 @@ const goToCardRemove = () => {
 
 // 해지
 const handleCardDelete = () => {
-  console.log('카드 해지 API 호출')
-  showDeleteModal.value = false
+  if (!walletId) {
+    console.error('walletId 없음!')
+    return
+  }
+
+  // 삭제 API
+  deleteWallet(walletId, {
+    onSuccess: () => {
+      showDeleteModal.value = false
+      router.push('/home')
+    },
+    onError: (error) => {
+      console.error('카드 해지 실패:', error)
+      alert('카드 해지 중 오류가 발생했습니다.')
+    },
+  })
 }
 </script>
 
@@ -30,15 +50,6 @@ const handleCardDelete = () => {
   >
     <template #content>
       <div class="flex flex-col bg-White-1">
-        <!-- 비밀번호 수정 -->
-        <div
-          class="flex justify-between items-center py-[2rem] px-[2.4rem] cursor-pointer"
-          @click="goToPasswordChange"
-        >
-          <span class="Body00 text-Black-1">비밀번호 수정</span>
-          <ChevronRight class="w-[1.2rem] h-[1.2rem] text-Gray-5" />
-        </div>
-
         <!-- 카드 해지 -->
         <div
           class="flex justify-between items-center py-[2rem] px-[2.4rem] cursor-pointer"

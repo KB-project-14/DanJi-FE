@@ -2,9 +2,10 @@
 import '@/assets/styles/main.css'
 import { defineProps, defineEmits } from 'vue'
 import { ChevronLeft, Settings } from 'lucide-vue-next'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 
 const props = withDefaults(
   defineProps<{
@@ -25,10 +26,14 @@ const emits = defineEmits<{
 
 const onLeftClick = () => emits('left-click')
 
-// SettingHeader에서 설정 아이콘 클릭 시
 const onRightClick = () => {
   emits('right-click')
-  router.push('/card/setting')
+  const walletId = route.params.walletId as string
+  if (walletId) {
+    router.push(`/card/setting/${walletId}`)
+  } else {
+    console.error('walletId 없음!')
+  }
 }
 </script>
 

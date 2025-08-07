@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import { ref, computed, onMounted, nextTick, defineProps, defineEmits } from 'vue'
 import UserCard from '@/components/common/card/UserCard.vue'
+import NoCard from '../common/card/NoCard.vue'
 
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 
@@ -28,8 +29,10 @@ const sortedCards = computed(() =>
 )
 
 const currentIndex = ref(0)
-
 const swiperEl = ref<any>(null)
+
+// 전체 슬라이드 개수 (카드 + NoCard)
+const totalSlides = computed(() => sortedCards.value.length + 1)
 
 const onSlideChange = (swiper: any) => {
   currentIndex.value = swiper.activeIndex
@@ -48,12 +51,18 @@ onMounted(() => {
   <div class="flex flex-col gap-4 max-w-full overflow-hidden">
     <!-- 순서 바꾸기 버튼 -->
     <div class="flex items-center justify-between">
-      <div class="Body04 text-Black-2">
+      <div class="Body04 text-Black-2" :class="{ 'opacity-0': currentIndex >= sortedCards.length }">
         나의 카드
         <span class="text-Gray-7"> {{ currentIndex + 1 }} / {{ sortedCards.length }} 개 </span>
       </div>
 
-      <button class="pr-20 Body04 text-Gray-4 underline" @click="orderCardPage">순서 바꾸기</button>
+      <button
+        class="pr-20 Body04 text-Gray-4 text-right underline"
+        :class="{ 'opacity-0': currentIndex >= sortedCards.length }"
+        @click="orderCardPage"
+      >
+        순서 바꾸기
+      </button>
     </div>
 
     <!-- 카드 슬라이더 -->
@@ -79,12 +88,17 @@ onMounted(() => {
             class="w-full"
           />
         </SwiperSlide>
+
+        <!-- NoCard 컴포넌트 추가 -->
+        <SwiperSlide class="!w-[275px] shrink-0 mr-[4rem]">
+          <no-card class="w-full" />
+        </SwiperSlide>
       </Swiper>
     </div>
 
     <!-- 혜택 안내 -->
     <div class="w-full text-right pr-20 Body04 text-Gray-4">
-      <span v-if="sortedCards.length">
+      <span v-if="sortedCards.length" :class="{ 'opacity-0': currentIndex >= sortedCards.length }">
         <!-- 카드 이름 -->
         {{ sortedCards[currentIndex]?.localCurrencyName }} 카드 혜택 :
         <!-- 인센티브 종류 -->
