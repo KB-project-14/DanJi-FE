@@ -88,7 +88,9 @@ const walletAfterCharge = computed(() => {
 })
 
 // 버튼 활성화 여부
-const isDisabled = computed(() => !amount.value)
+const isDisabled = computed(() => {
+  return !amount.value || walletAfterCharge.value < 0
+})
 
 // 금액 버튼 클릭 시
 const setAmount = (val: number) => {
