@@ -25,9 +25,15 @@ async function onLogin() {
       password: password.value,
     }
 
-    const response: LoginResponse = await login(loginData)
-    const { accessToken } = response
+    const response: LoginResponse | null = await login(loginData)
 
+    if (!response) {
+      errorMessage.value = '서버에서 응답이 없습니다.'
+      isLoading.value = false
+      return
+    }
+
+    const { accessToken } = response
     localStorage.setItem('ACCESS_TOKEN', accessToken)
 
     router.push('/home')
@@ -41,6 +47,8 @@ async function onLogin() {
     } else {
       errorMessage.value = '알 수 없는 오류가 발생했습니다.'
     }
+  } finally {
+    isLoading.value = false
   }
 }
 </script>

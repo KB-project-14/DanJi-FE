@@ -20,6 +20,14 @@ export const instance: AxiosInstance = axios.create({
   },
 })
 
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('ACCESS_TOKEN')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
 export type ApiResult<T> = AxiosResponse<ApiResponse<T>>
 
 export function get<T>(...args: Parameters<typeof instance.get>): Promise<ApiResult<T>> {
