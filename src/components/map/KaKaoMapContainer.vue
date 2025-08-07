@@ -6,7 +6,7 @@ import {
   KakaoMapCustomOverlay,
   type KakaoMapMarkerImage,
 } from 'vue3-kakao-maps'
-import { Plus, Minus, Crosshair } from 'lucide-vue-next'
+import { Plus, Minus, Crosshair, RotateCcw } from 'lucide-vue-next'
 import currentLocationIcon from '@/assets/icons/current-location-marker.svg'
 import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
 import LocalStoreMarker from './LocalStoreMarker.vue'
@@ -19,6 +19,7 @@ interface Props {
 
 interface Emit {
   (e: 'current-location'): void
+  (e: 'research'): void
 }
 
 defineProps<Props>()
@@ -26,12 +27,16 @@ const emit = defineEmits<Emit>()
 
 const mapLevel = ref(3)
 const map = ref<kakao.maps.Map>()
+const showResearchButton = ref<Boolean>(false)
 
 const onLoadKakaoMap = (mapRef: kakao.maps.Map) => {
   map.value = mapRef
   ;(window as any).kakao.maps.event.addListener(mapRef, 'zoom_changed', () => {
     const newLevel = mapRef.getLevel()
     mapLevel.value = newLevel
+  })
+  ;(window as any).kakao.maps.event.addListener(mapRef, 'dragend', () => {
+    showResearchButton.value = true
   })
 }
 
@@ -58,10 +63,13 @@ const zoomOut = () => {
   mapLevel.value = Math.min(MAX_ZOOM_LEVEL, mapLevel.value + 1)
 }
 
+const getMapCenterCoordinates = () => map.value?.getCenter()
+
 const selectedStore = ref<string>()
 
 defineExpose({
   panTo,
+  getMapCenterCoordinates,
 })
 </script>
 
@@ -102,6 +110,20 @@ defineExpose({
         />
       </kakao-map-custom-overlay>
     </kakao-map>
+
+    <span
+      v-if="showResearchButton"
+      class="absolute flex flex-row items-center top-[1rem] left-1/2 -translate-x-1/2 z-[200] px-[1rem] py-[0.8rem] bg-White-1 Body03 text-Gray-8 rounded-[2rem] shadow-xl"
+      @click="
+        () => {
+          showResearchButton = false
+          emit('research')
+        }
+      "
+    >
+      <rotate-ccw class="me-[0.5rem]" :size="16" />
+      이 지역 재검색
+    </span>
 
     <!-- Map Controls -->
     <div class="absolute flex flex-col gap-2 top-[1.7rem] right-[1.6rem] z-[200]">

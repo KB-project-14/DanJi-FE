@@ -2,7 +2,6 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import { useScrollLock } from '@vueuse/core'
-import axios from 'axios'
 
 import MapHeader from '@/components/map/MapHeader.vue'
 import MapFilters from '@/components/map/MapFilters.vue'
@@ -130,6 +129,16 @@ const handleCurrencLocationBtnClick = () => {
   mapLongitude.value = userCurrentLongitude.value
 }
 
+const handleResearchBtnClick = () => {
+  if (!mapRef.value) return
+
+  const center = mapRef.value.getMapCenterCoordinates()
+  if (mapLatitude.value !== undefined && mapLongitude.value != undefined) {
+    mapLatitude.value = center?.getLat()!
+    mapLongitude.value = center?.getLng()!
+  }
+}
+
 onMounted(async () => {
   try {
     await getUserLocation()
@@ -144,7 +153,7 @@ onMounted(async () => {
 <template>
   <Layout header-type="none" :is-bottom-nav="foldLocalStoreModal">
     <template #content>
-      <div class="flex flex-col h-full">
+      <div class="flex flex-col h-full bg-White-1">
         <!-- Header Section -->
         <map-header />
 
@@ -166,6 +175,7 @@ onMounted(async () => {
             :user-longitude="userCurrentLongitude"
             :filtered-stores="filteredStores"
             @current-location="handleCurrencLocationBtnClick"
+            @research="handleResearchBtnClick"
           />
 
           <!-- Modals -->
