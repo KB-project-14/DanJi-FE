@@ -104,7 +104,7 @@ const processCharge = () => {
     return { success: false }
   }
 
-  return postCharge(amount.value + incentive.value)
+  return postCharge(amount.value)
 }
 
 const handleCharge = async () => {
