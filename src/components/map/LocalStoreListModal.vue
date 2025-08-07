@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import type { LocalStore } from '@/types/types'
+import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
 import LocalStoreItem from './LocalStoreItem.vue'
 
 const props = defineProps<{
   isModalFold: boolean
-  localStoreList: LocalStore[]
+  localStoreList: LocalStoreResponseDTO[]
 }>()
 
 const sheetRef = ref<HTMLElement | null>(null)
