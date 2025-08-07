@@ -100,7 +100,6 @@ const saveOrder = async () => {
     })
   } catch (error) {
     console.error('순서 저장 실패:', error)
-    console.log('전송한 데이터:', walletOrderList)
     alert('저장에 실패했어요.')
     hasUnsavedChanges.value = false
   }
