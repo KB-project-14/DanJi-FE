@@ -216,7 +216,7 @@ const handleCharge = async () => {
                 <span>충전 후 통합지갑 잔액:</span>
                 <span>{{ walletAfterCharge.toLocaleString() }}원</span>
               </p>
-              <p v-if="walletAfterCharge < 0" class="mt-[0.8rem] text-Red-0 text-center Body03">
+              <p v-if="walletAfterCharge < 0" class="mt-[0.8rem] text-Red-0 text-right Body04">
                 통합지갑 잔액이 부족하여 충전할 수 없습니다.
               </p>
               <!-- 캐쉬백 안내 -->
@@ -230,8 +230,8 @@ const handleCharge = async () => {
           </section>
         </div>
 
-        <!-- 하단 버튼 -->
-        <div class="pt-[1rem]">
+        <!-- 하단 버튼: 항상 하단 고정 -->
+        <div class="sticky bottom-0 px-[1.6rem] pb-[1.6rem] bg-Background">
           <danji-button
             variant="large"
             class="w-full whitespace-nowrap text-center"
