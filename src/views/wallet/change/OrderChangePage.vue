@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
+import { useRouter } from 'vue-router'
+
 import Layout from '@/components/layout/Layout.vue'
 import WalletItem from '@/components/common/wallet/WalletItem.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
@@ -8,19 +10,10 @@ import draggable from 'vuedraggable'
 import useGetWalletList from '@/composables/queries/wallet/getWalletList'
 import updateWalletOrder from '@/composables/queries/wallet/patchWalletOrder'
 
-// 원본 DTO 타입
-interface WalletResponseDtoType {
-  walletId: string
-  walletType: 'CASH' | 'LOCAL'
-  localCurrencyId: string
-  localCurrencyName: string
-  benefitType: string
-  percentage: number
-  balance: number
-  displayOrder: number
-  backgroundImageUrl?: string | null
-  maximum?: number
-}
+import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
+import type { WalletOrderItem } from '@/types/wallet/WalletOrder'
+
+const router = useRouter()
 
 // 화면에서 사용할 카드 타입
 interface WalletCard {
@@ -29,12 +22,6 @@ interface WalletCard {
   balance: number
   displayOrder: number
   bgColorClass: string
-}
-
-// 순서 변경 API용 타입
-interface WalletOrderItem {
-  walletId: string
-  displayOrder: number
 }
 
 // 색상 배열
@@ -88,6 +75,7 @@ const saveOrder = async () => {
   // 현재 카드 순서대로 displayOrder 부여
   const walletOrderList: WalletOrderItem[] = cards.value.map((card, index) => ({
     walletId: card.walletId,
+    // 백엔드 로직에 따라 2부터 순서 반영
     displayOrder: index + 2,
   }))
   walletOrderList.forEach((item) => {
@@ -96,30 +84,24 @@ const saveOrder = async () => {
   try {
     await updateWalletOrder(walletOrderList)
 
-    // 성공 시: 저장된 순서로 화면 업데이트
-    cards.value = cards.value.map((card, index) => ({
+    // 성공 시 저장된 순서로 화면 업데이트
+    const sorted = [...cards.value].sort((a, b) => a.displayOrder - b.displayOrder)
+    cards.value = sorted.map((card, index) => ({
       ...card,
       displayOrder: index,
     }))
 
     // 저장 후 상태 초기화
     hasUnsavedChanges.value = false
-
     alert('저장 완료!')
 
-    // 데이터 새로고침
+    router.push('/order').then(() => {
+      window.location.reload()
+    })
   } catch (error) {
-    // CORS 에러 등 네트워크 오류 처리
     console.error('순서 저장 실패:', error)
-
     console.log('전송한 데이터:', walletOrderList)
-
-    // 에러 발생 시에도 로컬에서는 순서 유지
-    // 백엔드 연결이 안 될 때 임시로 화면만 업데이트
-    cards.value = cards.value.map((card, index) => ({
-      ...card,
-      displayOrder: index + 1,
-    }))
+    alert('저장에 실패했어요.')
     hasUnsavedChanges.value = false
   }
 }
