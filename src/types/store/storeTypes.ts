@@ -20,3 +20,10 @@ export interface LocalStoreResponseDTO {
   localCurrencyName: string
   distance: number
 }
+
+export interface ClusteredStore {
+  key: string
+  latitude: number
+  longitude: number
+  stores: LocalStoreResponseDTO[]
+}
