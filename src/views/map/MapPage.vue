@@ -140,7 +140,7 @@ const handleResearchBtnClick = () => {
   if (!mapRef.value) return
 
   const center = mapRef.value.getMapCenterCoordinates()
-  if (mapLatitude.value !== undefined && mapLongitude.value != undefined) {
+  if (center) {
     mapLatitude.value = center?.getLat()!
     mapLongitude.value = center?.getLng()!
   }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import {
   KakaoMap,
   KakaoMapMarker,
@@ -67,15 +67,19 @@ const clusteredStores = computed(() => {
   return clusters
 })
 
+const mapEventListeners: any[] = []
+
 const onLoadKakaoMap = (mapRef: kakao.maps.Map) => {
   map.value = mapRef
-  ;(window as any).kakao.maps.event.addListener(mapRef, 'zoom_changed', () => {
+  const zoomListener = (window as any).kakao.maps.event.addListener(mapRef, 'zoom_changed', () => {
     const newLevel = mapRef.getLevel()
     mapLevel.value = newLevel
   })
-  ;(window as any).kakao.maps.event.addListener(mapRef, 'dragend', () => {
+  const dragListener = (window as any).kakao.maps.event.addListener(mapRef, 'dragend', () => {
     showResearchButton.value = true
   })
+
+  mapEventListeners.push(zoomListener, dragListener)
 }
 
 const panTo = (lat: number, lon: number) => {
@@ -106,7 +110,7 @@ const getMapCenterCoordinates = () => map.value?.getCenter()
 const handleClusterClick = (cluster: ClusteredStore) => {
   if (cluster.stores.length === 1) {
     // 단일 매장인 경우 바로 선택
-    selectedStore.value = cluster.stores[0].name
+    selectedStore.value = cluster.stores[0].availableMerchantId
     selectedCluster.value = undefined
   } else {
     // 다중 매장인 경우 클러스터 선택 토글
@@ -134,6 +138,12 @@ const selectedClusterStores = computed(() => {
 defineExpose({
   panTo,
   getMapCenterCoordinates,
+})
+
+onUnmounted(() => {
+  mapEventListeners.forEach((listener) => {
+    ;(window as any).kakao.maps.event.removeListener(listener)
+  })
 })
 </script>
 
@@ -171,7 +181,7 @@ defineExpose({
           :cluster="cluster"
           :is-selected="
             selectedCluster === cluster.key ||
-            (cluster.stores.length === 1 && selectedStore === cluster.stores[0].name)
+            (cluster.stores.length === 1 && selectedStore === cluster.stores[0].availableMerchantId)
           "
           :map-level="mapLevel"
           @click="handleClusterClick(cluster)"
