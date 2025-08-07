@@ -4,36 +4,52 @@ import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
 import { Lock, User, ChevronRight } from 'lucide-vue-next'
 import { useRouter } from 'vue-router'
+import { login } from '@/api/auth'
+import type { LoginRequest, LoginResponse } from '@/types/auth'
 import axios from 'axios'
 
 const router = useRouter()
 const username = ref('')
 const password = ref('')
+const isLoading = ref(false)
+const errorMessage = ref('')
 
 async function onLogin() {
-  const payload = {
-    username: username.value,
-    password: password.value,
-  }
+  if (isLoading.value) return
+  isLoading.value = true
+  errorMessage.value = ''
 
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_APP_BASE_URL}/api/members/login`,
-      payload,
-    )
+    const loginData: LoginRequest = {
+      username: username.value,
+      password: password.value,
+    }
 
-    const token = response.data?.data?.accessToken
+    const response: LoginResponse | null = await login(loginData)
 
-    if (!token) {
-      alert('로그인 실패: 토큰이 없습니다.')
+    // ✅ null/undefined 체크 추가
+    if (!response) {
+      errorMessage.value = '서버에서 응답이 없습니다.'
+      isLoading.value = false
       return
     }
 
-    localStorage.setItem('accessToken', token)
-    router.push('/Home')
-  } catch (error) {
-    console.error('로그인 중 오류 발생:', error)
-    alert('서버 오류가 발생했습니다.')
+    const { accessToken } = response
+    localStorage.setItem('ACCESS_TOKEN', accessToken)
+
+    router.push('/home')
+  } catch (err: unknown) {
+    console.error('로그인 오류:', err)
+
+    if (axios.isAxiosError(err)) {
+      errorMessage.value = err.response?.data?.message || '로그인에 실패했습니다.'
+    } else if (err instanceof Error) {
+      errorMessage.value = err.message
+    } else {
+      errorMessage.value = '알 수 없는 오류가 발생했습니다.'
+    }
+  } finally {
+    isLoading.value = false
   }
 }
 </script>

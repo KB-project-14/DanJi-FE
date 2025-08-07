@@ -8,10 +8,22 @@ import type {
   SetPinResponse,
 } from '@/types/auth'
 
-// 로그인
+import axios from 'axios'
+
 export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
-  const { data } = await post<LoginResponse>('/api/auth/login', payload)
-  return data.data
+  console.log('[login] 요청 시작됨')
+  const response = await axios.post(
+    `${import.meta.env.VITE_APP_BASE_URL}/api/members/login`, // ✅ 수정된 경로!
+    payload,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  )
+
+  console.log('[login] 응답:', response)
+  return response.data.data
 }
 
 // 회원가입

@@ -20,7 +20,7 @@ export const instance: AxiosInstance = axios.create({
 })
 
 instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken')
+  const token = localStorage.getItem('ACCESS_TOKEN')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
