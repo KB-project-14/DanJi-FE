@@ -27,7 +27,6 @@ async function onLogin() {
 
     const response: LoginResponse | null = await login(loginData)
 
-    // ✅ null/undefined 체크 추가
     if (!response) {
       errorMessage.value = '서버에서 응답이 없습니다.'
       isLoading.value = false

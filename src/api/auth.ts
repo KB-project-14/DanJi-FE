@@ -13,7 +13,7 @@ import axios from 'axios'
 export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
   console.log('[login] 요청 시작됨')
   const response = await axios.post(
-    `${import.meta.env.VITE_APP_BASE_URL}/api/members/login`, // ✅ 수정된 경로!
+    `${import.meta.env.VITE_APP_BASE_URL}/api/members/login`,
     payload,
     {
       headers: {
