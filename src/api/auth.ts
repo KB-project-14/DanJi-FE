@@ -1,4 +1,5 @@
 import { post } from '@/api/api'
+import axios from 'axios'
 import type {
   LoginRequest,
   LoginResponse,
@@ -10,8 +11,8 @@ import type {
 
 // 로그인
 export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
-  const { data } = await post<LoginResponse>('/api/auth/login', payload)
-  return data.data
+  const res = await axios.post(`${import.meta.env.VITE_APP_BASE_URL}/auth/login`, payload)
+  return res.data
 }
 
 // 회원가입
