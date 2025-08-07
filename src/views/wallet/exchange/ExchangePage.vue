@@ -16,6 +16,7 @@ import type { BenefitType } from '@/types/local/localTypes'
 import type { TransferRequestDTO } from '@/types/transaction/TransactionType'
 import { TRANSACTION_TYPE } from '@/constants/Transaction'
 import usePostTransfer from '@/composables/queries/transaction/usePostTransfer'
+import router from '@/router'
 const route = useRoute()
 const cardId = route.params.id as string
 const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
@@ -31,7 +32,24 @@ const postExchange = (cost: number, toWalletId: string) => {
     type: TRANSACTION_TYPE.CONVERT,
   }
 
-  mutate(requestBody)
+  mutate(requestBody, {
+    onSuccess: () => {
+      router.push({
+        name: 'ExchangeCompletePage',
+        query: {
+          success: 'true',
+        },
+      })
+    },
+    onError: () => {
+      router.push({
+        name: 'ExchangeCompletePage',
+        query: {
+          success: 'false',
+        },
+      })
+    },
+  })
 }
 
 // 더미 거래 데이터
@@ -90,6 +108,7 @@ const selectedToCardData = computed(() => {
       incentiveAmount: 0,
       transactions: [],
       benefitType: 'INCENTIVE' as BenefitType,
+      walletId: '',
     }
   )
 })
@@ -134,7 +153,7 @@ const confirmExchange = (isConvert: boolean) => {
   showModal.value = false
 
   if (isConvert) {
-    postExchange(exchangeInput.value ?? 0, selectedToCard.value)
+    postExchange(exchangeInput.value ?? 0, selectedToCardData.value.walletId)
   } else {
     postExchange(exchangeInput.value ?? 0, CASH_WALLET_ID)
   }
@@ -177,6 +196,7 @@ const confirmExchange = (isConvert: boolean) => {
               :cardName="selectedCard.localCurrencyName"
               :fromCardName="selectedCard.localCurrencyName"
               :benefit-type="selectedToCardData.benefitType"
+              :to-card-list="cardList.filter((item) => item.walletId !== cardId)"
             />
 
             <!-- 지역 → 현금 -->

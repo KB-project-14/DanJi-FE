@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { HandCoins } from 'lucide-vue-next'
 import type { BenefitType } from '@/types/local/localTypes'
 import { benefitTypeTextMap } from '@/utils/benefit'
+import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 
 const props = defineProps<{
   balance: number
@@ -14,20 +15,13 @@ const props = defineProps<{
   mode?: 'region' | 'cash' // 지역→지역인지, 지역→현금인지 구분
   fromCardName: string
   benefitType: BenefitType
+  toCardList: WalletResponseDtoType[]
 }>()
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: number | null): void
   (e: 'select-card', value: string): void
 }>()
-
-// 카드 목록
-const sortedCards = [
-  { id: 1, name: '동백전', percentage: 7 },
-  { id: 2, name: '서울Pay', percentage: 10 },
-  { id: 3, name: '강원상품권', percentage: 10 },
-  { id: 4, name: '부산Pay', percentage: 10 },
-]
 
 // To 카드 선택 (지역→지역 모드일 때만 사용)
 const selectedCard = ref('')
@@ -45,9 +39,9 @@ const handleSelect = () => {
 
 // 혜택 문구 (지역→지역에서만 사용)
 const selectedCardBenefit = computed(() => {
-  const card = sortedCards.find((c) => c.name === selectedCard.value)
+  const card = props.toCardList.find((c) => c.localCurrencyName === selectedCard.value)
   return card
-    ? `${card.name} 혜택 : ${benefitTypeTextMap[props.benefitType]} ${card.percentage}%`
+    ? `${card.localCurrencyName} 혜택 : ${benefitTypeTextMap[props.benefitType]} ${card.percentage}%`
     : ''
 })
 </script>
@@ -98,11 +92,11 @@ const selectedCardBenefit = computed(() => {
         >
           <option value="">카드 선택</option>
           <option
-            v-for="card in sortedCards.filter((c) => c.name !== props.fromCardName)"
-            :key="card.id"
-            :value="card.name"
+            v-for="card in toCardList.filter((c) => c.localCurrencyId !== props.fromCardName)"
+            :key="card.localCurrencyId"
+            :value="card.localCurrencyName"
           >
-            {{ card.name }}
+            {{ card.localCurrencyName }}
           </option>
         </select>
 

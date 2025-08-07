@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import { calculateExchangeRegionToRegion } from '@/utils/exchange'
 
 import { ArrowDown } from 'lucide-vue-next'
-
-const router = useRouter()
 
 const props = defineProps<{
   fromCard: { name: string; percentage: number }
@@ -18,12 +15,6 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'confirm'): void
 }>()
-
-const handleConfirm = () => {
-  console.log('환전 API 연동 예정')
-  emit('confirm')
-  router.push('/exchange/complete')
-}
 
 // 계산 결과 가져오기
 const exchangeResult = computed(() =>
@@ -89,7 +80,7 @@ const exchangeResult = computed(() =>
         <danji-button
           class="!px-[0.5rem] !py-[0.5rem] flex-1 h-[5rem] whitespace-nowrap text-center"
           variant="small"
-          @click="handleConfirm"
+          @click="emit('confirm')"
         >
           환전
         </danji-button>
