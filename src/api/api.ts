@@ -2,8 +2,6 @@ import type { ApiError } from '@/types/types'
 import axios, { type AxiosInstance } from 'axios'
 import type { AxiosResponse } from 'axios'
 
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL
-
 // API Response 공통 타입 - error 등 구체적인 타입은 수정 가능성 있음
 export interface ApiResponse<T> {
   data: T
@@ -16,7 +14,7 @@ export const instance: AxiosInstance = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    //  Authorization: `${getAccessTokenLocalStorage()}`
+    Authorization: `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`,
   },
 })
 
