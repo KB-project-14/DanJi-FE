@@ -79,7 +79,7 @@ const localCurrencyAfterCharge = computed(() => {
 })
 
 // 현재 통합지갑 잔액
-const walletCurrentBalance = ref(cashWalletInfo.value.balance)
+const walletCurrentBalance = computed(() => cashWalletInfo.value.balance)
 
 // 충전 후 통합지갑 잔액
 const walletAfterCharge = computed(() => {
@@ -113,7 +113,7 @@ const handleCharge = async () => {
 
   router.push({
     name: 'ChargeCompletePage',
-    query: { success: result ? 'true' : 'false' },
+    query: { success: result.success ? 'true' : 'false' },
   })
 }
 </script>

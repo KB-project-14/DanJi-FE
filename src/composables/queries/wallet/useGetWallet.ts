@@ -11,7 +11,7 @@ export const getWallet = async (walletId: string): Promise<WalletResponseDtoType
 
 const useGetWallet = (walletId: string) => {
   const { data } = useQuery<WalletResponseDtoType>({
-    queryKey: WALLET_KEYS.transactions(walletId),
+    queryKey: WALLET_KEYS.detail(walletId),
     queryFn: () => getWallet(walletId),
     staleTime: 1000 * 60,
   })
