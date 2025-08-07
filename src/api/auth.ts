@@ -11,7 +11,6 @@ import type {
 import axios from 'axios'
 
 export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
-  console.log('[login] 요청 시작됨')
   const response = await axios.post(
     `${import.meta.env.VITE_APP_BASE_URL}/api/members/login`,
     payload,
@@ -21,8 +20,6 @@ export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
       },
     },
   )
-
-  console.log('[login] 응답:', response)
   return response.data.data
 }
 
