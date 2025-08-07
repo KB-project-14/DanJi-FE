@@ -15,23 +15,6 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'confirm'): void
 }>()
-
-const handleConfirm = async () => {
-  try {
-    // 환전 API 연동
-    const isSuccess = true //  API 응답에 따라 true/false 설정
-
-    router.push({
-      path: '/exchange/complete',
-      query: { success: isSuccess ? 'true' : 'false' },
-    })
-  } catch (err) {
-    router.push({
-      path: '/exchange/complete',
-      query: { success: 'false' },
-    })
-  }
-}
 </script>
 
 <template>
@@ -86,7 +69,7 @@ const handleConfirm = async () => {
         <danji-button
           class="flex-1 !px-[0.5rem] !py-[0.5rem] h-[5rem] whitespace-nowrap text-center"
           variant="small"
-          @click="handleConfirm"
+          @click="emit('confirm')"
         >
           환전
         </danji-button>

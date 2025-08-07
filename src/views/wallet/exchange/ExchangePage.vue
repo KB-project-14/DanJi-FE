@@ -13,7 +13,7 @@ import ExchangCashConfirmModal from '@/components/wallet/modal/ExchangCashConfir
 import { calculateExchangeRegionToRegion, calculateExchangeRegionToCash } from '@/utils/exchange'
 import useGetWalletList from '@/composables/queries/wallet/getWalletList'
 import type { BenefitType } from '@/types/local/localTypes'
-import type { TransferRequestDTO } from '@/types/transaction/TransactionType'
+import type { TransactionType, TransferRequestDTO } from '@/types/transaction/TransactionType'
 import { TRANSACTION_TYPE } from '@/constants/Transaction'
 import usePostTransfer from '@/composables/queries/transaction/usePostTransfer'
 import router from '@/router'
@@ -23,13 +23,13 @@ const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
 const cardList = useGetWalletList('LOCAL')
 const { mutate } = usePostTransfer()
 
-const postExchange = (cost: number, toWalletId: string) => {
+const postExchange = (cost: number, toWalletId: string, type: TransactionType) => {
   const requestBody: TransferRequestDTO = {
     amount: cost,
     fromWalletId: cardId,
     toWalletId: toWalletId,
     transactionLogging: true,
-    type: TRANSACTION_TYPE.CONVERT,
+    type: type,
   }
 
   mutate(requestBody, {
@@ -145,17 +145,16 @@ const closeModal = () => {
 }
 
 const confirmExchange = (isConvert: boolean) => {
-  console.log('환전 확정!', {
-    amount: exchangeInput.value,
-    from: selectedCard.value?.localCurrencyName,
-    to: selectedToCard.value,
-  })
   showModal.value = false
 
   if (isConvert) {
-    postExchange(exchangeInput.value ?? 0, selectedToCardData.value.walletId)
+    postExchange(
+      exchangeInput.value ?? 0,
+      selectedToCardData.value.walletId,
+      TRANSACTION_TYPE.CONVERT,
+    )
   } else {
-    postExchange(exchangeInput.value ?? 0, CASH_WALLET_ID)
+    postExchange(exchangeInput.value ?? 0, CASH_WALLET_ID, TRANSACTION_TYPE.REFUND)
   }
 }
 </script>
