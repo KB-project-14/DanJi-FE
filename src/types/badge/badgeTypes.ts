@@ -1,4 +1,4 @@
-import { Ref, ComputedRef, InjectionKey } from "vue"
+import type { Ref, ComputedRef, InjectionKey } from "vue"
 
 export type BadgeType = 'NORMAL' | 'SPECIAL'
 
