@@ -122,9 +122,14 @@ const gradient = ref(false)
 const gradientType = ref<GradientType>('linear')
 const gradientStartColor = ref('#000000')
 const gradientEndColor = ref('#38bdf8')
+
+const handleClose = () => {
+  console.log('결제 페이지 닫기')
+  router.push('/home')
+}
 </script>
 <template>
-  <layout :header-type="'pay'" :is-bottom-nav="false">
+  <layout :header-type="'pay'" :is-bottom-nav="false" @right-click="handleClose">
     <template #content>
       <div class="w-full h-full bg-Gray-0 overflow-hidden">
         <!-- QR / 현장결제 전환 -->
