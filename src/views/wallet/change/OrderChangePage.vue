@@ -88,7 +88,7 @@ const saveOrder = async () => {
   // 현재 카드 순서대로 displayOrder 부여
   const walletOrderList: WalletOrderItem[] = cards.value.map((card, index) => ({
     walletId: card.walletId,
-    displayOrder: index + 1,
+    displayOrder: index + 2,
   }))
   walletOrderList.forEach((item) => {
     const wallet = cards.value.find((w) => w.walletId === item.walletId)
