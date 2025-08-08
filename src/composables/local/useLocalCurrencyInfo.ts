@@ -1,7 +1,7 @@
 import { computed, type Ref } from 'vue'
 import useGetLocalCurrencies from '@/composables/queries/local/useGetLocalCurrencies'
 import type { LocalcurrencyListRequestDTO } from '@/types/local/localTypes'
-import { benefitTypeTextMap } from '@/utils/benefit'
+import { benefitTypeTextMap } from '@/constants/BenefitMapper'
 
 export default function useLocalCurrencyInfo(
   requestQuery: Ref<Partial<LocalcurrencyListRequestDTO>>,

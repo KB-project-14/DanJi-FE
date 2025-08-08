@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { format } from 'date-fns'
 import { HandCoins } from 'lucide-vue-next'
 import type { BenefitType } from '@/types/local/localTypes'
-import { benefitTypeTextMap } from '@/utils/benefit'
+import { benefitTypeTextMap } from '@/constants/BenefitMapper'
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 
 // 충전/인센티브 금액 알기위해 날짜 받기
