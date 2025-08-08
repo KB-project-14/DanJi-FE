@@ -30,7 +30,7 @@ const iconComponent = computed(() => {
 const handleClick = () => {
   switch (BottomNavProps.text) {
     case '지갑':
-      router.replace('/')
+      router.replace('/home')
       break
     case '지도':
       router.replace('/map')

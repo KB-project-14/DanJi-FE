@@ -5,7 +5,7 @@ import BottomNavItem from './BottomNavItem.vue'
 const route = useRoute()
 
 const ITEMS = [
-  { text: '지갑', path: '/' },
+  { text: '지갑', path: '/home' },
   { text: '지도', path: '/map' },
   { text: 'QR', path: '/qr' },
   { text: '뱃지', path: '/badge' },
