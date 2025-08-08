@@ -69,6 +69,10 @@ export default {
         'fade-in-scale': 'fade-in-scale 0.25s ease-out forwards',
         'fade-out-scale': 'fade-out-scale 0.25s ease-in forwards',
       },
+      height: {
+        'screen-mobile': ['100vh', '100dvh'],
+        'screen-dynamic': 'calc(var(--vh, 1vh) * 100)',
+      },
     },
   },
   plugins: [
