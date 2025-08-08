@@ -116,11 +116,11 @@ export function provideBadgeCollection(): BadgeCollection {
     },
     {
       badge_id: '13',
-      name: '충남',
-      image: 'http://danji.cloud/static/images/badge/chungnamspecial.webp',
+      name: '독도',
+      image: 'http://danji.cloud/static/images/badge/dokdospecial.webp',
       badge_type: 'SPECIAL' as BadgeType,
       region_id: 9,
-      comment: '딸기향 가득한 봄날, 달콤한 미소가 피어납니다.',
+      comment: '동해의 푸른 파도 위, 묵묵히 자리를 지키는 우리 땅, 독도입니다.',
     },
     {
       badge_id: '14',
