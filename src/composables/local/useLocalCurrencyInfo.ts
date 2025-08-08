@@ -1,12 +1,12 @@
 import { computed, type Ref } from 'vue'
 import useGetLocalCurrencies from '@/composables/queries/local/useGetLocalCurrencies'
-import type { localcurrencyListRequestDtoType } from '@/types/local/localTypes'
+import type { LocalcurrencyListRequestDTO } from '@/types/local/localTypes'
 import { benefitTypeTextMap } from '@/utils/benefit'
 
 export default function useLocalCurrencyInfo(
-  requestQuery: Ref<Partial<localcurrencyListRequestDtoType>>,
+  requestQuery: Ref<Partial<LocalcurrencyListRequestDTO>>,
 ) {
-  const localCurrencyQuery = computed<localcurrencyListRequestDtoType>(() => ({
+  const localCurrencyQuery = computed<LocalcurrencyListRequestDTO>(() => ({
     benefitType: requestQuery.value.benefitType || null,
     city: requestQuery.value.city || null,
     localCurrencyId: requestQuery.value.localCurrencyId || null,

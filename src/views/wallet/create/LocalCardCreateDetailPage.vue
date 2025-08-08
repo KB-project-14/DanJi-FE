@@ -11,7 +11,7 @@ import useLocalCurrencyInfo from '@/composables/local/useLocalCurrencyInfo'
 import useLocalSelector from '@/composables/local/useLocalSelector'
 import router from '@/router'
 import useAddLocalCard from '@/composables/queries/local/useAddLocalCard'
-import type { localCardCreateRequestDtoType } from '@/types/local/localTypes'
+import type { LocalCardCreateRequestDTO } from '@/types/local/localTypes'
 
 const route = useRoute()
 const routeCityId = computed(() => Number(route.params.id))
@@ -54,7 +54,7 @@ const handleModalConfirm = async (region: string, city: string): Promise<void> =
 const { mutate, isPending, isError } = useAddLocalCard()
 
 const handleCompeleteClick = () => {
-  const requestBody: localCardCreateRequestDtoType = {
+  const requestBody: LocalCardCreateRequestDTO = {
     localCurrencyId: localCurrencyId.value,
     walletType: 'LOCAL',
   }
