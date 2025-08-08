@@ -192,7 +192,7 @@ onUnmounted(() => {
     <!-- 클러스터 선택 시 매장 목록 표시 -->
     <div
       v-if="selectedCluster && selectedClusterStores.length > 1"
-      class="absolute bottom-[15rem] left-[1.6rem] right-[1.6rem] z-[300] bg-White-0 rounded-[1.2rem] shadow-xl max-h-[20rem] overflow-hidden"
+      class="absolute bottom-[21rem] left-[1.6rem] right-[1.6rem] z-[300] bg-White-0 rounded-[1.2rem] shadow-xl max-h-[20rem] overflow-hidden"
     >
       <div class="p-[1.6rem] border-b border-Gray-1">
         <h3 class="Head02 text-Black-1">이 위치의 매장들</h3>
