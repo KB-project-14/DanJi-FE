@@ -131,63 +131,65 @@ const handleFilterUpdate = (newFilter: FilterType) => {
     :show-right-icon="true"
   >
     <template #content>
-      <!-- 카드 잔액 / 혜택 -->
-      <div class="p-[3rem]">
-        <div class="flex justify-between items-center mb-[2rem]">
-          <div>
-            <div class="flex items-center gap-2 relative">
-              <p class="Body00 text-Black-2">{{ cardInfo?.localCurrencyName }}</p>
-              <tooltip
-                position="top"
-                align="start"
-                :message="`이번달 ${cardInfo?.localCurrencyName}의 ${cardInfo?.benefitType}은 ${cardInfo?.percentage}% 입니다.`"
+      <div class="bg-White-1">
+        <!-- 카드 잔액 / 혜택 -->
+        <div class="p-[3rem]">
+          <div class="flex justify-between items-center mb-[2rem]">
+            <div>
+              <div class="flex items-center gap-2 relative">
+                <p class="Body00 text-Black-2">{{ cardInfo?.localCurrencyName }}</p>
+                <tooltip
+                  position="top"
+                  align="start"
+                  :message="`이번달 ${cardInfo?.localCurrencyName}의 ${cardInfo?.benefitType}은 ${cardInfo?.percentage}% 입니다.`"
+                />
+              </div>
+              <p class="Head0 text-Black-2">{{ cardInfo?.balance?.toLocaleString() }} 원</p>
+              <div class="flex items-center gap-2 relative">
+                <p class="Body04 text-Gray-5">충전 최대 한도 :</p>
+                <p class="Body01">{{ cardInfo?.maximum?.toLocaleString() }}원</p>
+              </div>
+            </div>
+
+            <div
+              class="relative w-[10rem] aspect-[1000/1586] rounded-xl border border-Gray-2 bg-white overflow-hidden"
+            >
+              <img
+                v-if="cardInfo?.backgroundImageUrl"
+                :src="`https://danji.cloud${cardInfo.backgroundImageUrl}`"
+                alt="카드 이미지"
+                class="absolute top-1/2 left-1/2 object-cover transform -translate-x-1/2 -translate-y-1/2 rotate-90 scale-[1.58]"
               />
             </div>
-            <p class="Head0 text-Black-2">{{ cardInfo?.balance?.toLocaleString() }} 원</p>
-            <div class="flex items-center gap-2 relative">
-              <p class="Body04 text-Gray-5">충전 최대 한도 :</p>
-              <p class="Body01">{{ cardInfo?.maximum?.toLocaleString() }}원</p>
+          </div>
+
+          <!-- 박스 -->
+          <div class="bg-Gray-1 rounded-xl p-[1.4rem] Body00 text-Black-2">
+            <div class="flex justify-between mb-[1.2rem] text-Gray-7">
+              <span>{{ boxLabel }} 충전한 금액:</span>
+              <span>{{ aggregateCharge.toLocaleString() }}원</span>
+            </div>
+            <div class="flex justify-between mb-[1.2rem] text-Gray-7">
+              <span>{{ boxLabel }} 받은 혜택:</span>
+              <span class="text-Blue-0">{{ aggregateIncentive.toLocaleString() }}원</span>
+            </div>
+            <div class="flex justify-between text-Gray-7">
+              <span>{{ boxLabel }} 충전 가능 금액:</span>
+              <span>{{ availableAmount.toLocaleString() }}원</span>
             </div>
           </div>
-
-          <div
-            class="relative w-[10rem] aspect-[1000/1586] rounded-xl border border-Gray-2 bg-white overflow-hidden"
-          >
-            <img
-              v-if="cardInfo?.backgroundImageUrl"
-              :src="`https://danji.cloud${cardInfo.backgroundImageUrl}`"
-              alt="카드 이미지"
-              class="absolute top-1/2 left-1/2 object-cover transform -translate-x-1/2 -translate-y-1/2 rotate-90 scale-[1.58]"
-            />
-          </div>
         </div>
 
-        <!-- 박스 -->
-        <div class="bg-Gray-1 rounded-xl p-[1.4rem] Body00 text-Black-2">
-          <div class="flex justify-between mb-[1.2rem] text-Gray-7">
-            <span>{{ boxLabel }} 충전한 금액:</span>
-            <span>{{ aggregateCharge.toLocaleString() }}원</span>
-          </div>
-          <div class="flex justify-between mb-[1.2rem] text-Gray-7">
-            <span>{{ boxLabel }} 받은 혜택:</span>
-            <span class="text-Blue-0">{{ aggregateIncentive.toLocaleString() }}원</span>
-          </div>
-          <div class="flex justify-between text-Gray-7">
-            <span>{{ boxLabel }} 충전 가능 금액:</span>
-            <span>{{ availableAmount.toLocaleString() }}원</span>
-          </div>
-        </div>
+        <!-- 거래 내역 리스트 -->
+        <card-history-item-list
+          v-if="cardId"
+          :walletId="cardId"
+          :transactions="transactions"
+          :filter="filter"
+          :isLoading="isLoading"
+          @update:filter="handleFilterUpdate"
+        />
       </div>
-
-      <!-- 거래 내역 리스트 -->
-      <card-history-item-list
-        v-if="cardId"
-        :walletId="cardId"
-        :transactions="transactions"
-        :filter="filter"
-        :isLoading="isLoading"
-        @update:filter="handleFilterUpdate"
-      />
     </template>
   </Layout>
 </template>
