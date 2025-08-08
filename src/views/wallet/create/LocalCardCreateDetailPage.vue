@@ -11,7 +11,7 @@ import useLocalCurrencyInfo from '@/composables/local/useLocalCurrencyInfo'
 import useLocalSelector from '@/composables/local/useLocalSelector'
 import router from '@/router'
 import useAddLocalCard from '@/composables/queries/local/useAddLocalCard'
-import type { localCardCreateRequestDtoType } from '@/types/local/localTypes'
+import type { LocalCardCreateRequestDTO } from '@/types/local/localTypes'
 
 const route = useRoute()
 const routeCityId = computed(() => Number(route.params.id))
@@ -54,7 +54,7 @@ const handleModalConfirm = async (region: string, city: string): Promise<void> =
 const { mutate, isPending, isError } = useAddLocalCard()
 
 const handleCompeleteClick = () => {
-  const requestBody: localCardCreateRequestDtoType = {
+  const requestBody: LocalCardCreateRequestDTO = {
     localCurrencyId: localCurrencyId.value,
     walletType: 'LOCAL',
   }
@@ -74,42 +74,46 @@ const handleCompeleteClick = () => {
 <template>
   <layout header-type="basic" header-title="지역화폐 카드 발급" showLeftIcon :is-bottom-nav="false">
     <template #content>
-      <!-- 상단 구분선 -->
-      <div class="w-full h-[0.1rem] bg-Gray-0" />
+      <div class="bg-White-1">
+        <!-- 상단 구분선 -->
+        <div class="w-full h-[0.1rem] bg-Gray-0" />
 
-      <!-- 지역 선택 칩 -->
-      <danji-chip
-        class="ms-[2.7rem] mt-[1.2rem]"
-        :is-active="true"
-        :is-icon="true"
-        @click="handleClickModal"
-      >
-        {{ localInfo.value?.city ?? localInfo.value?.province }}
-      </danji-chip>
-
-      <!-- 지역 필터 모달 -->
-      <local-filter-modal
-        :is-visible="isModalVisible"
-        v-bind:initial-region="selectedRegion"
-        v-bind:initial-city="selectedCity"
-        @close="handleClickModal"
-        @confirm="handleModalConfirm"
-      />
-
-      <!-- 카드 이미지 & 이름 컴포넌트 -->
-      <card-info :card-name="localCurrencyName" />
-
-      <!-- 카드 혜택 정보 컴포넌트 -->
-      <card-benefit-info
-        :incentive-text="benefitDescription"
-        :max-charge-amount="String(benefitInfo?.maximum ?? 0)"
-      />
-
-      <!-- 하단 버튼 -->
-      <div class="flex justify-center mt-[3.4rem] mb-[4rem]">
-        <danji-button variant="large" @click="handleCompeleteClick" :disabled="isPending"
-          >발급하기</danji-button
+        <!-- 지역 선택 칩 -->
+        <danji-chip
+          class="ms-[2.7rem] mt-[1.2rem]"
+          :is-active="true"
+          :is-icon="true"
+          @click="handleClickModal"
         >
+          {{ localInfo.value?.city ?? localInfo.value?.province }}
+        </danji-chip>
+
+        <!-- 지역 필터 모달 -->
+        <local-filter-modal
+          :is-visible="isModalVisible"
+          v-bind:initial-region="selectedRegion"
+          v-bind:initial-city="selectedCity"
+          @confirm="handleModalConfirm"
+        />
+
+        <!-- 카드 이미지 & 이름 컴포넌트 -->
+        <card-info
+          :card-name="localCurrencyName"
+          :card-image="`http://danji.cloud${benefitInfo?.img}`"
+        />
+
+        <!-- 카드 혜택 정보 컴포넌트 -->
+        <card-benefit-info
+          :incentive-text="benefitDescription"
+          :max-charge-amount="String(benefitInfo?.maximum ?? 0)"
+        />
+
+        <!-- 하단 버튼 -->
+        <div class="flex justify-center mt-[3.4rem] mb-[4rem]">
+          <danji-button variant="large" @click="handleCompeleteClick" :disabled="isPending"
+            >발급하기</danji-button
+          >
+        </div>
       </div>
     </template>
   </layout>

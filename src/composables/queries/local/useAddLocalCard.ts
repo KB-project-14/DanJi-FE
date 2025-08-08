@@ -1,9 +1,9 @@
 import { WALLET_KEYS } from '@/constants/QueryKey'
-import type { localCardCreateRequestDtoType } from '@/types/local/localTypes'
+import type { LocalCardCreateRequestDTO } from '@/types/local/localTypes'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { post } from '@/api/api'
 
-const addLocalCard = async (newCardInfo: localCardCreateRequestDtoType) => {
+const addLocalCard = async (newCardInfo: LocalCardCreateRequestDTO) => {
   const { data } = await post('/api/wallets', newCardInfo)
   return data
 }
