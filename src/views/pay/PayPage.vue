@@ -11,6 +11,8 @@ import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 
 import { useRouter } from 'vue-router'
 import PayInfoModal from '@/components/common/modal/PayInfoModal.vue'
+import type { payRequestDtoType } from '@/types/pay/payTypes'
+import usePostPayment from '@/composables/queries/payment/usePostPayment'
 
 const router = useRouter()
 
@@ -22,9 +24,25 @@ const showLocalFailModal = ref(false)
 const showCashFailModal = ref(false)
 const showInfoModal = ref(false)
 
+// 지갑 단건조회 GET 추가 예정
+
 const localBalance = ref(50000) // 실제로는 API에서 가져온 지역화폐 잔액
 const paymentAmount = ref(600000) // 전체 결제요금 임시 설정 (6만원)
 const localPaymentAmount = ref(paymentAmount) // 지역화폐로 결제할 금액
+
+const { makePayment, data, isPending, error, isSuccess } = usePostPayment()
+
+// 임시로 지정한 post body 내용들
+const paymentData = computed((): payRequestDtoType => {
+  return {
+    availableMerchantId: '12DF8BC1-30A4-4608-A33D-50CC939C4430', // 임시로 가맹점 ID 설정(고정)
+    inputAmount: localPaymentAmount.value,
+    localWalletId: '74695305-1379-4FBE-A780-8ECB56FAB441', //추후 pinia에서 전역 값 가져오기
+    merchantAmount: paymentAmount.value,
+    type: selectedPayment.value === 'local' ? 'LOCAL_CURRENCY' : 'GENERAL',
+    walletPin: '',
+  }
+})
 
 // 결제 방식 선택 함수 (라디오 버튼처럼 동작)
 const selectPayment = (type: PaymentType) => {
@@ -92,9 +110,15 @@ const isPayDisabled = computed(() => {
   return false
 })
 
-const handleInfoConfirm = () => {
+const handleInfoConfirm = async () => {
   showInfoModal.value = false
-  router.push('/pay-complete')
+
+  router.push({
+    path: '/pay-pin',
+    state: {
+      paymentData: JSON.stringify(paymentData.value),
+    },
+  })
 }
 </script>
 <template>
