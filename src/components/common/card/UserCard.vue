@@ -39,7 +39,7 @@ const backgroundStyle = computed(() => {
     :class="{ 'has-bg': props.backgroundImageUrl }"
   >
     <!-- 오른쪽 하단 잔액  -->
-    <div class="absolute bottom-2 right-3 py-1 px-3 bg-white text-Brown-4 Head02 rounded">
+    <div class="absolute bottom-2 right-3 py-1 px-3 bg-white/50 text-Brown-4 Head02 rounded">
       남은 금액: {{ props.balance.toLocaleString() }} 원
     </div>
   </div>
