@@ -25,6 +25,7 @@ export interface localcurrencyResponseDtoType {
   benefitType: BenefitType
   maximum: number
   percentage: number
+  imageUrl: string
 }
 
 //TODO:: walletType을 나중에 지갑 쪽 타입이랑 합치기

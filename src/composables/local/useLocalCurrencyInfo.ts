@@ -37,6 +37,7 @@ export default function useLocalCurrencyInfo(
       type: currency.benefitType,
       percentage: currency.percentage,
       maximum: currency.maximum,
+      img: currency.imageUrl,
     }
   })
 
