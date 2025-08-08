@@ -24,7 +24,7 @@ const props = defineProps<{
       v-else
       :src="cardImage"
       :alt="`${cardName} 카드`"
-      class="mx-auto mt-[1.8rem] h-[19.8rem] w-[13.3rem] rounded-[0.8rem] object-cover"
+      class="rotate-90 h-[14rem] w-[22rem] mt-[6rem] mx-auto rounded-[1rem] shadow-md"
     />
 
     <!-- 카드 이름 -->
