@@ -71,5 +71,18 @@ export default {
       },
     },
   },
-  plugins: [require('tailwind-scrollbar-hide')],
+  plugins: [
+    require('tailwind-scrollbar-hide'),
+    function ({ addBase }) {
+      addBase({
+        '*': {
+          'scrollbar-width': 'none',
+          '-ms-overflow-style': 'none',
+        },
+        '*::-webkit-scrollbar': {
+          display: 'none',
+        },
+      })
+    },
+  ],
 }
