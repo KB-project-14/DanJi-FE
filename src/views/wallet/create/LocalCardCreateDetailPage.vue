@@ -92,7 +92,6 @@ const handleCompeleteClick = () => {
         :is-visible="isModalVisible"
         v-bind:initial-region="selectedRegion"
         v-bind:initial-city="selectedCity"
-        @close="handleClickModal"
         @confirm="handleModalConfirm"
       />
 
