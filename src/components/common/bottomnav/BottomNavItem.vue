@@ -30,19 +30,19 @@ const iconComponent = computed(() => {
 const handleClick = () => {
   switch (BottomNavProps.text) {
     case '지갑':
-      router.push('/home')
+      router.replace('/')
       break
     case '지도':
-      router.push('/map')
+      router.replace('/map')
       break
     case 'QR':
-      router.push('/qr')
+      router.replace('/qr')
       break
     case '뱃지':
-      alert('뱃지 페이지 준비 중')
+      router.replace('/badge')
       break
     case '마이':
-      router.push('/mypage')
+      router.replace('/mypage')
       break
   }
 }

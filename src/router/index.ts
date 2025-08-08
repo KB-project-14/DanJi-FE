@@ -29,7 +29,7 @@ import PayPinPage from '@/views/pay/PayPinPage.vue'
 const routes = [
   {
     path: '/',
-    component: CashPayFailModal,
+    component: HomePage,
   },
   {
     path: '/home',
