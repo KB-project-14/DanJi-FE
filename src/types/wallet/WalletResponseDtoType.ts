@@ -1,0 +1,14 @@
+import type { BenefitType } from '../local/localTypes'
+
+export interface WalletResponseDtoType {
+  walletId: string
+  walletType: 'CASH' | 'LOCAL'
+  localCurrencyId: string
+  localCurrencyName: string
+  benefitType: BenefitType
+  percentage: number
+  balance: number
+  displayOrder: number
+  backgroundImageUrl?: string | null
+  maximum?: number
+}

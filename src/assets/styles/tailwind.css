@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Pretendard 폰트 */
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
+    format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.Head0 {
+  @apply font-pretendard text-[2.4rem] font-bold leading-[1.5];
+}
+
+.Head01 {
+  @apply font-pretendard text-[2rem] font-bold leading-[1.5];
+}
+
+.Head02 {
+  @apply font-pretendard text-[1.6rem] font-bold leading-[1.5];
+}
+
+.Head03 {
+  @apply font-pretendard text-[1.6rem] font-semibold leading-[1.5];
+}
+
+.Head04 {
+  @apply font-pretendard text-[1.4rem] font-semibold leading-[1.5];
+}
+
+.Body00 {
+  @apply font-pretendard text-[1.4rem] font-medium leading-[1.5];
+}
+
+.Body01 {
+  @apply font-pretendard text-[1.2rem] font-medium leading-[1.5];
+}
+
+.Body02 {
+  @apply font-pretendard text-[1.4rem] font-normal leading-[1.5];
+}
+
+.Body03 {
+  @apply font-pretendard text-[1.2rem] font-normal leading-[1.5];
+}
+
+.Body04 {
+  @apply font-pretendard text-[1.1rem] font-bold leading-[1.5];
+}
