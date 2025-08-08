@@ -1,4 +1,4 @@
-export interface localResponseDtoType {
+export interface LocalResponseDTO {
   regionId: number
   province: string
   city: string | null
@@ -8,7 +8,7 @@ export interface localResponseDtoType {
 
 export type BenefitType = 'CASHBACK' | 'DISCOUNT_CHARGE' | 'DISCOUNT' | 'INCENTIVE'
 
-export interface localcurrencyListRequestDtoType {
+export interface LocalcurrencyListRequestDTO {
   benefitType: BenefitType | null
   city: string | null
   localCurrencyId: string | null
@@ -16,7 +16,7 @@ export interface localcurrencyListRequestDtoType {
   regionId: number | null
 }
 
-export interface localcurrencyResponseDtoType {
+export interface LocalcurrencyResponseDTO {
   createdAt: string
   updatedAt: string
   localCurrencyId: string
@@ -25,10 +25,11 @@ export interface localcurrencyResponseDtoType {
   benefitType: BenefitType
   maximum: number
   percentage: number
+  imageUrl: string
 }
 
 //TODO:: walletType을 나중에 지갑 쪽 타입이랑 합치기
-export interface localCardCreateRequestDtoType {
+export interface LocalCardCreateRequestDTO {
   localCurrencyId: string
   walletType: 'LOCAL'
 }

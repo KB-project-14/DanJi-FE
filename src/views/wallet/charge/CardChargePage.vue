@@ -7,7 +7,7 @@ import usePostTransfer from '@/composables/queries/transaction/usePostTransfer'
 import type { TransferRequestDTO } from '@/types/transaction/TransactionType'
 import { TRANSACTION_TYPE } from '@/constants/Transaction'
 import useGetWallet from '@/composables/queries/wallet/useGetWallet'
-import { benefitTypeTextMap } from '@/utils/benefit'
+import { benefitTypeTextMap } from '@/constants/BenefitMapper'
 
 const router = useRouter()
 const route = useRoute()
