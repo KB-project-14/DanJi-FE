@@ -25,6 +25,10 @@ const userCurrentLongitude = ref<number>(126.978)
 const mapLatitude = ref<number>(37.5665)
 const mapLongitude = ref<number>(126.978)
 
+// 헤더 검색창 상태 관리
+const searchValue = ref<string>('')
+const isSearchActive = ref<boolean>(false)
+
 const getUserLocation = (): Promise<{ lat: number; lng: number }> => {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
@@ -114,6 +118,11 @@ const handleFilterModalConfirm = (region: string, city: string): void => {
   isFilterModalVisible.value = false
   foldLocalStoreModal.value = false
 
+  // 헤더 검색창에 지역명 표시
+  const locationName = city || region
+  searchValue.value = locationName
+  isSearchActive.value = true
+
   const key = city || region
   const localCoordinates = LOCAL_COORDINATES[key].center
   console.log(localCoordinates)
@@ -146,6 +155,16 @@ const handleResearchBtnClick = () => {
   }
 }
 
+/**
+ * 검색창 초기화 핸들러
+ */
+const handleSearchClear = () => {
+  searchValue.value = ''
+  isSearchActive.value = false
+  resetSelection()
+  foldLocalStoreModal.value = true
+}
+
 onMounted(async () => {
   try {
     await getUserLocation()
@@ -162,7 +181,11 @@ onMounted(async () => {
     <template #content>
       <div class="flex flex-col h-full bg-White-1">
         <!-- Header Section -->
-        <map-header />
+        <map-header
+          :search-value="searchValue"
+          :is-search-active="isSearchActive"
+          @search-clear="handleSearchClear"
+        />
 
         <!-- Filters Section -->
         <map-filters

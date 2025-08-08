@@ -72,7 +72,7 @@ const handleRightClick = () => {
 }
 </script>
 <template>
-  <div class="flex flex-col h-screen">
+  <div class="flex flex-col h-screen-mobile w-screen">
     <!-- 헤더 타입에 따라 다른 컴포넌트 렌더링 -->
     <MainHeader v-if="headerProps.headerType === 'main'" />
     <PayHeader v-else-if="headerProps.headerType === 'pay'" @right-click="handleRightClick" />

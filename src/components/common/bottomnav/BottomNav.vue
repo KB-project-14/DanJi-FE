@@ -1,23 +1,29 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router'
 import BottomNavItem from './BottomNavItem.vue'
-import { ref } from 'vue'
 
-const ITEMS = ['지갑', '지도', 'QR', '뱃지', '마이']
+const route = useRoute()
 
-const activeItem = ref('지갑')
-const setActive = (item: string) => {
-  activeItem.value = item
+const ITEMS = [
+  { text: '지갑', path: '/home' },
+  { text: '지도', path: '/map' },
+  { text: 'QR', path: '/qr' },
+  { text: '뱃지', path: '/badge' },
+  { text: '마이', path: '/mypage' },
+]
+
+const getActiveItem = (path: string) => {
+  return route.path === path
 }
 </script>
 
 <template>
   <section class="flex h-[9rem] justify-between items-center px-[0.75rem] bg-White-0">
     <BottomNavItem
-      v-for="(text, _) in ITEMS"
-      :key="text"
-      :text="text"
-      :isActive="activeItem === text"
-      @click="setActive(text)"
+      v-for="item in ITEMS"
+      :key="item.text"
+      :text="item.text"
+      :isActive="getActiveItem(item.path)"
     />
   </section>
 </template>

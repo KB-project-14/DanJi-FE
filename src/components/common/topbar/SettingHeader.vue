@@ -51,7 +51,7 @@ const onRightClick = () => {
     </div>
 
     <!-- 제목 -->
-    <div class="text-center Head0">{{ title }}</div>
+    <div class="text-center Head01">{{ title }}</div>
 
     <!-- 오른쪽 아이콘 -->
     <div

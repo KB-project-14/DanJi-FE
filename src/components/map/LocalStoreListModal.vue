@@ -115,10 +115,7 @@ watch(() => props.isModalFold, resetToInitialPosition)
 </script>
 
 <template>
-  <div
-    ref="sheetRef"
-    class="fixed w-full max-w-[37.5rem] mx-auto bg-White-0 rounded-t-[2rem] shadow-xl"
-  >
+  <div ref="sheetRef" class="fixed w-full mx-auto bg-White-0 rounded-t-[2rem] shadow-xl">
     <!-- 드래그 핸들 -->
     <div
       class="w-full flex justify-center py-[1.4rem] cursor-grab active:cursor-grabbing"
