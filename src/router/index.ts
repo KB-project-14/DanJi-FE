@@ -23,7 +23,6 @@ import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDeta
 import PaymentPin from '@/views/auth/PaymentPinPage.vue'
 import BadgePage from '@/views/badge/BadgePage.vue'
 import LocalCardCreateSuccessPage from '@/views/wallet/create/LocalCardCreateSuccessPage.vue'
-import { Component } from 'lucide-vue-next'
 import PayPinPage from '@/views/pay/PayPinPage.vue'
 
 const routes = [

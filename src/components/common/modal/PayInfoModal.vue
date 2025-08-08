@@ -40,7 +40,7 @@ const handleCancel = () => {
       <div class="flex flex-col items-center justify-center">
         <!-- 텍스트 -->
         <div class="flex flex-col items-center justify-center space-y-2">
-          <span class="Head03">지역화폐로 결제하신 금액을 제외한</span>
+          <span class="Head03">지역화폐로 결제할 금액을 제외한</span>
           <span class="Head03"
             >금액은 <span class="text-Red-0">일반결제</span>로 자동 결제됩니다.</span
           >
