@@ -28,7 +28,7 @@ const props = defineProps<{
     />
 
     <!-- 카드 이름 -->
-    <div class="text-center mt-[0.4rem]">
+    <div class="text-center mt-[5rem]">
       <div class="text-Brown-4 Body01">{{ cardName }}</div>
     </div>
   </div>
