@@ -14,7 +14,7 @@ const usePostPayment = () => {
   const mutation = useMutation({
     mutationFn: postPayment,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [PAY_KEYS] })
+      queryClient.invalidateQueries({ queryKey: PAY_KEYS.all })
       console.log('결제 요청 성공', data)
       // store 업데이트 처리 추후 추가 예정
     },

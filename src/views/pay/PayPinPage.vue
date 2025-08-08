@@ -128,10 +128,10 @@ async function confirmPin() {
           <div class="flex justify-center mt-6 mb-4">
             <button
               class="w-[315px] py-5 text-3xl text-white bg-[#4e3d31] rounded-xl cursor-pointer disabled:bg-[#cccccc] disabled:text-white disabled:cursor-not-allowed"
-              :disabled="currentPin.length < 4"
+              :disabled="currentPin.length < 4 || isPending"
               @click="confirmPin"
             >
-              확인
+              {{ isPending ? '결제 처리 중..' : '확인' }}
             </button>
           </div>
         </div>
