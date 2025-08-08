@@ -25,9 +25,15 @@ const { selectedBadge } = useBadgeCollection()
       <span class="absolute top-[-13%] bg-White-0">{{ selectedBadge?.name }}</span>
 
       <span
+        v-if="selectedBadge?.badge_type === 'NORMAL'"
         class="flex justify-center items-center px-[7rem] text-center flex-wrap Body01 text-Black-0 break-keep"
-        >{{ selectedBadge?.region_id }} 지역화폐 사용 금액이 20만 원을 넘은 당신에게 주어지는 가장
-        빛나는 사랑의 증표입니다.🥇</span
+      >
+        지역화폐 사용 금액이 20만 원을 넘은 당신에게 주어지는 가장 빛나는 사랑의 증표입니다.🥇</span
+      >
+      <span
+        v-if="selectedBadge?.badge_type === 'SPECIAL'"
+        class="flex justify-center items-center px-[7rem] text-center flex-wrap Body01 text-Black-0 break-keep"
+        >{{ selectedBadge?.name }} 지역을 방문한 당신! 숨겨진 스페셜 뱃지를 획득하였습니다. ✨</span
       >
     </div>
   </div>

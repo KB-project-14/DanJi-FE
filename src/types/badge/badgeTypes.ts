@@ -1,6 +1,15 @@
-import type { Ref, ComputedRef, InjectionKey } from "vue"
+import type { Ref, ComputedRef, InjectionKey } from 'vue'
 
 export type BadgeType = 'NORMAL' | 'SPECIAL'
+
+export type NormalBadge = {
+  badge_id: string
+  name: string
+  images: string[]
+  badge_type: BadgeType
+  region_id: number
+  comment: string
+}
 
 export type Badge = {
   badge_id: string

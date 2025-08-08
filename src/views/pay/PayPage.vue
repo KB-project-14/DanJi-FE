@@ -12,7 +12,6 @@ import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import { useRouter } from 'vue-router'
 import PayInfoModal from '@/components/common/modal/PayInfoModal.vue'
 import type { payRequestDtoType } from '@/types/pay/payTypes'
-import usePostPayment from '@/composables/queries/payment/usePostPayment'
 
 const router = useRouter()
 
@@ -26,11 +25,10 @@ const showInfoModal = ref(false)
 
 // 지갑 단건조회 GET 추가 예정
 
+const cashBalance = ref(100000) // 현금 결제 금액 (임시로 0원 설정, 추후 API에서 가져올 예정)
 const localBalance = ref(50000) // 실제로는 API에서 가져온 지역화폐 잔액
-const paymentAmount = ref(600000) // 전체 결제요금 임시 설정 (6만원)
-const localPaymentAmount = ref(paymentAmount) // 지역화폐로 결제할 금액
-
-const { makePayment, data, isPending, error, isSuccess } = usePostPayment()
+const paymentAmount = ref(60000) // 전체 결제요금 임시 설정 (6만원)
+const localPaymentAmount = ref(paymentAmount.value) // 지역화폐로 결제할 금액
 
 // 임시로 지정한 post body 내용들
 const paymentData = computed((): payRequestDtoType => {
@@ -52,27 +50,31 @@ const selectPayment = (type: PaymentType) => {
 // 결제 버튼 클릭 함수
 const onClickPay = () => {
   if (selectedPayment.value === null) return
-  if (localPaymentAmount.value === 0) return // 지역화폐 0원 결제 방지
 
-  // 결제 금액보다 잔액이 부족한 경우(결제 수단별 분기)
-  let isInsufficient = false
-
-  // 지역화폐 결제의 경우 잔액 확인
   if (selectedPayment.value === 'local') {
-    isInsufficient = localBalance.value < paymentAmount.value
-  } else if (selectedPayment.value === 'cash') {
-    // 일반결제는 현금 잔액과 비교
-    isInsufficient = false // 임시로 false 설정
-  }
-  if (isInsufficient) {
-    if (selectedPayment.value === 'local') {
+    if (localPaymentAmount.value === 0) return // 지역화폐 0원 결제 방지
+
+    // 1. 지역화폐 잔액 부족 확인
+    if (localPaymentAmount.value > localBalance.value) {
       showLocalFailModal.value = true
-    } else if (selectedPayment.value === 'cash') {
-      showCashFailModal.value = true
+      return
     }
-    return
+
+    // 2. 나머지 금액(일반 결제)이 현금 잔액보다 큰지 확인
+    const remainingAmount = paymentAmount.value - localPaymentAmount.value
+    if (remainingAmount > cashBalance.value) {
+      alert('현금 계좌 잔액이 부족합니다.')
+      return
+    }
+  } else if (selectedPayment.value === 'cash') {
+    // 3. 현금 계좌 잔액이 전체 결제 금액보다 적은지 확인
+    if (paymentAmount.value > cashBalance.value) {
+      alert('현금 계좌 잔액이 부족합니다.')
+      return
+    }
   }
 
+  // 모든 검증 통과 시 결제 정보 모달 표시
   showInfoModal.value = true
 }
 
@@ -136,7 +138,9 @@ const handleInfoConfirm = async () => {
           class="relative flex flex-col w-full h-[10rem] px-[2.4rem] py-[2rem] mb-[1.4rem] bg-White-0 rounded-[1.6rem]"
         >
           <span class="text-Black-2 Head03">전체 금액</span>
-          <span class="absolute bottom-[2rem] right-[2.4rem] text-Yellow-0 Head03"> 600,000원</span>
+          <span class="absolute bottom-[2rem] right-[2.4rem] text-Yellow-0 Head03">
+            {{ paymentAmount.toLocaleString() }}원</span
+          >
         </section>
 
         <!-- 결제 수단 섹션 -->
@@ -172,7 +176,18 @@ const handleInfoConfirm = async () => {
 
             <!-- 카드 div(체크됐을 때만 표시) -->
             <div v-if="selectedPayment === 'local'">
-              <div class="w-[21rem] aspect-[1586/1000] rounded-[1.6rem] bg-Gray-10"></div>
+              <div class="relative w-[21rem] aspect-[1586/1000] rounded-[1.6rem] bg-Gray-10">
+                <img
+                  :src="`http://danji.cloud/static/images/localCurrency/gunsan.jpg`"
+                  alt="지역화폐-카드-이미지"
+                />
+                <div
+                  class="absolute flex flex-col bottom-[1.4rem] left-[2.1rem] px-[0.7rem] py-[0.2rem] bg-White-1/50"
+                >
+                  <span class="text-Black-1 Head03">부산페이</span>
+                  <span class="text-Black-2 Body01">부산 지역화폐</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -197,11 +212,6 @@ const handleInfoConfirm = async () => {
               </div>
 
               <span class="text-Black-1 Head04">일반결제</span>
-            </div>
-
-            <!-- 카드 div(선택됐을 때만 표시) -->
-            <div v-if="selectedPayment === 'cash'">
-              <div class="w-[21rem] aspect-[1586/1000] rounded-[1.6rem] bg-Gray-10"></div>
             </div>
           </div>
         </section>
