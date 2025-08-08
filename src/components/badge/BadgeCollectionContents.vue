@@ -7,7 +7,7 @@ import SpecialBadgeCollection from '@/components/badge/SpecialBadgeCollection.vu
 // 추후 수정 예정(카테고리에 맞는 뱃지만 렌더링할 수 있도록)
 const { category, regionBadges, specialBadges } = useBadgeCollection()
 
-const currentBadges = computed(() => (category.value === '지역' ? regionBadges : specialBadges))
+const currentBadges = computed(() => (category.value === 'NORMAL' ? regionBadges : specialBadges))
 const badgeCount = computed(() => currentBadges.value.length)
 </script>
 <template>
@@ -19,8 +19,8 @@ const badgeCount = computed(() => currentBadges.value.length)
     </div>
 
     <!-- 뱃지 목록 -->
-    <local-badge-collection v-if="category === '지역'" />
-    <special-badge-collection v-if="category === '스페셜'" />
+    <local-badge-collection v-if="category === 'NORMAL'" />
+    <special-badge-collection v-if="category === 'SPECIAL'" />
 
     <!-- 뱃지 없을 때 -->
     <div

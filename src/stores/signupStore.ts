@@ -5,6 +5,7 @@ export const useSignUpStore = defineStore('signUp', {
     name: '',
     username: '',
     password: '',
+    paymentPin: '',
   }),
   actions: {
     setInfo(payload: { name: string; username: string; password: string }) {
@@ -12,10 +13,14 @@ export const useSignUpStore = defineStore('signUp', {
       this.username = payload.username
       this.password = payload.password
     },
+    setPaymentPin(pin: string) {
+      this.paymentPin = pin
+    },
     reset() {
       this.name = ''
       this.username = ''
       this.password = ''
+      this.paymentPin = ''
     },
   },
 })

@@ -1,3 +1,5 @@
+import type { Ref, ComputedRef, InjectionKey } from "vue"
+
 export type BadgeType = 'NORMAL' | 'SPECIAL'
 
 export type Badge = {
@@ -10,7 +12,7 @@ export type Badge = {
 }
 
 export interface BadgeCollection {
-  category: Readonly<Ref<BadgeCategoryType>>
+  category: Readonly<Ref<BadgeType>>
   selectedBadge: Readonly<Ref<Badge | null>>
   showBadgeDetail: Readonly<Ref<boolean>>
 
@@ -19,7 +21,7 @@ export interface BadgeCollection {
   currentBadges: Readonly<ComputedRef<Badge[]>>
   badgeCount: Readonly<ComputedRef<number>>
 
-  changeCategory: (newCategory: BadgeCategoryType) => void
+  changeCategory: (newCategory: BadgeType) => void
   handleBadgeClick: (badge: Badge) => void
   handleBackFromDetail: () => void
 }
