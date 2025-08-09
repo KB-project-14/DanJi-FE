@@ -5,6 +5,7 @@ import 'swiper/css'
 import { ref, computed, onMounted, nextTick, defineProps, defineEmits } from 'vue'
 import UserCard from '@/components/common/card/UserCard.vue'
 import NoCard from '../common/card/NoCard.vue'
+import { benefitTypeTextMap } from '@/constants/BenefitMapper'
 
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 
@@ -104,7 +105,7 @@ onMounted(() => {
         <!-- 카드 이름 -->
         {{ sortedCards[currentIndex]?.localCurrencyName }} 카드 혜택 :
         <!-- 인센티브 종류 -->
-        {{ sortedCards[currentIndex]?.benefitType }}
+        {{ benefitTypeTextMap[sortedCards[currentIndex]?.benefitType] }}
         <!-- 몇 % 인지 -->
         {{ sortedCards[currentIndex]?.percentage }}%
       </span>
