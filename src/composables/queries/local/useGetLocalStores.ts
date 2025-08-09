@@ -23,8 +23,16 @@ const useGetLocalStores = (lat: Ref<number>, lng: Ref<number>) => {
 
   return useQuery<LocalStoreResponseDTO[]>({
     queryKey,
-    queryFn: () => getLocalStores({ latitude: lat.value, longitude: lng.value }),
-    staleTime: 1000 * 60,
+    queryFn: () => {
+      if (lat.value === null || lng.value === null) {
+        throw new Error('좌표가 설정되지 않았습니다.')
+      }
+
+      return getLocalStores({ latitude: lat.value, longitude: lng.value })
+    },
+    enabled: computed(() => lat.value !== null && lng.value !== null),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   })
 }
 

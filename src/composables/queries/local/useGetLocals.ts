@@ -16,7 +16,8 @@ const useGetLocals = () => {
   const { data } = useQuery<LocalResponseDTO[]>({
     queryKey: LOCAL_KEYS.all,
     queryFn: getLocals,
-    staleTime: 1000 * 60,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   })
 
   return data ?? []
