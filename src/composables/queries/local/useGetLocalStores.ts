@@ -1,28 +1,42 @@
-import { computed, type Ref } from 'vue'
+import { get } from '@/api/api'
+import { LOCAL_STORE_KEYS } from '@/constants/QueryKey'
+import type { LocalStoreResponseDTO, LocalStoreQueryParams } from '@/types/store/storeTypes'
+import { type Ref, computed } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
 
-// API 함수 (실제 구현에 맞게 수정)
-const fetchLocalStores = async (lat: number, lng: number): Promise<LocalStoreResponseDTO[]> => {
-  // 실제 API 호출 로직
-  const response = await fetch(`/api/stores?lat=${lat}&lng=${lng}`)
-  return response.json()
+const getLocalStores = async (query: LocalStoreQueryParams): Promise<LocalStoreResponseDTO[]> => {
+  const response = await get<LocalStoreResponseDTO[]>('/api/available-merchants', {
+    params: query,
+  })
+
+  // 카테고리 빈 문자열인 경우 '기타'로 대체
+  const mappedData = response.data.data.map((store) => ({
+    ...store,
+    category: store.category?.trim() === '' ? '기타' : store.category,
+  }))
+
+  return mappedData
 }
 
-export default function useGetLocalStores(
-  latitude: Ref<number | null>,
-  longitude: Ref<number | null>,
-) {
-  return useQuery({
-    queryKey: ['localStores', latitude, longitude],
+const useGetLocalStores = (lat: Ref<number | null>, lng: Ref<number | null>) => {
+  const queryKey = computed(() =>
+    lat.value !== null && lng.value !== null
+      ? LOCAL_STORE_KEYS.byLocation(lat.value, lng.value)
+      : ['localStores', 'disabled'],
+  )
+
+  return useQuery<LocalStoreResponseDTO[]>({
+    queryKey,
     queryFn: () => {
-      if (latitude.value === null || longitude.value === null) {
-        throw new Error('좌표가 설정되지 않았습니다.')
+      if (lat.value === null || lng.value === null) {
+        throw new Error('위치 정보가 없습니다.')
       }
-      return fetchLocalStores(latitude.value, longitude.value)
+      return getLocalStores({ latitude: lat.value, longitude: lng.value })
     },
-    enabled: computed(() => latitude.value !== null && longitude.value !== null),
-    staleTime: 5 * 60 * 1000, // 5분간 캐시
-    gcTime: 10 * 60 * 1000, // 10분간 메모리 보관
+    enabled: computed(() => lat.value !== null && lng.value !== null),
+    staleTime: 1000 * 60,
+    retry: false,
   })
 }
+
+export default useGetLocalStores
