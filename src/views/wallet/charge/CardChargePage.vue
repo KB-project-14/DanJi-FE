@@ -179,7 +179,7 @@ const handleCharge = async () => {
                 class="flex items-center gap-2 Body03 text-Yellow-1 transition-all duration-300"
                 :class="{ 'border-t border-Gray-3 pt-[0.8rem] mt-[0.4rem]': amount }"
               >
-                <span :class="{ 'line-through text-Yellow-0': amount, 'text-Yellow-0': !amount }">
+                <span :class="{ 'line-through text-Black-2': amount, 'text-Yellow-0': !amount }">
                   예상 수수료(1%): {{ fee.toLocaleString() }}원
                 </span>
                 <span v-if="amount" class="text-Red-0">수수료 면제 대상입니다!</span>
@@ -191,7 +191,7 @@ const handleCharge = async () => {
               </p>
               <p>
                 최종 충전 금액:
-                <span class="text-Red-0">{{ finalChargeAmount.toLocaleString() }}원</span>
+                <span class="text-Red-1 Body02">{{ finalChargeAmount.toLocaleString() }}원</span>
               </p>
             </div>
           </section>
