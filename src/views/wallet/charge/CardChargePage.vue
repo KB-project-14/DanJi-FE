@@ -15,11 +15,79 @@ const route = useRoute()
 
 const { mutate } = usePostTransfer()
 const routeWalletId = route.params.id as string
-const cashWallets = useGetWalletList('CASH')
-const CASH_WALLET_ID = computed(() => cashWallets.value?.[0]?.walletId || '').value
-const cashWalletInfo = useGetWallet(CASH_WALLET_ID)
-const localWalletInfo = useGetWallet(routeWalletId)
 
+// 통합지갑/지역지갑 정보
+const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
+const cashWalletInfo = useGetWallet(CASH_WALLET_ID) // ref<{ balance: number }>
+const localWalletInfo = useGetWallet(routeWalletId) // ref<{ balance: number, percentage: number, ... }>
+
+// 런칭 이벤트: 수수료 면제 (표시는 하되 계산/차감에는 반영 X)
+const EVENT_FEE_FREE = true
+
+// 충전할 금액
+const amount = ref<number>(0)
+
+// 금액 포맷 (콤마 + 원)
+const formattedAmount = computed(() => (amount.value ? amount.value.toLocaleString() + '원' : ''))
+
+// input 숫자만 저장
+const handleInput = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  const numericValue = target.value.replace(/[^0-9]/g, '')
+  amount.value = numericValue ? parseInt(numericValue, 10) : 0
+}
+
+// focus/blur 시 표시 전환
+const handleFocus = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  target.value = amount.value ? amount.value.toString() : ''
+}
+const handleBlur = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  target.value = formattedAmount.value
+}
+
+// 안전 기본값 (데이터 로딩 전 NaN/에러 방지)
+const walletCurrentBalance = computed(() => cashWalletInfo.value?.balance ?? 0)
+const localBalance = computed(() => localWalletInfo.value?.balance ?? 0)
+const localPercentage = computed(() => localWalletInfo.value?.percentage ?? 0)
+
+// 수수료 (표시용)
+const fee = computed(() => (amount.value ? amount.value * 0.01 : 0))
+
+// 인센티브 (표기 및 지역화폐 잔액 계산에만 사용)
+const incentive = computed(() =>
+  amount.value > 0 ? amount.value * (localPercentage.value / 100) : 0,
+)
+
+// 실제 결제 금액(통합지갑에서 빠질 금액) — 수수료 면제 시 수수료 없음
+const actualCharge = computed(() => (EVENT_FEE_FREE ? amount.value : amount.value + fee.value))
+
+// 최종 충전 금액 (충전 금액 + 인센티브)
+const finalChargeAmount = computed(() => {
+  return amount.value + incentive.value
+})
+
+// 충전 후 지역화폐 잔액
+const localCurrencyAfterCharge = computed(() => {
+  return localBalance.value + amount.value + incentive.value
+})
+
+// 충전 후 통합지갑 잔액 — 이벤트 중 수수료 미반영
+const walletAfterCharge = computed(() => {
+  if (!amount.value) return walletCurrentBalance.value
+  return walletCurrentBalance.value - actualCharge.value
+})
+
+// 버튼 활성화 여부
+const isDisabled = computed(() => !amount.value || walletAfterCharge.value < 0)
+
+// 금액 버튼
+const setAmount = (val: number) => {
+  amount.value += val
+}
+
+// API 호출 래퍼
 const postCharge = (cost: number): Promise<{ success: boolean }> => {
   const requestBody: TransferRequestDTO = {
     amount: cost,
@@ -28,7 +96,6 @@ const postCharge = (cost: number): Promise<{ success: boolean }> => {
     transactionLogging: true,
     type: TRANSACTION_TYPE.CHARGE,
   }
-
   return new Promise((resolve) => {
     mutate(requestBody, {
       onSuccess: () => resolve({ success: true }),
@@ -37,84 +104,16 @@ const postCharge = (cost: number): Promise<{ success: boolean }> => {
   })
 }
 
-// 충전할 금액
-const amount = ref<number>(0)
-
-// 금액 포맷 (콤마 + 원)
-const formattedAmount = computed(() => {
-  return amount.value ? amount.value.toLocaleString() + '원' : ''
-})
-
-// input 입력 시 숫자만 저장
-const handleInput = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  const numericValue = target.value.replace(/[^0-9]/g, '')
-  amount.value = numericValue ? parseInt(numericValue, 10) : 0
-}
-
-// focus 시 숫자만 보여주기
-const handleFocus = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  target.value = amount.value ? amount.value.toString() : ''
-}
-
-// blur 시 포맷된 값 보여주기
-const handleBlur = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  target.value = formattedAmount.value
-}
-
-// 수수료
-const fee = computed(() => (amount.value ? amount.value * 0.01 : 0))
-
-// 인센티브
-const incentive = computed(() =>
-  amount.value > 0 ? amount.value * (localWalletInfo.value.percentage / 100) : 0,
-)
-
-// 실제 결제 금액 (통합지갑에서 빠질 금액)
-const actualCharge = computed(() => (amount.value ? Math.floor(amount.value + fee.value) : 0))
-
-// 충전 후 지역화폐 잔액
-const localCurrencyAfterCharge = computed(() => {
-  return localWalletInfo.value.balance + amount.value + incentive.value
-})
-
-// 현재 통합지갑 잔액
-const walletCurrentBalance = computed(() => cashWalletInfo.value.balance)
-
-// 충전 후 통합지갑 잔액
-const walletAfterCharge = computed(() => {
-  if (!amount.value) return walletCurrentBalance.value
-  return walletCurrentBalance.value - amount.value - fee.value
-})
-
-// 버튼 활성화 여부
-const isDisabled = computed(() => {
-  return !amount.value || walletAfterCharge.value < 0
-})
-
-// 금액 버튼 클릭 시
-const setAmount = (val: number) => {
-  amount.value += val
-}
-
-// 충전 처리 로직
+// 충전 처리
 const processCharge = () => {
   const isCashWalletBalanceValid = actualCharge.value <= walletCurrentBalance.value
-
-  // 통합지갑 잔액 부족 시
-  if (!isCashWalletBalanceValid) {
-    return { success: false }
-  }
-
+  if (!isCashWalletBalanceValid) return { success: false }
+  // 서버에는 '충전 금액' 그대로 전송 (수수료 없음)
   return postCharge(amount.value)
 }
 
 const handleCharge = async () => {
-  // 충전 처리
   const result = await processCharge()
-
   router.push({
     name: 'ChargeCompletePage',
     query: { success: result.success ? 'true' : 'false' },
@@ -191,8 +190,8 @@ const handleCharge = async () => {
                 <span class="text-Yellow-0">{{ incentive.toLocaleString() }}원</span>
               </p>
               <p>
-                실제 결제될 금액:
-                <span class="text-Red-0">{{ actualCharge.toLocaleString() }}원</span>
+                최종 충전 금액:
+                <span class="text-Red-0">{{ finalChargeAmount.toLocaleString() }}원</span>
               </p>
             </div>
           </section>
