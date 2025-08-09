@@ -8,13 +8,15 @@ import type { TransferRequestDTO } from '@/types/transaction/TransactionType'
 import { TRANSACTION_TYPE } from '@/constants/Transaction'
 import useGetWallet from '@/composables/queries/wallet/useGetWallet'
 import { benefitTypeTextMap } from '@/constants/BenefitMapper'
+import useGetWalletList from '@/composables/queries/wallet/getWalletList'
 
 const router = useRouter()
 const route = useRoute()
 
 const { mutate } = usePostTransfer()
 const routeWalletId = route.params.id as string
-const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
+const cashWallets = useGetWalletList('CASH')
+const CASH_WALLET_ID = computed(() => cashWallets.value?.[0]?.walletId || '').value
 const cashWalletInfo = useGetWallet(CASH_WALLET_ID)
 const localWalletInfo = useGetWallet(routeWalletId)
 
