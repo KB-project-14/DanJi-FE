@@ -15,11 +15,10 @@ const route = useRoute()
 
 const { mutate } = usePostTransfer()
 const routeWalletId = route.params.id as string
-
-// 통합지갑/지역지갑 정보
-const CASH_WALLET_ID = '7333408f-212c-4c88-9089-2cf8b818456a'
-const cashWalletInfo = useGetWallet(CASH_WALLET_ID) // ref<{ balance: number }>
-const localWalletInfo = useGetWallet(routeWalletId) // ref<{ balance: number, percentage: number, ... }>
+const cashWallets = useGetWalletList('CASH')
+const CASH_WALLET_ID = computed(() => cashWallets.value?.[0]?.walletId || '').value
+const cashWalletInfo = useGetWallet(CASH_WALLET_ID)
+const localWalletInfo = useGetWallet(routeWalletId)
 
 // 런칭 이벤트: 수수료 면제 (표시는 하되 계산/차감에는 반영 X)
 const EVENT_FEE_FREE = true
