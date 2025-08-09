@@ -25,6 +25,9 @@ const userCurrentLongitude = ref<number>(126.978)
 const mapLatitude = ref<number>(37.5665)
 const mapLongitude = ref<number>(126.978)
 
+// 초기화 상태 관리
+const isLocationReady = ref<boolean>(false)
+
 // 헤더 검색창 상태 관리
 const searchValue = ref<string>('')
 const isSearchActive = ref<boolean>(false)
@@ -78,7 +81,12 @@ const getUserLocation = (): Promise<{ lat: number; lng: number }> => {
   })
 }
 
-const { data } = useGetLocalStores(mapLatitude, mapLongitude)
+// 위치가 준비된 후에만 가맹점 데이터 요청
+const { data } = useGetLocalStores(
+  computed(() => (isLocationReady.value ? mapLatitude.value : null)),
+  computed(() => (isLocationReady.value ? mapLongitude.value : null)),
+)
+
 const localStores = computed(() => data.value ?? [])
 
 const selectedFilter = ref<string>('전체')
@@ -126,6 +134,8 @@ const handleFilterModalConfirm = (region: string, city: string): void => {
   const key = city || region
   const localCoordinates = LOCAL_COORDINATES[key].center
   console.log(localCoordinates)
+
+  // 지역 선택 시 좌표 업데이트 및 가맹점 API 호출 트리거
   mapLatitude.value = localCoordinates.lat
   mapLongitude.value = localCoordinates.lng
   mapRef.value?.panTo(localCoordinates.lat, localCoordinates.lng)
@@ -165,14 +175,39 @@ const handleSearchClear = () => {
   foldLocalStoreModal.value = true
 }
 
-onMounted(async () => {
+/**
+ * 초기화 함수 - (호출 시간 테스트 -> 순서 로깅)
+ */
+const initializeApp = async () => {
   try {
-    await getUserLocation()
-    mapLatitude.value = userCurrentLatitude.value
-    mapLongitude.value = userCurrentLongitude.value
+    console.log('1. 지역 선택 API 호출 시작')
+    // 1. 지역 선택 API 먼저 호출 (useLocalSelector에서 처리)
+    await new Promise((resolve) => {
+      // 지역 데이터가 로드될 때까지 대기
+      setTimeout(resolve, 100)
+    })
+
+    console.log('2. 현재 위치 가져오기 시작')
+    // 2. 현재 위치 가져오기
+    const location = await getUserLocation()
+
+    console.log('3. 지도 좌표 업데이트')
+    // 3. 지도 좌표 업데이트
+    mapLatitude.value = location.lat
+    mapLongitude.value = location.lng
+
+    console.log('4. 가맹점 API 호출 허용')
+    // 4. 가맹점 API 호출 허용
+    isLocationReady.value = true
   } catch (error) {
     console.error('초기화 중 오류 발생:', error)
+    // 오류 발생 시에도 기본 좌표로 가맹점 API 호출 허용
+    isLocationReady.value = true
   }
+}
+
+onMounted(async () => {
+  await initializeApp()
 })
 </script>
 
@@ -199,6 +234,18 @@ onMounted(async () => {
 
         <!-- Map Section -->
         <div class="flex-1 overflow-hidden relative mt-[2.2rem]">
+          <div
+            v-if="!isLocationReady"
+            class="absolute inset-0 flex items-center justify-center bg-gray-100 z-10"
+          >
+            <div class="text-center">
+              <div
+                class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"
+              ></div>
+              <p class="text-gray-600">위치 정보를 가져오는 중...</p>
+            </div>
+          </div>
+
           <kakao-map-container
             ref="mapRef"
             :user-latitude="userCurrentLatitude"
