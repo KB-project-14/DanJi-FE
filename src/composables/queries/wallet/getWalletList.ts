@@ -20,9 +20,10 @@ const useGetWalletList = (walletType: 'CASH' | 'LOCAL') => {
   const { data } = useQuery<WalletResponseDtoType[]>({
     queryKey: WALLET_KEYS.list(walletType),
     queryFn: () => getWalletList(walletType),
-    staleTime: 1000 * 60,
-    refetchOnMount: true,
-    refetchOnWindowFocus: false,
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   })
 
   return computed(() => data.value ?? [])

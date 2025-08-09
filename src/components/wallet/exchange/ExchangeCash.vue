@@ -45,9 +45,9 @@ const excludedIncentive = computed(() => {
     <!-- 내가 충전한 금액 / 인센티브 -->
     <div class="Body03 text-Gray-6">
       {{ currentMonthLabel }} 충전한 금액:
-      <span class="text-Yellow-1">{{ props.chargedAmount.toLocaleString() }}원</span><br />
+      <span class="Body02 text-Black-2">{{ props.chargedAmount.toLocaleString() }}원</span><br />
       {{ currentMonthLabel }} 받은 인센티브({{ props.percentage }}%):
-      <span class="text-Yellow-1">{{ props.incentiveAmount.toLocaleString() }}원</span>
+      <span class="Body02 text-Black-2">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 
     <!-- 입력 UI -->

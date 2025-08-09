@@ -17,7 +17,7 @@ const goWalletPage = () => {
   <div class="aspect-[1586/700] rounded-xl overflow-hidden w-full shadow mx-auto flex flex-col">
     <!-- 상단 영역: 2/3 비율 -->
     <div class="flex flex-col items-start p-4 bg-Yellow-0/40 flex-[2]">
-      <span class="mb-1 Head4 text-Gray-6">통합지갑</span>
+      <span class="mb-1 Head4 text-Gray-6">KB 저축 계좌 775102-00-097294 </span>
       <span class="self-center Head0 text-Black">
         {{ (walletAmount ?? 0).toLocaleString() }}원
       </span>
