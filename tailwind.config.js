@@ -73,6 +73,9 @@ export default {
         'screen-mobile': ['100vh', '100dvh'],
         'screen-dynamic': 'calc(var(--vh, 1vh) * 100)',
       },
+      touchAction: {
+        manipulation: 'manipulation',
+      },
     },
   },
   plugins: [
@@ -87,6 +90,14 @@ export default {
           display: 'none',
         },
       })
+    },
+    function ({ addUtilities, theme }) {
+      const newUtilities = {
+        '.touch-manipulation': {
+          'touch-action': 'manipulation',
+        },
+      }
+      addUtilities(newUtilities, ['responsive'])
     },
   ],
 }
