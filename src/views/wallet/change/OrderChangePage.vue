@@ -7,7 +7,7 @@ import WalletItem from '@/components/common/wallet/WalletItem.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import draggable from 'vuedraggable'
 
-import useGetWalletList from '@/composables/queries/wallet/getWalletList'
+import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
 import updateWalletOrder from '@/composables/queries/wallet/patchWalletOrder'
 
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'

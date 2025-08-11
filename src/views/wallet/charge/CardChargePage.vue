@@ -8,7 +8,7 @@ import type { TransferRequestDTO } from '@/types/transaction/TransactionType'
 import { TRANSACTION_TYPE } from '@/constants/Transaction'
 import useGetWallet from '@/composables/queries/wallet/useGetWallet'
 import { benefitTypeTextMap } from '@/constants/BenefitMapper'
-import useGetWalletList from '@/composables/queries/wallet/getWalletList'
+import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
 
 const router = useRouter()
 const route = useRoute()
