@@ -30,11 +30,11 @@ const emit = defineEmits<{
           <p class="pb-[0.6rem] Body02">{{ props.fromCard.name }}</p>
           <p class="mb-[0.2rem] Body03 text-Gray-6">
             환전 예정 금액:
-            <span class="text-Yellow-1">{{ props.totalAmount.toLocaleString() }}원</span>
+            <span class="text-Black-1">{{ props.totalAmount.toLocaleString() }}원</span>
           </p>
           <p class="Body03 text-Gray-6">
             제외된 인센티브:
-            <span class="text-Red-0">{{ props.result.excludedIncentive.toLocaleString() }}원</span>
+            <span class="text-Red-1">{{ props.result.excludedIncentive.toLocaleString() }}원</span>
           </p>
         </div>
 
@@ -47,14 +47,14 @@ const emit = defineEmits<{
           <p class="pb-[0.6rem] Body02">통합지갑</p>
           <p class="mt-[0.8rem] Body03 text-Gray-6">
             최종 충전 금액:
-            <span class="text-Yellow-1">{{ props.result.finalAmount.toLocaleString() }}원</span>
+            <span class="text-Black-1">{{ props.result.finalAmount.toLocaleString() }}원</span>
           </p>
         </div>
       </div>
 
       <div class="mb-[2rem] text-center Head02">
         최종 환전 금액:
-        <span class="text-Black-2">{{ props.result.finalAmount.toLocaleString() }}원</span>
+        <span class="text-Red-1">{{ props.result.finalAmount.toLocaleString() }}원</span>
       </div>
 
       <div class="w-full max-w-[34.3rem] flex gap-3">
