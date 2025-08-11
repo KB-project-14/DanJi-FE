@@ -4,10 +4,10 @@ import { useRouter } from 'vue-router'
 import { ChevronLeft } from 'lucide-vue-next'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
-import { useSignUpStore } from '@/stores/signupStore'
+import { useMemberStore } from '@/stores/useMemberStore'
 
+const store = useMemberStore()
 const router = useRouter()
-const store = useSignUpStore()
 const name = ref<string>('')
 const username = ref<string>('')
 const password = ref<string>('')
