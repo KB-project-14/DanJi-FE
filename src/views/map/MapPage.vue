@@ -9,6 +9,7 @@ import KakaoMapContainer from '@/components/map/KaKaoMapContainer.vue'
 import LocalStoreListModal from '@/components/map/LocalStoreListModal.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
 import useLocalSelector from '@/composables/local/useLocalSelector'
+import useGeolocation from '@/composables/map/useGeolocation'
 
 import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
 import useGetLocalStores from '@/composables/queries/local/useGetLocalStores'
@@ -18,12 +19,15 @@ const isLocked = useScrollLock(document.body)
 isLocked.value = true
 
 const foldLocalStoreModal = ref<boolean>(true)
-
 const mapRef = ref<InstanceType<typeof KakaoMapContainer> | null>(null)
-const userCurrentLatitude = ref<number>(37.5665)
-const userCurrentLongitude = ref<number>(126.978)
+
+// 지도 중심 좌표 (가맹점 API 호출용)
 const mapLatitude = ref<number>(37.5665)
 const mapLongitude = ref<number>(126.978)
+
+// 위치 정보 컴포저블 사용
+const { currentLatitude, currentLongitude, isLocationLoading, locationError, getCurrentLocation } =
+  useGeolocation()
 
 // 초기화 상태 관리
 const isLocationReady = ref<boolean>(false)
@@ -31,55 +35,6 @@ const isLocationReady = ref<boolean>(false)
 // 헤더 검색창 상태 관리
 const searchValue = ref<string>('')
 const isSearchActive = ref<boolean>(false)
-
-const getUserLocation = (): Promise<{ lat: number; lng: number }> => {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      const error = '위치 정보가 지원되지 않는 브라우저입니다.'
-      reject(new Error(error))
-      return
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        userCurrentLatitude.value = position.coords.latitude
-        userCurrentLongitude.value = position.coords.longitude
-
-        const coords = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-
-        console.log('현재 위치 업데이트:', coords)
-        resolve(coords)
-      },
-      (error) => {
-        let errorMessage: string
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage = '위치 정보 접근이 거부되었습니다.'
-            break
-          case error.POSITION_UNAVAILABLE:
-            errorMessage = '위치 정보를 사용할 수 없습니다.'
-            break
-          case error.TIMEOUT:
-            errorMessage = '위치 정보 요청 시간이 초과되었습니다.'
-            break
-          default:
-            errorMessage = '알 수 없는 오류가 발생했습니다.'
-        }
-
-        console.error('위치 정보 오류:', error)
-        reject(new Error(errorMessage))
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000,
-      },
-    )
-  })
-}
 
 // 위치가 준비된 후에만 가맹점 데이터 요청
 const { data } = useGetLocalStores(
@@ -148,8 +103,8 @@ const handleCurrencLocationBtnClick = () => {
   resetSelection()
   foldLocalStoreModal.value = true
 
-  mapLatitude.value = userCurrentLatitude.value
-  mapLongitude.value = userCurrentLongitude.value
+  mapLatitude.value = currentLatitude.value
+  mapLongitude.value = currentLongitude.value
 }
 
 /**
@@ -188,8 +143,8 @@ const initializeApp = async () => {
     })
 
     console.log('2. 현재 위치 가져오기 시작')
-    // 2. 현재 위치 가져오기
-    const location = await getUserLocation()
+    // 2. 현재 위치 가져오기 (컴포저블 사용)
+    const location = await getCurrentLocation()
 
     console.log('3. 지도 좌표 업데이트')
     // 3. 지도 좌표 업데이트
@@ -235,21 +190,27 @@ onMounted(async () => {
         <!-- Map Section -->
         <div class="flex-1 overflow-hidden relative mt-[2.2rem]">
           <div
-            v-if="!isLocationReady"
+            v-if="!isLocationReady || isLocationLoading"
             class="absolute inset-0 flex items-center justify-center bg-gray-100 z-10"
           >
             <div class="text-center">
               <div
                 class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"
               ></div>
-              <p class="text-gray-600">위치 정보를 가져오는 중...</p>
+              <p class="text-gray-600">
+                {{ isLocationLoading ? '위치 정보를 가져오는 중...' : '데이터를 불러오는 중...' }}
+              </p>
+              <!-- 위치 오류가 있을 경우 표시 -->
+              <p v-if="locationError" class="text-red-500 text-sm mt-2">
+                {{ locationError }}
+              </p>
             </div>
           </div>
 
           <kakao-map-container
             ref="mapRef"
-            :user-latitude="userCurrentLatitude"
-            :user-longitude="userCurrentLongitude"
+            :user-latitude="currentLatitude"
+            :user-longitude="currentLongitude"
             :filtered-stores="filteredStores"
             @current-location="handleCurrencLocationBtnClick"
             @research="handleResearchBtnClick"
