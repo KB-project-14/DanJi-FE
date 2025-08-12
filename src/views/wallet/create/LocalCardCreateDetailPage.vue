@@ -110,8 +110,8 @@ const handleCompeleteClick = () => {
 
         <!-- 하단 버튼 -->
         <div class="flex justify-center mt-[3.4rem] mb-[4rem]">
-          <danji-button variant="large" @click="handleCompeleteClick" :disabled="isPending"
-            >발급하기</danji-button
+          <danji-button variant="large" @click="handleCompeleteClick" :disabled="isPending">
+            {{ isPending ? '발급하는 중…' : '발급하기' }}</danji-button
           >
         </div>
       </div>
