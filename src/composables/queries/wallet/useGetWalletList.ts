@@ -8,7 +8,7 @@ import { WALLET_KEYS } from '@/constants/QueryKey'
 export const getWalletList = async (
   walletType: 'CASH' | 'LOCAL',
 ): Promise<WalletResponseDtoType[]> => {
-  const response = await get<WalletResponseDtoType[]>('/api/wallets', {
+  const response = await get<WalletResponseDtoType[]>('api/wallets', {
     params: { walletType },
   })
 
