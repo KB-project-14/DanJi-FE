@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia'
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
+import type { WalletOrderItem } from '@/types/wallet/WalletOrder'
+import { bgColors } from '@/constants/CardBgColors'
 
 export const useWalletStore = defineStore('wallet', {
   state: () => ({
     cashWallet: null as WalletResponseDtoType | null,
     localWallets: [] as WalletResponseDtoType[],
+    walletColorMap: new Map<string, string>(),
   }),
 
   getters: {
@@ -17,6 +20,11 @@ export const useWalletStore = defineStore('wallet', {
 
     // 지역화폐 개수
     localWalletCount: (state) => state.localWallets.length,
+
+    // 특정 카드 ID에 할당된 배경 색상 클래스 반환
+    getWalletColor: (state) => (walletId: string) => {
+      return state.walletColorMap.get(walletId) || 'bg-[#F1F1F1] text-Black-1'
+    },
   },
 
   actions: {
@@ -28,6 +36,7 @@ export const useWalletStore = defineStore('wallet', {
     // 지역화폐 지갑 목록 설정
     setLocalWallets(wallets: WalletResponseDtoType[]) {
       this.localWallets = wallets
+      this.assignWalletColors(wallets)
     },
 
     // 현금 지갑 잔액 업데이트
@@ -52,6 +61,19 @@ export const useWalletStore = defineStore('wallet', {
       }
     },
 
+    updateLocalWalletsOrder(walletOrderList: WalletOrderItem[]) {
+      const updatedWallets = [...this.localWallets]
+
+      walletOrderList.forEach(({ walletId, displayOrder }) => {
+        const wallet = updatedWallets.find((w) => w.walletId === walletId)
+        if (wallet) {
+          wallet.displayOrder = displayOrder
+        }
+      })
+      updatedWallets.sort((a, b) => a.displayOrder - b.displayOrder)
+      this.localWallets = updatedWallets
+    },
+
     // 지역화폐 지갑 잔액만 업데이트
     updateLocalWalletBalance(walletId: string, newBalance: number) {
       this.updateLocalWallet(walletId, { balance: newBalance })
@@ -70,6 +92,7 @@ export const useWalletStore = defineStore('wallet', {
     // 지역화폐 지갑 추가
     addLocalWallet(wallet: WalletResponseDtoType) {
       this.localWallets.push(wallet)
+      this.assignWalletColors([wallet])
     },
 
     // 지역화폐 지갑 제거
@@ -86,6 +109,39 @@ export const useWalletStore = defineStore('wallet', {
     reset() {
       this.cashWallet = null
       this.localWallets = []
+      this.walletColorMap.clear()
+    },
+
+    // 지갑별로 고유 색상을 할당
+    assignWalletColors(wallets: WalletResponseDtoType[]) {
+      wallets.forEach((wallet, _) => {
+        // 이미 색상이 할당된 지갑은 패스
+        if (!this.walletColorMap.has(wallet.walletId)) {
+          // walletColorMap의 크기를 기준으로 색상 인덱스 할당
+          const newColor = bgColors[this.walletColorMap.size % bgColors.length]
+          this.walletColorMap.set(wallet.walletId, newColor)
+        }
+      })
+    },
+  },
+  persist: {
+    storage: sessionStorage,
+    serializer: {
+      serialize: (state) => {
+        // Map을 배열로 변환하여 JSON.stringify가 처리할 수 있도록 설정
+        return JSON.stringify({
+          ...state,
+          walletColorMap: Array.from(state.walletColorMap.entries()),
+        })
+      },
+      deserialize: (stateString) => {
+        const state = JSON.parse(stateString)
+        // 배열을 다시 Map으로 복구
+        return {
+          ...state,
+          walletColorMap: new Map(state.walletColorMap),
+        }
+      },
     },
   },
 })
