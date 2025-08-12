@@ -3,6 +3,8 @@ import { computed } from 'vue'
 import { format } from 'date-fns'
 import { calculateExchangeRegionToCash } from '@/utils/exchange'
 import { HandCoins } from 'lucide-vue-next'
+import { benefitTypeTextMap } from '@/constants/BenefitMapper'
+import type { BenefitType } from '@/types/local/localTypes'
 
 const currentMonthLabel = format(new Date(), 'M월')
 
@@ -13,6 +15,7 @@ const props = defineProps<{
   cardName?: string
   modelValue: number | null
   percentage?: number
+  fromCardBenefit: BenefitType
 }>()
 
 const emit = defineEmits<{
@@ -46,7 +49,9 @@ const excludedIncentive = computed(() => {
     <div class="Body03 text-Gray-6">
       {{ currentMonthLabel }} 충전한 금액:
       <span class="Body02 text-Black-2">{{ props.chargedAmount.toLocaleString() }}원</span><br />
-      {{ currentMonthLabel }} 받은 인센티브({{ props.percentage }}%):
+      {{ currentMonthLabel }} 받은 {{ benefitTypeTextMap[fromCardBenefit] }}({{
+        props.percentage
+      }}%):
       <span class="Body02 text-Black-2">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 
@@ -54,7 +59,9 @@ const excludedIncentive = computed(() => {
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
-        <div class="Body04 text-Gray-5">인센티브 비율만큼 차감된 금액으로 환전됩니다</div>
+        <div v-if="benefitTypeTextMap[fromCardBenefit] === '인센티브'" class="Body04 text-Gray-5">
+          인센티브 비율만큼 차감된 금액으로 환전됩니다
+        </div>
       </div>
 
       <input

@@ -165,7 +165,10 @@ const confirmExchange = (isConvert: boolean) => {
               :incentiveAmount="incentiveAmount"
               :cardName="selectedCard.localCurrencyName"
               :fromCardName="selectedCard.localCurrencyName"
-              :benefit-type="selectedToCardData.benefitType"
+              :benefit-type="{
+                fromCard: selectedCard.benefitType,
+                toCard: selectedToCardData.benefitType,
+              }"
               :to-card-list="cardList.filter((item) => item.walletId !== cardId)"
             />
 
@@ -179,6 +182,7 @@ const confirmExchange = (isConvert: boolean) => {
               :incentiveAmount="incentiveAmount"
               :cardName="selectedCard.localCurrencyName"
               :percentage="selectedCard.percentage"
+              :from-card-benefit="selectedCard.benefitType"
             />
           </div>
 

@@ -18,7 +18,7 @@ const props = defineProps<{
   modelValue: number | null
   mode?: 'region' | 'cash' // 지역→지역인지, 지역→현금인지 구분
   fromCardName: string
-  benefitType: BenefitType
+  benefitType: { fromCard: BenefitType; toCard: BenefitType }
   toCardList: WalletResponseDtoType[]
 }>()
 
@@ -45,7 +45,7 @@ const handleSelect = () => {
 const selectedCardBenefit = computed(() => {
   const card = props.toCardList.find((c) => c.localCurrencyName === selectedCard.value)
   return card
-    ? `${card.localCurrencyName} 혜택 : ${benefitTypeTextMap[props.benefitType]} ${card.percentage}%`
+    ? `${card.localCurrencyName} 혜택 : ${benefitTypeTextMap[props.benefitType.toCard]} ${card.percentage}%`
     : ''
 })
 </script>
@@ -65,7 +65,9 @@ const selectedCardBenefit = computed(() => {
     <div class="Body03 text-Gray-6">
       {{ currentMonthLabel }} 충전한 금액:
       <span class="Body02 text-Black-2">{{ props.chargedAmount.toLocaleString() }}원</span><br />
-      {{ currentMonthLabel }} 받은 인센티브({{ props.percentage }}%):
+      {{ currentMonthLabel }} 받은 {{ benefitTypeTextMap[benefitType.fromCard] }}({{
+        props.percentage
+      }}%):
       <span class="Body02 text-Black-2">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 
@@ -73,7 +75,12 @@ const selectedCardBenefit = computed(() => {
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
-        <div class="Body04 text-Gray-5">인센티브는 제외하고 환전됩니다</div>
+        <div
+          v-if="benefitTypeTextMap[benefitType.fromCard] === '인센티브'"
+          class="Body04 text-Gray-5"
+        >
+          인센티브는 제외하고 환전됩니다
+        </div>
       </div>
 
       <input
