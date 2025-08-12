@@ -4,7 +4,7 @@ import { LOCAL_KEYS } from '@/constants/QueryKey'
 import type { LocalResponseDTO } from '@/types/local/localTypes'
 
 export const getLocals = async (): Promise<LocalResponseDTO[]> => {
-  const response = await get<LocalResponseDTO[]>('/api/regions', {
+  const response = await get<LocalResponseDTO[]>('api/regions', {
     params: {
       hasLocalCurrency: true,
     },
