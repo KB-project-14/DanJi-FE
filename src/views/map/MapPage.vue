@@ -63,14 +63,23 @@ const { findPlaceByCoordinatesAndName } = useKakaoPlacesSearch()
 
 const selectedPlace = ref<KakaoPlace | null>(null)
 const showPlaceDetail = ref<boolean>(false)
+const selectedPlaceId = ref<string>('')
 
 /**
  * 마커 클릭 핸들러
  */
-const handlePlaceMarkerClick = async (payload: { lat: number; lng: number; name: string }) => {
+const handlePlaceMarkerClick = async (payload: {
+  lat: number
+  lng: number
+  name: string
+  id: string
+}) => {
   const data = findPlaceByCoordinatesAndName(payload.lat, payload.lng, payload.name)
   selectedPlace.value = await data
   showPlaceDetail.value = true
+  selectedPlaceId.value = payload.id
+
+  mapRef.value?.panTo(payload.lat, payload.lng)
 }
 
 /**
@@ -242,6 +251,7 @@ onMounted(async () => {
             :user-latitude="currentLatitude"
             :user-longitude="currentLongitude"
             :filtered-stores="filteredStores"
+            :selected-place-id="selectedPlaceId"
             @current-location="handleCurrencLocationBtnClick"
             @research="handleResearchBtnClick"
             @select-place="handlePlaceMarkerClick"

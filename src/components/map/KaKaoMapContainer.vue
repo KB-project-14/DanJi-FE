@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted, watch } from 'vue'
 import {
   KakaoMap,
   KakaoMapMarker,
@@ -15,12 +15,13 @@ interface Props {
   userLatitude: number
   userLongitude: number
   filteredStores: LocalStoreResponseDTO[]
+  selectedPlaceId: string
 }
 
 interface Emit {
   (e: 'current-location'): void
   (e: 'research'): void
-  (e: 'select-place', payload: { lat: number; lng: number; name: string }): void
+  (e: 'select-place', payload: { lat: number; lng: number; name: string; id: string }): void
 }
 
 const props = defineProps<Props>()
@@ -115,7 +116,7 @@ const handleClusterClick = (cluster: ClusteredStore) => {
     selectedStore.value = store.availableMerchantId
     selectedCluster.value = undefined
 
-    emitPlace(cluster.latitude, cluster.longitude, store.name)
+    emitPlace(cluster.latitude, cluster.longitude, store.name, store.availableMerchantId)
   } else {
     // 다중 매장인 경우 클러스터 선택 토글
     if (selectedCluster.value === cluster.key) {
@@ -128,10 +129,10 @@ const handleClusterClick = (cluster: ClusteredStore) => {
 }
 
 const handleStoreSelect = (store: LocalStoreResponseDTO) => {
-  selectedStore.value = store.name
+  selectedStore.value = store.availableMerchantId
   selectedCluster.value = undefined
 
-  emitPlace(store.latitude, store.longitude, store.name)
+  emitPlace(store.latitude, store.longitude, store.name, store.availableMerchantId)
 }
 
 // 클릭된 클러스터의 매장들
@@ -141,8 +142,8 @@ const selectedClusterStores = computed(() => {
   return cluster?.stores || []
 })
 
-const emitPlace = (lat: number, lng: number, name: string) => {
-  emit('select-place', { lat, lng, name })
+const emitPlace = (lat: number, lng: number, name: string, id: string) => {
+  emit('select-place', { lat, lng, name, id })
 }
 
 defineExpose({
@@ -155,6 +156,15 @@ onUnmounted(() => {
     ;(window as any).kakao.maps.event.removeListener(listener)
   })
 })
+
+watch(
+  () => props.selectedPlaceId,
+  (id) => {
+    selectedStore.value = id
+    selectedCluster.value = undefined
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -191,7 +201,7 @@ onUnmounted(() => {
           :cluster="cluster"
           :is-selected="
             selectedCluster === cluster.key ||
-            (cluster.stores.length === 1 && selectedStore === cluster.stores[0].availableMerchantId)
+            cluster.stores.some((s) => s.availableMerchantId === selectedStore)
           "
           :map-level="mapLevel"
           @click="handleClusterClick(cluster)"

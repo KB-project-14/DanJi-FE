@@ -9,7 +9,7 @@ const props = defineProps<{
 }>()
 
 interface Emit {
-  (e: 'select-place', payload: { lat: number; lng: number; name: string }): void
+  (e: 'select-place', payload: { lat: number; lng: number; name: string; id: string }): void
 }
 
 const emit = defineEmits<Emit>()
@@ -94,7 +94,7 @@ const resetToInitialPosition = () => {
   }, 300)
 }
 
-const handleSelectPlace = (payload: { lat: number; lng: number; name: string }) => {
+const handleSelectPlace = (payload: { lat: number; lng: number; name: string; id: string }) => {
   emit('select-place', payload)
 }
 

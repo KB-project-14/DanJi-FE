@@ -8,7 +8,7 @@ const props = defineProps<{
 }>()
 
 interface Emit {
-  (e: 'select-place', payload: { lat: number; lng: number; name: string }): void
+  (e: 'select-place', payload: { lat: number; lng: number; name: string; id: string }): void
 }
 
 const emit = defineEmits<Emit>()
@@ -18,6 +18,7 @@ const handleItemClick = () => {
     lat: props.localStore.latitude,
     lng: props.localStore.longitude,
     name: props.localStore.name,
+    id: props.localStore.availableMerchantId,
   })
 }
 </script>
