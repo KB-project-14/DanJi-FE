@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted, watch } from 'vue'
 import {
   KakaoMap,
   KakaoMapMarker,
@@ -15,11 +15,14 @@ interface Props {
   userLatitude: number
   userLongitude: number
   filteredStores: LocalStoreResponseDTO[]
+  selectedPlaceId: string
+  isMakerSelected: boolean
 }
 
 interface Emit {
   (e: 'current-location'): void
   (e: 'research'): void
+  (e: 'select-place', payload: { lat: number; lng: number; name: string; id: string }): void
 }
 
 const props = defineProps<Props>()
@@ -109,9 +112,12 @@ const getMapCenterCoordinates = () => map.value?.getCenter()
 
 const handleClusterClick = (cluster: ClusteredStore) => {
   if (cluster.stores.length === 1) {
-    // 단일 매장인 경우 바로 선택
-    selectedStore.value = cluster.stores[0].availableMerchantId
+    // 단일 매장인 경우
+    const store = cluster.stores[0]
+    selectedStore.value = store.availableMerchantId
     selectedCluster.value = undefined
+
+    emitPlace(cluster.latitude, cluster.longitude, store.name, store.availableMerchantId)
   } else {
     // 다중 매장인 경우 클러스터 선택 토글
     if (selectedCluster.value === cluster.key) {
@@ -124,8 +130,10 @@ const handleClusterClick = (cluster: ClusteredStore) => {
 }
 
 const handleStoreSelect = (store: LocalStoreResponseDTO) => {
-  selectedStore.value = store.name
+  selectedStore.value = store.availableMerchantId
   selectedCluster.value = undefined
+
+  emitPlace(store.latitude, store.longitude, store.name, store.availableMerchantId)
 }
 
 // 클릭된 클러스터의 매장들
@@ -134,6 +142,10 @@ const selectedClusterStores = computed(() => {
   const cluster = clusteredStores.value.find((c) => c.key === selectedCluster.value)
   return cluster?.stores || []
 })
+
+const emitPlace = (lat: number, lng: number, name: string, id: string) => {
+  emit('select-place', { lat, lng, name, id })
+}
 
 defineExpose({
   panTo,
@@ -145,6 +157,27 @@ onUnmounted(() => {
     ;(window as any).kakao.maps.event.removeListener(listener)
   })
 })
+
+watch(
+  () => props.isMakerSelected,
+  (on) => {
+    if (!on) {
+      selectedStore.value = undefined
+      selectedCluster.value = undefined
+    } else if (props.selectedPlaceId) {
+      selectedStore.value = props.selectedPlaceId
+    }
+  },
+)
+
+watch(
+  () => props.selectedPlaceId,
+  (id) => {
+    if (!props.isMakerSelected) return
+    selectedStore.value = id
+    selectedCluster.value = undefined
+  },
+)
 </script>
 
 <template>
@@ -180,8 +213,9 @@ onUnmounted(() => {
         <local-store-marker
           :cluster="cluster"
           :is-selected="
-            selectedCluster === cluster.key ||
-            (cluster.stores.length === 1 && selectedStore === cluster.stores[0].availableMerchantId)
+            props.isMakerSelected &&
+            (selectedCluster === cluster.key ||
+              cluster.stores.some((s) => s.availableMerchantId === selectedStore))
           "
           :map-level="mapLevel"
           @click="handleClusterClick(cluster)"
@@ -192,7 +226,7 @@ onUnmounted(() => {
     <!-- 클러스터 선택 시 매장 목록 표시 -->
     <div
       v-if="selectedCluster && selectedClusterStores.length > 1"
-      class="absolute bottom-[21rem] left-[1.6rem] right-[1.6rem] z-[300] bg-White-0 rounded-[1.2rem] shadow-xl max-h-[20rem] overflow-hidden"
+      class="absolute bottom-[21rem] left-[1.6rem] right-[1.6rem] z-[450] bg-White-0 rounded-[1.2rem] shadow-xl max-h-[20rem] overflow-hidden"
     >
       <div class="p-[1.6rem] border-b border-Gray-1">
         <h3 class="Head02 text-Black-1">이 위치의 매장들</h3>

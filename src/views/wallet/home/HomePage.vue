@@ -8,23 +8,16 @@ import TotalWallet from '@/components/wallet/TotalWallet.vue'
 import HasCardSection from '@/components/wallet/HasCardSection.vue'
 import NoCardSection from '@/components/wallet/NoCardSection.vue'
 
-import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
+import useHomeCardList from '@/composables/home/useHomeCardList'
+import { useWalletStore } from '@/stores/useWalletStore'
 
 const router = useRouter()
+const walletStore = useWalletStore()
 
-// 통합지갑 (CASH)
-const cashWallets = useGetWalletList('CASH')
-const cashBalance = computed(() => cashWallets.value?.[0]?.balance || 0)
+const { sortedLocalWallets, localWalletCount } = useHomeCardList()
 
-// 로컬카드 (LOCAL)
-const localWallets = useGetWalletList('LOCAL')
-
-// 카드 정렬 (displayOrder 기준)
-const sortedCards = computed(() =>
-  (localWallets.value ? [...localWallets.value] : []).sort(
-    (a, b) => a.displayOrder - b.displayOrder,
-  ),
-)
+// 통합지갑 잔액 (CASH)
+const cashBalance = computed(() => walletStore.cashWallet?.balance || 0)
 
 // 현재 카드 index값
 const currentIndex = ref(0)
@@ -36,13 +29,13 @@ const goCardHistory = (id: string) => {
 
 // 충전 버튼 클릭 시
 const goCharge = () => {
-  const selectedCard = sortedCards.value[currentIndex.value]
+  const selectedCard = sortedLocalWallets.value[currentIndex.value]
   if (selectedCard) router.push(`/card/charge/${selectedCard.walletId}`)
 }
 
 // 환전 버튼 클릭 시
 const goExchange = () => {
-  const selectedCard = sortedCards.value[currentIndex.value]
+  const selectedCard = sortedLocalWallets.value[currentIndex.value]
   if (selectedCard) router.push(`/card/exchange/${selectedCard.walletId}`)
 }
 </script>
@@ -61,8 +54,8 @@ const goExchange = () => {
         <!-- 카드 리스트 -->
         <div class="pl-20 pt-[4rem] pb-[3rem] px-[1rem]">
           <has-card-section
-            v-if="sortedCards.length > 0"
-            :cards="sortedCards"
+            v-if="localWalletCount > 0"
+            :cards="sortedLocalWallets"
             @click-card="goCardHistory"
             @slide-change="currentIndex = $event"
           />

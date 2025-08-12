@@ -6,10 +6,25 @@ import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
 const props = defineProps<{
   localStore: LocalStoreResponseDTO
 }>()
+
+interface Emit {
+  (e: 'select-place', payload: { lat: number; lng: number; name: string; id: string }): void
+}
+
+const emit = defineEmits<Emit>()
+
+const handleItemClick = () => {
+  emit('select-place', {
+    lat: props.localStore.latitude,
+    lng: props.localStore.longitude,
+    name: props.localStore.name,
+    id: props.localStore.availableMerchantId,
+  })
+}
 </script>
 
 <template>
-  <div class="px-[2rem] pt-[1.6rem] pb-[2.7rem] bg-White-0">
+  <div class="px-[2rem] pt-[1.6rem] pb-[2.7rem] bg-White-0" @click="handleItemClick">
     <!-- 가맹점 이름과 카테고리 -->
     <div class="flex justify-between items-center">
       <span class="Head04 text-Black-1">{{ localStore.name }}</span>

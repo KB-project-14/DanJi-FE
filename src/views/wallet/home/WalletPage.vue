@@ -5,9 +5,12 @@ import Layout from '@/components/layout/Layout.vue'
 import WalletItem from '@/components/common/wallet/WalletItem.vue'
 import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 
-import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
+import { useWalletStore } from '@/stores/useWalletStore'
 
-const localWallets = useGetWalletList('LOCAL')
+const walletStore = useWalletStore()
+
+// 스토어에서 정렬된 지역화폐 지갑 목록 가져오기
+const localWallets = computed(() => walletStore.sortedLocalWallets)
 
 // 카드 총 잔액 계산
 const totalBalance = computed(() =>
