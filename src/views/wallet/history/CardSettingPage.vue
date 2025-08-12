@@ -6,7 +6,7 @@ import Layout from '@/components/layout/Layout.vue'
 import { ChevronRight, Wallet } from 'lucide-vue-next'
 import CardDeleteModal from '@/components/common/modal/CardDeleteModal.vue'
 
-import useDeleteWallet from '@/composables/queries/wallet/deleteWallet'
+import useDeleteWallet from '@/composables/queries/wallet/useDeleteWallet'
 
 const router = useRouter()
 const route = useRoute()

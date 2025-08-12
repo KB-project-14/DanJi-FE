@@ -5,7 +5,7 @@ import Layout from '@/components/layout/Layout.vue'
 import WalletItem from '@/components/common/wallet/WalletItem.vue'
 import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 
-import useGetWalletList from '@/composables/queries/wallet/getWalletList'
+import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
 
 const localWallets = useGetWalletList('LOCAL')
 
