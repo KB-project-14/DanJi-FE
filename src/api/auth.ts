@@ -5,7 +5,7 @@ import axios from 'axios'
 
 export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
   const response = await axios.post(
-    `${import.meta.env.VITE_APP_BASE_URL}/api/members/login`,
+    `${import.meta.env.VITE_APP_BASE_URL}api/members/login`,
     payload,
     {
       headers: {
