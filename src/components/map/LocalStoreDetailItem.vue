@@ -124,10 +124,10 @@ const makeCall = () => {
     <!-- Place 정보가 없을 때 -->
     <div v-else class="relative w-full bg-White-0 shadow-2xl overflow-hidden" @click.stop>
       <div class="flex items-center justify-between p-[2rem]">
-        <div class="flex-1 text-center">
+        <div class="flex-1 text-center mt-[2rem]">
           <div class="py-[2rem]">
             <p class="Head03 text-Gray-6 mb-[0.8rem]">주소 정보가 없습니다</p>
-            <p class="Body03 text-Gray-5">선택한 위치의 상세 정보를 찾을 수 없습니다.</p>
+            <p class="Body03 text-Gray-5 mb-[2rem]">선택한 위치의 상세 정보를 찾을 수 없습니다.</p>
           </div>
         </div>
         <button @click="emit('close')" class="mb-auto" aria-label="닫기">
