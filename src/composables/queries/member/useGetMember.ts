@@ -6,7 +6,7 @@ import type { MemberResponseDto } from '@/types/member/memberTypes'
 import type { AxiosResponse } from 'axios'
 
 export const getMember = async (): Promise<MemberResponseDto> => {
-  const response: AxiosResponse<ApiResponse<MemberResponseDto>> = await get('/api/members/me')
+  const response: AxiosResponse<ApiResponse<MemberResponseDto>> = await get('api/members/me')
   return response.data.data
 }
 
