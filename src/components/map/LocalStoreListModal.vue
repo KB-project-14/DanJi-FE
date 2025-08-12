@@ -8,6 +8,12 @@ const props = defineProps<{
   localStoreList: LocalStoreResponseDTO[]
 }>()
 
+interface Emit {
+  (e: 'select-place', payload: { lat: number; lng: number; name: string; id: string }): void
+}
+
+const emit = defineEmits<Emit>()
+
 const sheetRef = ref<HTMLElement | null>(null)
 const isDragging = ref(false)
 const startY = ref(0)
@@ -88,6 +94,10 @@ const resetToInitialPosition = () => {
   }, 300)
 }
 
+const handleSelectPlace = (payload: { lat: number; lng: number; name: string; id: string }) => {
+  emit('select-place', payload)
+}
+
 onMounted(() => {
   // 이벤트 리스너 등록
   document.addEventListener('mousemove', handleMove)
@@ -139,6 +149,7 @@ watch(() => props.isModalFold, resetToInitialPosition)
         v-for="localStore in localStoreList"
         :key="localStore.availableMerchantId"
         :local-store="localStore"
+        @select-place="handleSelectPlace"
       />
 
       <div class="h-[15rem]"></div>
