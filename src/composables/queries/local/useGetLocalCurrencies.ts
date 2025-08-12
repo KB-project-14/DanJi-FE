@@ -8,7 +8,7 @@ import { computed, type Ref } from 'vue'
 export const getLocalCurrencies = async (
   query: LocalcurrencyListRequestDTO,
 ): Promise<LocalcurrencyResponseDTO[]> => {
-  const response = await get<LocalcurrencyResponseDTO[]>('/api/local-currencies', { params: query })
+  const response = await get<LocalcurrencyResponseDTO[]>('api/local-currencies', { params: query })
   return response.data.data
 }
 

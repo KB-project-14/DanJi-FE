@@ -5,7 +5,7 @@ import { type Ref, computed } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 
 const getLocalStores = async (query: LocalStoreQueryParams): Promise<LocalStoreResponseDTO[]> => {
-  const response = await get<LocalStoreResponseDTO[]>('/api/available-merchants', {
+  const response = await get<LocalStoreResponseDTO[]>('api/available-merchants', {
     params: query,
   })
 
