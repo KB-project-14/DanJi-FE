@@ -18,7 +18,8 @@ const routeCityId = computed(() => Number(route.params.id))
 
 const isModalVisible = ref<boolean>(false)
 
-const { selectedRegion, selectedCity, selectedCityId, getLocalInfoById } = useLocalSelector()
+const { selectedRegion, selectedCity, selectedCityId, getLocalInfoById, setLocal } =
+  useLocalSelector()
 const { localCurrencyName, benefitInfo, benefitDescription, localCurrencyId } =
   useLocalCurrencyInfo(
     computed(() => ({
@@ -37,8 +38,7 @@ const handleClickModal = (): void => {
 }
 
 const handleModalConfirm = async (region: string, city: string): Promise<void> => {
-  selectedRegion.value = region
-  selectedCity.value = city
+  setLocal(region, city)
   isModalVisible.value = false
 
   await nextTick()
