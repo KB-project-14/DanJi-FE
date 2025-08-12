@@ -252,6 +252,7 @@ onMounted(async () => {
             :user-longitude="currentLongitude"
             :filtered-stores="filteredStores"
             :selected-place-id="selectedPlaceId"
+            :is-maker-selected="showPlaceDetail"
             @current-location="handleCurrencLocationBtnClick"
             @research="handleResearchBtnClick"
             @select-place="handlePlaceMarkerClick"

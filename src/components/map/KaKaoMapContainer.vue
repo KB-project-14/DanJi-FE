@@ -16,6 +16,7 @@ interface Props {
   userLongitude: number
   filteredStores: LocalStoreResponseDTO[]
   selectedPlaceId: string
+  isMakerSelected: boolean
 }
 
 interface Emit {
@@ -158,12 +159,24 @@ onUnmounted(() => {
 })
 
 watch(
+  () => props.isMakerSelected,
+  (on) => {
+    if (!on) {
+      selectedStore.value = undefined
+      selectedCluster.value = undefined
+    } else if (props.selectedPlaceId) {
+      selectedStore.value = props.selectedPlaceId
+    }
+  },
+)
+
+watch(
   () => props.selectedPlaceId,
   (id) => {
+    if (!props.isMakerSelected) return
     selectedStore.value = id
     selectedCluster.value = undefined
   },
-  { immediate: true },
 )
 </script>
 
@@ -200,8 +213,9 @@ watch(
         <local-store-marker
           :cluster="cluster"
           :is-selected="
-            selectedCluster === cluster.key ||
-            cluster.stores.some((s) => s.availableMerchantId === selectedStore)
+            props.isMakerSelected &&
+            (selectedCluster === cluster.key ||
+              cluster.stores.some((s) => s.availableMerchantId === selectedStore))
           "
           :map-level="mapLevel"
           @click="handleClusterClick(cluster)"
