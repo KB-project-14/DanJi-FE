@@ -116,7 +116,7 @@ const selectedCardBenefit = computed(() => {
 
       <p class="text-Yellow-1 Body03" :class="{ invisible: !props.modelValue }">
         <span class="line-through">예상 수수료(1%)</span>
-        <span class="text-Red-0"> 수수료 면제 대상입니다!</span>
+        <span class="text-Red-1"> 수수료 면제 대상입니다!</span>
       </p>
     </div>
   </div>
