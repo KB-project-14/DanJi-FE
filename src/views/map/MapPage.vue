@@ -131,6 +131,9 @@ const handleCurrencLocationBtnClick = () => {
 
   mapLatitude.value = currentLatitude.value
   mapLongitude.value = currentLongitude.value
+
+  searchValue.value = ''
+  isSearchActive.value = false
 }
 
 /**
@@ -152,8 +155,9 @@ const handleResearchBtnClick = () => {
 const handleSearchClear = () => {
   searchValue.value = ''
   isSearchActive.value = false
-  resetSelection()
-  foldLocalStoreModal.value = true
+  handleCurrencLocationBtnClick()
+  mapRef.value?.panTo(mapLatitude.value, mapLongitude.value)
+  showPlaceDetail.value = false
 }
 
 /**
@@ -246,7 +250,7 @@ onMounted(async () => {
           <!-- Modals -->
           <local-store-list-modal
             class="absolute bottom-[7rem] z-[300]"
-            v-model:is-modal-fold="foldLocalStoreModal"
+            :is-modal-fold="foldLocalStoreModal || showPlaceDetail"
             :local-store-list="filteredStores"
             @select-place="handlePlaceMarkerClick"
           />
