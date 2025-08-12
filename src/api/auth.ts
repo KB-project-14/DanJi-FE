@@ -18,6 +18,6 @@ export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
 
 // 회원가입
 export const signUp = async (payload: SignUpRequest): Promise<SignUpResponse> => {
-  const { data } = await post<SignUpResponse>('/api/members', payload)
+  const { data } = await post<SignUpResponse>('api/members', payload)
   return data.data
 }
