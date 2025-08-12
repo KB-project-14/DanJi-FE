@@ -7,6 +7,42 @@
     font-family: 'Pretendard', sans-serif;
   }
 }
+/* toast  */
+/* 바텀내브 높이에 맞춰 조정 */
+.Toastify__toast-container--bottom-center {
+  bottom: 10rem;
+}
+/* 항상 맨 위로 */
+:root {
+  --toastify-z-index: 99999;
+}
+
+/* 타입별 컬러 (컬러드 테마 기준) */
+.Toastify__toast--success {
+  background: #0b1526; /* 딥 네이비 */
+  color: #e6fff1;
+  border: 1px solid rgba(34, 197, 94, 0.28);
+}
+.Toastify__toast--error {
+  background: #1a0b0b; /* 딥 레드톤 */
+  color: #ffecec;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+.Toastify__toast--warning {
+  background: #19170a; /* 딥 옐로우톤 */
+  color: #fff8e6;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+/* 아이콘/본문  정리 */
+.Toastify__toast-body {
+  align-items: center;
+  letter-spacing: 0.1px;
+}
+.Toastify__toast-icon svg {
+  width: 18px;
+  height: 18px;
+}
 
 /* @font-face {
   font-family: 'Pretendard';

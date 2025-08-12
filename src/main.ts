@@ -1,9 +1,13 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate' // ⭐ 1. 추가
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { useKakao } from 'vue3-kakao-maps/@utils'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { queryClient } from '@/api/queryClient'
+
+import 'vue3-toastify/dist/index.css'
+import Vue3Toastify, { toast } from 'vue3-toastify'
+import { useUiStore } from '@/stores/useUiStore'
 
 import './assets/styles/reset.css'
 import './assets/styles/tailwind.css'
@@ -30,5 +34,15 @@ app.use(VueQueryPlugin, {
 
 app.use(pinia)
 app.use(router)
+
+app.use(Vue3Toastify, {
+  newestOnTop: true,
+})
+
+const ui = useUiStore(pinia)
+router.afterEach(() => {
+  const t = ui.popNextToast()
+  if (t) toast[t.type](t.msg, t.opts)
+})
 
 app.mount('#app')
