@@ -96,7 +96,7 @@ const makeCall = () => {
             </div>
 
             <!-- 지번 주소 -->
-            <div v-if="place.road_address_name" class="flex items-start gap-[0.6rem]">
+            <div v-if="place.address_name" class="flex items-start gap-[0.6rem]">
               <span
                 class="flex-shrink-0 px-[0.4rem] py-[0.2rem] Body05 text-Gray-6 border border-Gray-2 rounded-[0.4rem]"
                 >지번</span

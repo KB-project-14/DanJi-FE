@@ -61,7 +61,7 @@ export default function useGeolocation() {
         {
           enableHighAccuracy: true,
           timeout: 10000,
-          maximumAge: 300000,
+          maximumAge: 0,
         },
       )
     })
