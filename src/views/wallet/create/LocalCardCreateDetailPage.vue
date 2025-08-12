@@ -99,7 +99,7 @@ const handleCompeleteClick = () => {
         <!-- 카드 이미지 & 이름 컴포넌트 -->
         <card-info
           :card-name="localCurrencyName"
-          :card-image="`http://danji.cloud${benefitInfo?.img}`"
+          :card-image="benefitInfo?.img ? `http://danji.cloud${benefitInfo.img}` : undefined"
         />
 
         <!-- 카드 혜택 정보 컴포넌트 -->
