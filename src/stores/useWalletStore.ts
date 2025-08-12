@@ -125,7 +125,7 @@ export const useWalletStore = defineStore('wallet', {
     },
   },
   persist: {
-    storage: sessionStorage,
+    storage: localStorage,
     serializer: {
       serialize: (state) => {
         // Map을 배열로 변환하여 JSON.stringify가 처리할 수 있도록 설정
