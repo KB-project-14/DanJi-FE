@@ -44,10 +44,6 @@ const handleCardDelete = () => {
       })
       await router.push('/home')
     },
-    onError: (error) => {
-      console.error('카드 해지 실패:', error)
-      alert('카드 해지 중 오류가 발생했습니다.')
-    },
   })
 }
 </script>
