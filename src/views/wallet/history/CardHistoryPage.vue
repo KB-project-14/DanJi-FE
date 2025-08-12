@@ -140,7 +140,11 @@ const handleFilterUpdate = (newFilter: FilterType) => {
                 <tooltip
                   position="top"
                   align="start"
-                  :message="`이번달 ${cardInfo?.localCurrencyName}의 인센티브는 ${cardInfo?.percentage}% 입니다.`"
+                  :message="
+                    cardInfo?.percentage != null
+                      ? `이번달 ${cardInfo.localCurrencyName}의 인센티브는 ${cardInfo.percentage}% 입니다.`
+                      : ''
+                  "
                 />
               </div>
               <p class="Head0 text-Black-2">{{ cardInfo?.balance?.toLocaleString() }} 원</p>
