@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate' // ⭐ 1. 추가
 import { useKakao } from 'vue3-kakao-maps/@utils'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { queryClient } from '@/api/queryClient'
@@ -19,11 +20,15 @@ import router from './router'
 useKakao(import.meta.env.VITE_KAKAO_APP_API_KEY, ['clusterer'])
 const app = createApp(App)
 
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+
 app.use(VueQueryPlugin, {
   queryClient,
-  enableDevtoolsV6Plugin: true, // Vue DevTools 지원
+  enableDevtoolsV6Plugin: true,
 })
-app.use(createPinia())
+
+app.use(pinia)
 app.use(router)
 
 app.mount('#app')
