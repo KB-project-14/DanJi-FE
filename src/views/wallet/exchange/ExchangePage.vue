@@ -12,8 +12,8 @@ import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import ExchangeCardConfirmModal from '@/components/wallet/modal/ExchangeCardConfirmModal.vue'
 import ExchangCashConfirmModal from '@/components/wallet/modal/ExchangCashConfirmModal.vue'
 import { calculateExchangeRegionToRegion, calculateExchangeRegionToCash } from '@/utils/exchange'
-import useGetWalletList from '@/composables/queries/wallet/getWalletList'
-import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
+import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
+import { useGetWalletTransaction } from '@/composables/queries/wallet/useGetWalletTransaction'
 import type { BenefitType } from '@/types/local/localTypes'
 import type {
   TransactionType,

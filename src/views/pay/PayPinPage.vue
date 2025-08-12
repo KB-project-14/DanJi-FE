@@ -3,12 +3,12 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChevronLeft } from 'lucide-vue-next'
 import Layout from '@/components/layout/Layout.vue'
-import { useSignUpStore } from '@/stores/signupStore'
+import { useMemberStore } from '@/stores/useMemberStore'
 import usePostPayment from '@/composables/queries/payment/usePostPayment'
 import type { payRequestDtoType } from '@/types/pay/payTypes'
 
+const store = useMemberStore()
 const router = useRouter()
-const signUpStore = useSignUpStore()
 const { makePayment, isPending } = usePostPayment()
 
 const currentPin = ref('')
