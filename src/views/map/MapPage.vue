@@ -14,6 +14,9 @@ import useGeolocation from '@/composables/map/useGeolocation'
 import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
 import useGetLocalStores from '@/composables/queries/local/useGetLocalStores'
 import { LOCAL_COORDINATES } from '@/constants/LocalCenterCoordinates'
+import LocalStoreDetailItem from '@/components/map/LocalStoreDetailItem.vue'
+import type { KakaoPlace } from '@/types/store/kakaoMapTypes'
+import useKakaoPlacesSearch from '@/composables/queries/store/useGetKakaoPlaceDetail'
 
 const isLocked = useScrollLock(document.body)
 isLocked.value = true
@@ -55,6 +58,29 @@ const storeCategories = computed(() => {
   if (categories.length === 0) return []
   return ['전체', ...categories]
 })
+
+const { findPlaceByCoordinatesAndName } = useKakaoPlacesSearch()
+
+const selectedPlace = ref<KakaoPlace | null>(null)
+const showPlaceDetail = ref<boolean>(false)
+
+/**
+ * 마커 클릭 핸들러
+ */
+const handlePlaceMarkerClick = async (payload: { lat: number; lng: number; name: string }) => {
+  foldLocalStoreModal.value = true
+  const data = findPlaceByCoordinatesAndName(payload.lat, payload.lng, payload.name)
+  selectedPlace.value = await data
+  showPlaceDetail.value = true
+}
+
+/**
+ * 장소 상세 정보 모달 닫기 핸들러
+ */
+const closePlaceDetail = () => {
+  showPlaceDetail.value = false
+  selectedPlace.value = null
+}
 
 /**
  * 선택된 필터에 따라 가맹점을 필터링
@@ -214,6 +240,7 @@ onMounted(async () => {
             :filtered-stores="filteredStores"
             @current-location="handleCurrencLocationBtnClick"
             @research="handleResearchBtnClick"
+            @select-place="handlePlaceMarkerClick"
           />
 
           <!-- Modals -->
@@ -229,6 +256,13 @@ onMounted(async () => {
             v-model:initial-region="selectedRegion"
             v-model:initial-city="selectedCity"
             @confirm="handleFilterModalConfirm"
+          />
+
+          <local-store-detail-item
+            class="z-[400]"
+            :place="selectedPlace"
+            :is-visible="showPlaceDetail"
+            @close="closePlaceDetail"
           />
         </div>
       </div>
