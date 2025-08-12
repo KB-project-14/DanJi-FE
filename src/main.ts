@@ -39,9 +39,8 @@ app.use(Vue3Toastify, {
   newestOnTop: true,
 })
 
-// 라우팅 끝난 뒤 예약된 토스트 표시 (Pinia 인스턴스 넘겨서 사용)
+const ui = useUiStore(pinia)
 router.afterEach(() => {
-  const ui = useUiStore(pinia)
   const t = ui.popNextToast()
   if (t) toast[t.type](t.msg, t.opts)
 })
