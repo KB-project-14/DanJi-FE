@@ -19,7 +19,7 @@ export interface SignUpResponse {
   createdAt: string
 }
 
-// 회우너가입 응답
+// 회원가입 응답
 export interface SignUpRequest {
   username: string
   password: string

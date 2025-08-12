@@ -3,12 +3,12 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChevronLeft } from 'lucide-vue-next'
 import Layout from '@/components/layout/Layout.vue'
-import { useSignUpStore } from '@/stores/signupStore'
+import { useMemberStore } from '@/stores/useMemberStore'
 import { signUp } from '@/api/auth'
 import type { SignUpRequest } from '@/types/auth'
 import type { AxiosError } from 'axios'
 
-const store = useSignUpStore()
+const store = useMemberStore()
 const router = useRouter()
 
 const step = ref(1)
