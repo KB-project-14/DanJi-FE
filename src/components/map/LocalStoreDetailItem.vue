@@ -54,7 +54,10 @@ const makeCall = () => {
 </script>
 
 <template>
-  <div v-if="isVisible" class="fixed bottom-0 left-0 right-0 max-h-[50vh] overflow-y-auto">
+  <div
+    v-if="isVisible"
+    class="fixed bottom-0 left-0 right-0 max-h-[50vh] overflow-y-auto shadow-2xl"
+  >
     <div v-if="place" class="relative w-full bg-White-0 shadow-2xl overflow-hidden" @click.stop>
       <!-- Modal Content -->
       <div class="flex items-center justify-between p-[2rem]">
