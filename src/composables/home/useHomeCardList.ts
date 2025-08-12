@@ -1,5 +1,5 @@
 import { useWalletStore } from '@/stores/useWalletStore'
-import useGetWalletList from '../queries/wallet/getWalletList'
+import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
 import { computed, watch } from 'vue'
 
 export default function useHomeCardList() {
