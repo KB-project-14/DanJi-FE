@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { toast } from 'vue3-toastify'
 
 import Layout from '@/components/layout/Layout.vue'
 import { ChevronRight, Wallet } from 'lucide-vue-next'
@@ -24,14 +25,18 @@ const goToCardRemove = () => {
 const handleCardDelete = () => {
   if (!walletId) {
     console.error('walletId 없음!')
+    toast.error('유효하지 않은 카드입니다.')
     return
   }
 
   // 삭제 API
   deleteWallet(walletId, {
     onSuccess: () => {
+      toast.success('카드가 해지되었습니다.', { autoClose: 1500 })
       showDeleteModal.value = false
-      router.push('/home')
+      setTimeout(() => {
+        router.push('/home')
+      }, 800)
     },
     onError: (error) => {
       console.error('카드 해지 실패:', error)
