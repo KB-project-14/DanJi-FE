@@ -3,7 +3,7 @@ import { del } from '@/api/api'
 import { WALLET_KEYS } from '@/constants/QueryKey'
 
 export const deleteWallet = async (walletId: string) => {
-  return await del(`/api/wallets/${walletId}`)
+  return await del(`api/wallets/${walletId}`)
 }
 
 const useDeleteWallet = () => {
