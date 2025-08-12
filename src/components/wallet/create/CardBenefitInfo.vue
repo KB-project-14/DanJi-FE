@@ -8,7 +8,7 @@ const props = defineProps<{
   /**
    * 최대 충전 가능 금액
    */
-  maxChargeAmount: string
+  maxChargeAmount: number
 }>()
 </script>
 
@@ -21,7 +21,7 @@ const props = defineProps<{
     <!-- 최대 충전 금액 -->
     <div>
       <span class="Body02 text-Gray-5">최대 충전 가능 금액</span>
-      <span class="ms-[0.5rem] Head04 text-Yellow-1">{{ maxChargeAmount }}원</span>
+      <span class="ms-[0.5rem] Head04 text-Yellow-1">{{ maxChargeAmount.toLocaleString() }}원</span>
     </div>
   </div>
 </template>

@@ -105,7 +105,7 @@ const handleCompeleteClick = () => {
         <!-- 카드 혜택 정보 컴포넌트 -->
         <card-benefit-info
           :incentive-text="benefitDescription"
-          :max-charge-amount="String(benefitInfo?.maximum ?? 0)"
+          :max-charge-amount="benefitInfo?.maximum ?? 0"
         />
 
         <!-- 하단 버튼 -->
