@@ -6,6 +6,7 @@ export const useMemberStore = defineStore('member', {
     username: '',
     password: '',
     paymentPin: '',
+    currentLocation: '',
   }),
   actions: {
     setInfo(payload: { name: string; username: string; password: string }) {
@@ -16,11 +17,16 @@ export const useMemberStore = defineStore('member', {
     setPaymentPin(pin: string) {
       this.paymentPin = pin
     },
+    setCurrentLocation(location: string) {
+      this.currentLocation = location
+    },
+
     reset() {
       this.name = ''
       this.username = ''
       this.password = ''
       this.paymentPin = ''
+      this.currentLocation = ''
     },
   },
 })

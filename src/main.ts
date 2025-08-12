@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate' // ⭐ 1. 추가
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { useKakao } from 'vue3-kakao-maps/@utils'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { queryClient } from '@/api/queryClient'
