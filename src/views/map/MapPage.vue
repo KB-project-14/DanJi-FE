@@ -68,7 +68,6 @@ const showPlaceDetail = ref<boolean>(false)
  * 마커 클릭 핸들러
  */
 const handlePlaceMarkerClick = async (payload: { lat: number; lng: number; name: string }) => {
-  foldLocalStoreModal.value = true
   const data = findPlaceByCoordinatesAndName(payload.lat, payload.lng, payload.name)
   selectedPlace.value = await data
   showPlaceDetail.value = true
@@ -97,6 +96,7 @@ const filteredStores = computed((): LocalStoreResponseDTO[] => {
  */
 const handleFilterChipClick = (): void => {
   isFilterModalVisible.value = !isFilterModalVisible.value
+  showPlaceDetail.value = false
 }
 
 /**
@@ -248,6 +248,7 @@ onMounted(async () => {
             class="absolute bottom-[7rem] z-[300]"
             v-model:is-modal-fold="foldLocalStoreModal"
             :local-store-list="filteredStores"
+            @select-place="handlePlaceMarkerClick"
           />
 
           <local-filter-modal
