@@ -19,7 +19,7 @@ instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('ACCESS_TOKEN')
   const url = config.url ?? ''
 
-  const isPublic = url.includes('/api') || url.includes('/api/members')
+  const isPublic = url.includes('api') || url.includes('api/members')
 
   if (token && !isPublic) {
     config.headers.Authorization = `Bearer ${token}`
