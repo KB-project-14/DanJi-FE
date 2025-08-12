@@ -40,7 +40,12 @@ const handleCardDelete = () => {
       useUiStore().setNextToast({
         type: 'success',
         msg: '카드가 해지되었습니다.',
-        opts: { autoClose: 120000, position: 'bottom-center' },
+        opts: {
+          autoClose: 1500,
+          position: 'bottom-center',
+          hideProgressBar: true,
+          closeButton: false,
+        },
       })
       await router.push('/home')
     },
