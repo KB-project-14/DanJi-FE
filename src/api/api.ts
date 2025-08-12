@@ -12,15 +12,16 @@ export interface ApiResponse<T> {
 export const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
   withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${import.meta.env.VITE_DEV_ACCESS_TOKEN}`,
-  },
+  headers: { 'Content-Type': 'application/json' },
 })
 
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('ACCESS_TOKEN')
-  if (token) {
+  const url = config.url ?? ''
+
+  const isPublic = url.includes('/api') || url.includes('/api/members')
+
+  if (token && !isPublic) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config
