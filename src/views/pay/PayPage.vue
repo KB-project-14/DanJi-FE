@@ -32,7 +32,10 @@ console.log('현재 위치:', currentLocation.value)
 
 // 현재 지역의 지역화폐 찾기
 const currentLocalWallet = computed(() => {
-  const location = currentLocation.value
+  // const location = currentLocation.value
+  const location = '광주광역시' // 시연을 위해 고정값 임시 부여
+  console.log('현재 위치:', location)
+
   if (!location) return null
 
   return (
@@ -40,9 +43,10 @@ const currentLocalWallet = computed(() => {
       return (
         // 임시로 설정(추후 백엔드 수정 후 수정 예정)
         wallet.walletId === location ||
-        wallet.localCurrencyName?.includes(
+        wallet.province?.includes(
           location.replace(/특별시|광역시|특별자치시|특별자치도|도$/g, ''),
-        )
+        ) ||
+        wallet.city?.includes(location.replace(/특별시|광역시|특별자치시|특별자치도|도$/g, ''))
       )
     }) || null
   )
@@ -72,15 +76,15 @@ const paymentData = computed((): payRequestDtoType => {
 // 컴포넌트 마운트 시 위치 정보 및 지갑 정보 확인
 onMounted(() => {
   if (!currentLocation.value) {
-    console.warn('⚠️ 위치 정보가 없습니다.')
+    console.warn('위치 정보가 없습니다.')
   }
 
   if (!currentLocalWallet.value) {
-    console.warn('⚠️ 현재 지역의 지역화폐 지갑이 없습니다.')
+    console.warn('현재 지역의 지역화폐 지갑이 없습니다.')
   }
 
   // 지역화폐 여부에 따라 초기 결제 방식 자동 선택
-  if (currentLocalWallet.value && localBalance.value > 0) {
+  if (currentLocalWallet.value && localBalance.value >= 0) {
     selectedPayment.value = 'local'
   } else {
     selectedPayment.value = 'cash'
@@ -226,14 +230,18 @@ const handleInfoConfirm = async () => {
             <div v-if="selectedPayment === 'local'">
               <div class="relative w-[21rem] aspect-[1586/1000] rounded-[1.6rem] bg-Gray-10">
                 <img
-                  :src="`http://danji.cloud/static/images/localCurrency/gunsan.jpg`"
+                  :src="`http://danji.cloud${currentLocalWallet?.backgroundImageUrl}`"
                   alt="지역화폐-카드-이미지"
                 />
                 <div
                   class="absolute flex flex-col bottom-[1.4rem] left-[2.1rem] px-[0.7rem] py-[0.2rem] bg-White-1/50"
                 >
-                  <span class="text-Black-1 Head03">부산페이</span>
-                  <span class="text-Black-2 Body01">부산 지역화폐</span>
+                  <span class="text-Black-1 Head03">{{
+                    currentLocalWallet?.localCurrencyName
+                  }}</span>
+                  <span class="text-Black-2 Body01"
+                    >{{ currentLocalWallet?.province }} 지역화폐</span
+                  >
                 </div>
               </div>
             </div>

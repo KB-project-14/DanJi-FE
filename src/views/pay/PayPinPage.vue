@@ -69,7 +69,6 @@ async function confirmPin() {
       error instanceof AxiosError &&
       error?.response?.data?.error?.message?.includes('결제 비밀번호가 일치하지 않습니다')
     ) {
-      // console.log('결제 비밀번호가 일치하지 않습니다!!!')
       useUiStore().setNextToast({
         type: 'error',
         msg: '결제 비밀번호가 일치하지 않습니다.',
