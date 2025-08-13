@@ -5,7 +5,7 @@ import type { WalletTransactionParams } from '@/types/transaction/TransactionTyp
 
 export const getWalletTransaction = async (walletId: string, params: WalletTransactionParams) => {
   // get() → AxiosResponse<ApiResponse<T>> 반환
-  const response = await get<any>(`/api/wallets/${walletId}/transactions`, {
+  const response = await get<any>(`api/wallets/${walletId}/transactions`, {
     params,
   })
 
