@@ -223,6 +223,7 @@ const confirmExchange = (isConvert: boolean) => {
             :from-card="{
               name: selectedCard.localCurrencyName,
               percentage: selectedCard.percentage,
+              benefitType: selectedCard.benefitType,
             }"
             :total-amount="exchangeInput || 0"
             :result="exchangeResult"
