@@ -2,12 +2,14 @@
 import { computed } from 'vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import { calculateExchangeRegionToRegion } from '@/utils/exchange'
+import { isIncentiveWallet } from '@/utils/checkIncentiveType'
 
 import { ArrowDown } from 'lucide-vue-next'
+import type { BenefitType } from '@/types/local/localTypes'
 
 const props = defineProps<{
-  fromCard: { name: string; percentage: number }
-  toCard: { name: string; percentage: number }
+  fromCard: { name: string; percentage: number; benefitType: BenefitType }
+  toCard: { name: string; percentage: number; benefitType: BenefitType }
   totalAmount: number
 }>()
 
@@ -16,14 +18,32 @@ const emit = defineEmits<{
   (e: 'confirm'): void
 }>()
 
+const fromCardPercentage = isIncentiveWallet(props.fromCard.benefitType)
+  ? props.fromCard.percentage
+  : 0
+
+const toCardPercentage = isIncentiveWallet(props.toCard.benefitType) ? props.fromCard.percentage : 0
+
 // 계산 결과 가져오기
 const exchangeResult = computed(() =>
-  calculateExchangeRegionToRegion(
-    props.fromCard.percentage,
-    props.toCard.percentage,
-    props.totalAmount,
-  ),
+  calculateExchangeRegionToRegion(fromCardPercentage, toCardPercentage, props.totalAmount),
 )
+
+const exchangeCalculationDescription = computed(() => {
+  const fromIsIncentive = isIncentiveWallet(props.fromCard.benefitType)
+  const toIsIncentive = isIncentiveWallet(props.toCard.benefitType)
+
+  if (fromIsIncentive && toIsIncentive) {
+    return `환전 시 기존 카드 인센티브(${props.fromCard.percentage}%)는 제외되며, \n환전할 카드 인센티브(${props.toCard.percentage}%)가 새로 적용됩니다.`
+  }
+  if (fromIsIncentive && !toIsIncentive) {
+    return `환전 시 기존 카드 인센티브(${props.fromCard.percentage}%)는 제외되며, \n환전할 카드의 혜택은 추후 결제 시 적용됩니다.`
+  }
+  if (!fromIsIncentive && toIsIncentive) {
+    return `환전할 카드 인센티브(${props.toCard.percentage}%)가 새로 적용됩니다.`
+  }
+  return `환전할 카드의 혜택은 추후 결제 시 적용됩니다.`
+})
 </script>
 
 <template>
@@ -52,7 +72,7 @@ const exchangeResult = computed(() =>
             충전 금액:
             <span class="text-Yellow-1">{{ exchangeResult.baseAmount.toLocaleString() }}원</span>
           </p>
-          <p class="Body03 text-Gray-6 mb-[0.2rem]">
+          <p v-if="isIncentiveWallet(toCard.benefitType)" class="Body03 text-Gray-6 mb-[0.2rem]">
             인센티브:
             <span class="text-Yellow-1">{{ exchangeResult.incentive.toLocaleString() }}원</span>
           </p>
@@ -63,9 +83,8 @@ const exchangeResult = computed(() =>
         최종 환전 금액:
         <span class="text-Black-2">{{ exchangeResult.finalAmount.toLocaleString() }}원</span>
       </div>
-      <div class="mb-[1rem] text-center text-Gray-5 Body03">
-        ※ 환전 시 전 카드의 인센티브( {{ props.fromCard.percentage }}% )는 제외되고, <br />
-        환전할 카드의 인센티브( {{ props.toCard.percentage }}% )만 새로 적용됩니다.
+      <div class="mb-[1rem] text-center text-Gray-5 Body03 whitespace-pre-line">
+        ※ {{ exchangeCalculationDescription }}
       </div>
 
       <div class="w-full max-w-[34.3rem] flex gap-3">
