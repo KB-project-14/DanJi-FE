@@ -18,5 +18,6 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
+    // 서버 주소 연동
   },
 })

@@ -25,7 +25,7 @@ async function onLogin() {
       password: password.value,
     }
 
-    const response: LoginResponse | null = await login(loginData)
+    const response: LoginResponse = await login(loginData)
 
     if (!response) {
       errorMessage.value = '서버에서 응답이 없습니다.'
@@ -106,7 +106,7 @@ async function onLogin() {
           <!-- 회원가입 링크 -->
           <router-link
             to="/signup"
-            class="flex items-center justify-end text-[1.3rem] text-[#c7c7c7] mt-[0.4rem] mb-[-2rem] mr-[1rem]"
+            class="flex items-center justify-end text-[1.09rem] text-[#c7c7c7] mt-[1rem] mb-[-1.95rem] mr-[0.625rem]"
           >
             단지의 첫 지갑을 만들어볼까요?
             <span class="mx-[4px]"></span>
