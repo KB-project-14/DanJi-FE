@@ -27,7 +27,7 @@ const chunkedBadges = computed(() => {
         :key="badge.badge_id"
         :src="badge.image"
         :alt="`${badge.name} 뱃지 ${badgeIndex + 1}`"
-        class="w-[6rem] h-[6rem] bg-Gray-1 cursor-pointer"
+        class="w-[6rem] h-[6rem] cursor-pointer"
         @click="handleBadgeClick(badge)"
       />
     </div>
