@@ -160,7 +160,10 @@ const confirmExchange = (isConvert: boolean) => {
               mode="region"
               @select-card="(value) => (selectedToCard = value)"
               :balance="selectedCard.balance"
-              :percentage="selectedCard.percentage"
+              :percentage="{
+                fromCard: selectedCard.percentage,
+                toCard: selectedToCardData.percentage,
+              }"
               :chargedAmount="chargedAmountThisMonth"
               :incentiveAmount="incentiveAmount"
               :cardName="selectedCard.localCurrencyName"
