@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import Layout from '@/components/layout/Layout.vue'
@@ -12,8 +12,12 @@ import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import { useRouter } from 'vue-router'
 import PayInfoModal from '@/components/common/modal/PayInfoModal.vue'
 import type { payRequestDtoType } from '@/types/pay/payTypes'
+import { useMemberStore } from '@/stores/useMemberStore'
+import { useWalletStore } from '@/stores/useWalletStore'
 
 const router = useRouter()
+const memberStore = useMemberStore()
+const walletStore = useWalletStore()
 
 // 결제 방식 타입 (최대 하나만 선택)
 type PaymentType = 'local' | 'cash'
@@ -23,11 +27,34 @@ const showLocalFailModal = ref(false)
 const showCashFailModal = ref(false)
 const showInfoModal = ref(false)
 
-// 지갑 단건조회 GET 추가 예정
+const currentLocation = computed(() => memberStore.currentLocation)
+console.log('현재 위치:', currentLocation.value)
 
-const cashBalance = ref(100000) // 현금 결제 금액 (임시로 0원 설정, 추후 API에서 가져올 예정)
-const localBalance = ref(50000) // 실제로는 API에서 가져온 지역화폐 잔액
-const paymentAmount = ref(60000) // 전체 결제요금 임시 설정 (6만원)
+const localBalance = computed(() => currentLocalWallet.value?.balance || 0)
+const cashBalance = computed(() => walletStore.cashWallet?.balance || 0)
+
+console.log('현금계좌 잔액', cashBalance.value)
+console.log('지역화폐 잔액', localBalance.value)
+
+// 현재 지역의 지역화폐 찾기
+const currentLocalWallet = computed(() => {
+  const location = currentLocation.value
+  if (!location) return null
+
+  return (
+    walletStore.localWallets.find((wallet) => {
+      return (
+        // 임시로 설정(추후 백엔드 수정 후 수정 예정)
+        wallet.walletId === location ||
+        wallet.localCurrencyName?.includes(
+          location.replace(/특별시|광역시|특별자치시|특별자치도|도$/g, ''),
+        )
+      )
+    }) || null
+  )
+})
+
+const paymentAmount = ref(30000) // 전체 결제요금 임시 설정
 const localPaymentAmount = ref(paymentAmount.value) // 지역화폐로 결제할 금액
 
 // 임시로 지정한 post body 내용들
@@ -42,8 +69,31 @@ const paymentData = computed((): payRequestDtoType => {
   }
 })
 
+// 컴포넌트 마운트 시 위치 정보 및 지갑 정보 확인
+onMounted(() => {
+  if (!currentLocation.value) {
+    console.warn('⚠️ 위치 정보가 없습니다.')
+  }
+
+  if (!currentLocalWallet.value) {
+    console.warn('⚠️ 현재 지역의 지역화폐 지갑이 없습니다.')
+  }
+
+  // 지역화폐 여부에 따라 초기 결제 방식 자동 선택
+  if (currentLocalWallet.value && localBalance.value > 0) {
+    selectedPayment.value = 'local'
+  } else {
+    selectedPayment.value = 'cash'
+  }
+})
+
 // 결제 방식 선택 함수 (라디오 버튼처럼 동작)
 const selectPayment = (type: PaymentType) => {
+  // 지역화폐 선택 시 해당 지역의 지갑이 있는지 확인
+  if (type === 'local' && !currentLocalWallet.value) {
+    alert('해당 지역의 지역화폐 지갑이 없습니다.')
+    return
+  }
   selectedPayment.value = type
 }
 
@@ -88,7 +138,7 @@ const handleInput = (event: Event) => {
   const numericValue = value.replace(/[^\d]/g, '')
   const cleanedValue = numericValue.replace(/^0+/, '')
 
-  // 즉시 input 값 업데이트 (문자 제거)
+  // 즉시 input 값 업데이트
   target.value = cleanedValue ? parseInt(cleanedValue).toLocaleString() : ''
 
   // 상태 업데이트
@@ -107,8 +157,6 @@ const isPayDisabled = computed(() => {
       return true
     }
   }
-
-  // 그 외엔 활성화
   return false
 })
 

@@ -29,4 +29,5 @@ export const useMemberStore = defineStore('member', {
       this.currentLocation = ''
     },
   },
+  persist: true,
 })
