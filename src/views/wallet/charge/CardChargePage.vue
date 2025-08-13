@@ -9,6 +9,7 @@ import { TRANSACTION_TYPE } from '@/constants/Transaction'
 import useGetWallet from '@/composables/queries/wallet/useGetWallet'
 import { benefitTypeTextMap } from '@/constants/BenefitMapper'
 import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
+import { isIncentiveWallet } from '@/utils/checkIncentiveType'
 
 const router = useRouter()
 const route = useRoute()
@@ -64,7 +65,7 @@ const actualCharge = computed(() => (EVENT_FEE_FREE ? amount.value : amount.valu
 
 // 최종 충전 금액 (인센 : 충전 금액 + 인센티브, 그 외 : 충전 금액만)
 const finalChargeAmount = computed(() => {
-  if (isIncentive()) {
+  if (isIncentiveWallet(localWalletInfo.value.benefitType)) {
     return amount.value + incentive.value
   } else {
     return amount.value
@@ -73,7 +74,7 @@ const finalChargeAmount = computed(() => {
 
 // 충전 후 지역화폐 잔액 (인센 : 인센 포함 더한 금액, 그 외 : 충전 금액만 더함)
 const localCurrencyAfterCharge = computed(() => {
-  if (isIncentive()) {
+  if (isIncentiveWallet(localWalletInfo.value.benefitType)) {
     return localBalance.value + amount.value + incentive.value
   } else {
     return localBalance.value + amount.value
@@ -126,8 +127,6 @@ const handleCharge = async () => {
     query: { success: result.success ? 'true' : 'false' },
   })
 }
-
-const isIncentive = () => benefitTypeTextMap[localWalletInfo.value.benefitType] === '인센티브'
 </script>
 
 <template>
@@ -193,7 +192,7 @@ const isIncentive = () => benefitTypeTextMap[localWalletInfo.value.benefitType] 
                 </span>
                 <span v-if="amount" class="text-Red-0">수수료 면제 대상입니다!</span>
               </p>
-              <p v-if="isIncentive()">
+              <p v-if="isIncentiveWallet(localWalletInfo.benefitType)">
                 {{ localWalletInfo.localCurrencyName }}
                 인센티브({{ localWalletInfo.percentage }}%):
                 <span class="text-Yellow-0">{{ incentive.toLocaleString() }}원</span>
@@ -230,7 +229,7 @@ const isIncentive = () => benefitTypeTextMap[localWalletInfo.value.benefitType] 
                 통합지갑 잔액이 부족하여 충전할 수 없습니다.
               </p>
               <!-- 캐쉬백 안내 -->
-              <p v-if="!isIncentive()" class="text-Red-0 Body04">
+              <p v-if="!isIncentiveWallet(localWalletInfo.benefitType)" class="text-Red-0 Body04">
                 {{ benefitTypeTextMap[localWalletInfo.benefitType] }}
                 {{ incentive.toLocaleString() }}원은 다음 달에 지급됩니다.
               </p>
