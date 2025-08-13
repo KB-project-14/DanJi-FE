@@ -6,7 +6,7 @@ import type { BenefitType } from '@/types/local/localTypes'
 import { benefitTypeTextMap } from '@/constants/BenefitMapper'
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
 import { isIncentiveWallet } from '@/utils/checkIncentiveType'
-import { calculateExchangeRegionToCash } from '@/utils/exchange'
+import { calculateExchangeRegionToRegion } from '@/utils/exchange'
 
 // 충전/인센티브 금액 알기위해 날짜 받기
 const currentMonthLabel = format(new Date(), 'M월')
@@ -55,11 +55,17 @@ const selectedCardBenefit = computed(() => {
 const excludedIncentive = computed(() => {
   if (!props.modelValue || !props.percentage.toCard) return ' - '
 
-  const fromCardPercentage = isIncentiveWallet(props.benefitType.toCard)
-    ? props.percentage.toCard
+  const fromCardPercentage = isIncentiveWallet(props.benefitType.fromCard)
+    ? props.percentage.fromCard
     : 0
 
-  const { finalAmount } = calculateExchangeRegionToCash(fromCardPercentage, props.modelValue)
+  const toCardPercentage = isIncentiveWallet(props.benefitType.toCard) ? props.percentage.toCard : 0
+
+  const { finalAmount } = calculateExchangeRegionToRegion(
+    fromCardPercentage,
+    toCardPercentage,
+    props.modelValue,
+  )
   return finalAmount.toLocaleString()
 })
 </script>
