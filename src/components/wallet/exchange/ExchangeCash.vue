@@ -5,6 +5,7 @@ import { calculateExchangeRegionToCash } from '@/utils/exchange'
 import { HandCoins } from 'lucide-vue-next'
 import { benefitTypeTextMap } from '@/constants/BenefitMapper'
 import type { BenefitType } from '@/types/local/localTypes'
+import { isIncentiveWallet } from '@/utils/checkIncentiveType'
 
 const currentMonthLabel = format(new Date(), 'M월')
 
@@ -59,7 +60,7 @@ const excludedIncentive = computed(() => {
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
-        <div v-if="benefitTypeTextMap[fromCardBenefit] === '인센티브'" class="Body04 text-Gray-5">
+        <div v-if="isIncentiveWallet(fromCardBenefit)" class="Body04 text-Gray-5">
           인센티브 비율만큼 차감된 금액으로 환전됩니다
         </div>
       </div>

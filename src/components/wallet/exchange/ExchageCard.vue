@@ -5,6 +5,7 @@ import { HandCoins } from 'lucide-vue-next'
 import type { BenefitType } from '@/types/local/localTypes'
 import { benefitTypeTextMap } from '@/constants/BenefitMapper'
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
+import { isIncentiveWallet } from '@/utils/checkIncentiveType'
 
 // 충전/인센티브 금액 알기위해 날짜 받기
 const currentMonthLabel = format(new Date(), 'M월')
@@ -75,10 +76,7 @@ const selectedCardBenefit = computed(() => {
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
-        <div
-          v-if="benefitTypeTextMap[benefitType.fromCard] === '인센티브'"
-          class="Body04 text-Gray-5"
-        >
+        <div v-if="isIncentiveWallet(benefitType.fromCard)" class="Body04 text-Gray-5">
           인센티브는 제외하고 환전됩니다
         </div>
       </div>
