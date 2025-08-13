@@ -4,7 +4,7 @@ import { post } from '@/api/api'
 import type { payRequestDtoType, payResponseDtoType } from '@/types/pay/payTypes'
 
 export const postPayment = async (payInfo: payRequestDtoType) => {
-  const response = await post<payResponseDtoType[]>('/api/payment', payInfo)
+  const response = await post<payResponseDtoType[]>('api/payment', payInfo)
   return response.data.data
 }
 

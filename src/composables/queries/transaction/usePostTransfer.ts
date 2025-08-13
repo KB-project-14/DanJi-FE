@@ -4,7 +4,7 @@ import type { TransferRequestDTO, TransferResponseDTO } from '@/types/transactio
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 const postTransfer = async (transferRequest: TransferRequestDTO) => {
-  const response = await post<TransferResponseDTO>('/api/wallets/transfer', transferRequest)
+  const response = await post<TransferResponseDTO>('api/wallets/transfer', transferRequest)
   return response.data.data
 }
 

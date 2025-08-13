@@ -3,10 +3,11 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import Layout from '@/components/layout/Layout.vue'
-import { ChevronRight, Wallet } from 'lucide-vue-next'
+import { ChevronRight } from 'lucide-vue-next'
 import CardDeleteModal from '@/components/common/modal/CardDeleteModal.vue'
 
 import useDeleteWallet from '@/composables/queries/wallet/useDeleteWallet'
+import { useUiStore } from '@/stores/useUiStore'
 
 const router = useRouter()
 const route = useRoute()
@@ -24,18 +25,29 @@ const goToCardRemove = () => {
 const handleCardDelete = () => {
   if (!walletId) {
     console.error('walletId 없음!')
+    useUiStore().setNextToast({
+      type: 'error',
+      msg: '해당 카드는 존재하지 않습니다. ',
+      opts: { autoClose: 800, position: 'bottom-center' },
+    })
     return
   }
 
   // 삭제 API
   deleteWallet(walletId, {
-    onSuccess: () => {
+    onSuccess: async () => {
       showDeleteModal.value = false
-      router.push('/home')
-    },
-    onError: (error) => {
-      console.error('카드 해지 실패:', error)
-      alert('카드 해지 중 오류가 발생했습니다.')
+      useUiStore().setNextToast({
+        type: 'success',
+        msg: '카드가 해지되었습니다.',
+        opts: {
+          autoClose: 1500,
+          position: 'bottom-center',
+          hideProgressBar: true,
+          closeButton: false,
+        },
+      })
+      await router.push('/home')
     },
   })
 }
