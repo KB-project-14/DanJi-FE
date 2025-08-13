@@ -18,16 +18,15 @@ const emit = defineEmits<{
   (e: 'confirm'): void
 }>()
 
-const fromCardPercentage = isIncentiveWallet(props.fromCard.benefitType)
-  ? props.fromCard.percentage
-  : 0
-
-const toCardPercentage = isIncentiveWallet(props.toCard.benefitType) ? props.fromCard.percentage : 0
-
 // 계산 결과 가져오기
-const exchangeResult = computed(() =>
-  calculateExchangeRegionToRegion(fromCardPercentage, toCardPercentage, props.totalAmount),
-)
+const exchangeResult = computed(() => {
+  const fromCardPercentage = isIncentiveWallet(props.fromCard.benefitType)
+    ? props.fromCard.percentage
+    : 0
+  const toCardPercentage = isIncentiveWallet(props.toCard.benefitType) ? props.toCard.percentage : 0
+
+  return calculateExchangeRegionToRegion(fromCardPercentage, toCardPercentage, props.totalAmount)
+})
 
 const exchangeCalculationDescription = computed(() => {
   const fromIsIncentive = isIncentiveWallet(props.fromCard.benefitType)
