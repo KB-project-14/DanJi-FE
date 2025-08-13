@@ -30,12 +30,6 @@ const showInfoModal = ref(false)
 const currentLocation = computed(() => memberStore.currentLocation)
 console.log('현재 위치:', currentLocation.value)
 
-const localBalance = computed(() => currentLocalWallet.value?.balance || 0)
-const cashBalance = computed(() => walletStore.cashWallet?.balance || 0)
-
-console.log('현금계좌 잔액', cashBalance.value)
-console.log('지역화폐 잔액', localBalance.value)
-
 // 현재 지역의 지역화폐 찾기
 const currentLocalWallet = computed(() => {
   const location = currentLocation.value
@@ -53,6 +47,12 @@ const currentLocalWallet = computed(() => {
     }) || null
   )
 })
+
+const localBalance = computed(() => currentLocalWallet.value?.balance || 0)
+const cashBalance = computed(() => walletStore.cashWallet?.balance || 0)
+
+console.log('현금계좌 잔액', cashBalance.value)
+console.log('지역화폐 잔액', localBalance.value)
 
 const paymentAmount = ref(30000) // 전체 결제요금 임시 설정
 const localPaymentAmount = ref(paymentAmount.value) // 지역화폐로 결제할 금액
@@ -91,7 +91,7 @@ onMounted(() => {
 const selectPayment = (type: PaymentType) => {
   // 지역화폐 선택 시 해당 지역의 지갑이 있는지 확인
   if (type === 'local' && !currentLocalWallet.value) {
-    alert('해당 지역의 지역화폐 지갑이 없습니다.')
+    alert('현재 지역의 지역화폐 카드가 없습니다.')
     return
   }
   selectedPayment.value = type
