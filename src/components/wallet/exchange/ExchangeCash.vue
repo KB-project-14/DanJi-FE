@@ -30,7 +30,10 @@ const handleInput = (e: Event) => {
 // 현금 환전 금액 계산
 const excludedIncentive = computed(() => {
   if (!props.modelValue || !props.percentage) return 0
-  const { finalAmount } = calculateExchangeRegionToCash(props.percentage, props.modelValue)
+
+  const fromCardPercentage = isIncentiveWallet(props.fromCardBenefit) ? props.percentage : 0
+
+  const { finalAmount } = calculateExchangeRegionToCash(fromCardPercentage, props.modelValue)
   return finalAmount
 })
 </script>
