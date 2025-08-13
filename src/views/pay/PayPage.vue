@@ -33,7 +33,7 @@ console.log('현재 위치:', currentLocation.value)
 // 현재 지역의 지역화폐 찾기
 const currentLocalWallet = computed(() => {
   // const location = currentLocation.value
-  const location = '광주광역시' // 시연을 위해 고정값 임시 부여
+  const location = '제주특별자치도' // 시연을 위해 고정값 임시 부여
   console.log('현재 위치:', location)
 
   if (!location) return null
@@ -230,6 +230,7 @@ const handleInfoConfirm = async () => {
             <div v-if="selectedPayment === 'local'">
               <div class="relative w-[21rem] aspect-[1586/1000] rounded-[1.6rem] bg-Gray-10">
                 <img
+                  class="object-cover w-full aspect-[1586/1000] rounded-[1.6rem]"
                   :src="`http://danji.cloud${currentLocalWallet?.backgroundImageUrl}`"
                   alt="지역화폐-카드-이미지"
                 />
