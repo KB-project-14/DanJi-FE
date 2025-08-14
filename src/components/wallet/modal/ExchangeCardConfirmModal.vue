@@ -56,7 +56,7 @@ const exchangeCalculationDescription = computed(() => {
           <p class="pb-[0.6rem] Body02">{{ props.fromCard.name }}</p>
           <p class="Body03 text-Gray-6 mt-[1rem]">
             환전 예정 금액:
-            <span class="text-Yellow-1">{{ props.totalAmount.toLocaleString() }}원</span>
+            <span class="Body02 text-Black-1">{{ props.totalAmount.toLocaleString() }}원</span>
           </p>
         </div>
 
@@ -69,18 +69,23 @@ const exchangeCalculationDescription = computed(() => {
           <p class="pb-[0.6rem] Body02">{{ props.toCard.name }}</p>
           <p class="Body03 text-Gray-6 mb-[0.2rem]">
             충전 금액:
-            <span class="text-Yellow-1">{{ exchangeResult.baseAmount.toLocaleString() }}원</span>
+            <span class="Body02 text-Black-1"
+              >{{ exchangeResult.baseAmount.toLocaleString() }}원</span
+            >
           </p>
           <p v-if="isIncentiveWallet(toCard.benefitType)" class="Body03 text-Gray-6 mb-[0.2rem]">
             인센티브:
-            <span class="text-Yellow-1">{{ exchangeResult.incentive.toLocaleString() }}원</span>
+            <span class="Body02 text-Black-1"
+              >{{ exchangeResult.incentive.toLocaleString() }}원</span
+            >
           </p>
         </div>
       </div>
 
       <div class="mb-[2rem] text-center Head02">
         최종 환전 금액:
-        <span class="text-Black-2">{{ exchangeResult.finalAmount.toLocaleString() }}원</span>
+        <span class="text-Blue-0"> {{ exchangeResult.finalAmount.toLocaleString() }}</span>
+        <span class="ms-[0.2rem]">원</span>
       </div>
       <div class="mb-[1rem] text-center text-Gray-5 Body03 whitespace-pre-line">
         ※ {{ exchangeCalculationDescription }}
