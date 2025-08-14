@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import BottomNavItem from './BottomNavItem.vue'
+import LoginRequiredModal from '@/components/common/modal/LoginRequiredModal.vue'
+import { isGuest } from '@/utils/auth'
 
 const route = useRoute()
+const router = useRouter()
 
+const guestAllowed = new Set<string>(['/map'])
 const ITEMS = [
   { text: '지갑', path: '/home' },
   { text: '지도', path: '/map' },
@@ -12,8 +17,29 @@ const ITEMS = [
   { text: '마이', path: '/mypage' },
 ]
 
-const getActiveItem = (path: string) => {
-  return route.path === path
+const getActiveItem = (path: string) => route.path === path
+
+const showLoginModal = ref(false)
+const pendingPath = ref<string | null>(null)
+
+function onNavClick(path: string) {
+  if (isGuest() && !guestAllowed.has(path)) {
+    pendingPath.value = path
+    showLoginModal.value = true
+    return
+  }
+  router.push(path)
+}
+
+function closeModal() {
+  showLoginModal.value = false
+  pendingPath.value = null
+}
+
+function goLogin() {
+  showLoginModal.value = false
+  pendingPath.value = null
+  router.push({ path: '/login', query: { redirect: '/home' } })
 }
 </script>
 
@@ -24,6 +50,9 @@ const getActiveItem = (path: string) => {
       :key="item.text"
       :text="item.text"
       :isActive="getActiveItem(item.path)"
+      @click="onNavClick(item.path)"
     />
   </section>
+
+  <LoginRequiredModal v-if="showLoginModal" @close="closeModal" @go-login="goLogin" />
 </template>
