@@ -16,8 +16,7 @@ export const useGetMember = () => {
     queryFn: getMember,
     staleTime: 1000 * 60,
   })
-
-  return data ?? null
+  return data
 }
 
 export default useGetMember

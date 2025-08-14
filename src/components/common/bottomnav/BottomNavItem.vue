@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { Wallet, Map, QrCode, Shield, UserRound } from 'lucide-vue-next'
-import { computed, defineProps } from 'vue'
+import { computed, defineProps, defineEmits } from 'vue'
 import { useRouter } from 'vue-router'
+
+const emit = defineEmits<{ (e: 'click'): void }>()
 
 const router = useRouter()
 
@@ -28,6 +30,8 @@ const iconComponent = computed(() => {
 })
 
 const handleClick = () => {
+  emit('click')
+
   switch (BottomNavProps.text) {
     case '지갑':
       router.replace('/home')

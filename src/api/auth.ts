@@ -12,10 +12,15 @@ export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
       },
     },
   )
+
+  const token = response.data?.data?.accessToken
+  if (token) {
+    localStorage.setItem('accessToken', token)
+  }
+
   return response.data.data
 }
 
-// 회원가입
 export const signUp = async (payload: SignUpRequest): Promise<SignUpResponse> => {
   const { data } = await post<SignUpResponse>('/api/auth/signup', payload)
   return data.data

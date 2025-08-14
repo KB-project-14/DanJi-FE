@@ -16,7 +16,7 @@ export const instance: AxiosInstance = axios.create({
 })
 
 instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('ACCESS_TOKEN')
+  const token = localStorage.getItem('accessToken')
   const url = config.url ?? ''
 
   const isPublic = url.includes('/api') || url.includes('/api/members')
