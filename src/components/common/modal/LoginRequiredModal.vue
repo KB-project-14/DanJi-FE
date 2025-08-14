@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import fail from '@/assets/icons/fail.svg'
 
-const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'go-login'): void
-}>()
-
+const emit = defineEmits<{ close: []; 'go-login': [] }>()
 function goLogin() {
   emit('go-login')
 }
+
 function closeOnly() {
   emit('close')
 }

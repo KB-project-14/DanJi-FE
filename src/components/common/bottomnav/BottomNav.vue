@@ -37,10 +37,9 @@ function closeModal() {
 }
 
 function goLogin() {
-  const redirect = pendingPath.value ?? '/home'
   showLoginModal.value = false
   pendingPath.value = null
-  router.push({ path: '/login', query: { redirect } })
+  router.push({ path: '/login', query: { redirect: '/home' } })
 }
 </script>
 
