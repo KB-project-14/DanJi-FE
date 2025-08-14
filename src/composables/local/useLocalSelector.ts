@@ -87,13 +87,7 @@ export default function useLocalSelector() {
   // 특정 지역 설정 (외부에서 초기값 설정 시 사용)
   const setLocal = (region?: string, city?: string) => {
     selectedRegion.value = region ?? ''
-
-    // city selector가 보여지는 경우에만 city 설정
-    if (city && shouldShowCitySelector.value) {
-      selectedCity.value = city
-    } else {
-      selectedCity.value = ''
-    }
+    selectedCity.value = city ?? ''
   }
 
   const getLocalInfoById = (cityId: number) => {

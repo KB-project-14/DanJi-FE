@@ -18,7 +18,8 @@ const routeCityId = computed(() => Number(route.params.id))
 
 const isModalVisible = ref<boolean>(false)
 
-const { selectedRegion, selectedCity, selectedCityId, getLocalInfoById } = useLocalSelector()
+const { selectedRegion, selectedCity, selectedCityId, getLocalInfoById, setLocal } =
+  useLocalSelector()
 const { localCurrencyName, benefitInfo, benefitDescription, localCurrencyId } =
   useLocalCurrencyInfo(
     computed(() => ({
@@ -37,8 +38,7 @@ const handleClickModal = (): void => {
 }
 
 const handleModalConfirm = async (region: string, city: string): Promise<void> => {
-  selectedRegion.value = region
-  selectedCity.value = city
+  setLocal(region, city)
   isModalVisible.value = false
 
   await nextTick()
@@ -99,19 +99,19 @@ const handleCompeleteClick = () => {
         <!-- 카드 이미지 & 이름 컴포넌트 -->
         <card-info
           :card-name="localCurrencyName"
-          :card-image="`http://danji.cloud${benefitInfo?.img}`"
+          :card-image="benefitInfo?.img ? `http://danji.cloud${benefitInfo.img}` : undefined"
         />
 
         <!-- 카드 혜택 정보 컴포넌트 -->
         <card-benefit-info
           :incentive-text="benefitDescription"
-          :max-charge-amount="String(benefitInfo?.maximum ?? 0)"
+          :max-charge-amount="benefitInfo?.maximum ?? 0"
         />
 
         <!-- 하단 버튼 -->
         <div class="flex justify-center mt-[3.4rem] mb-[4rem]">
-          <danji-button variant="large" @click="handleCompeleteClick" :disabled="isPending"
-            >발급하기</danji-button
+          <danji-button variant="large" @click="handleCompeleteClick" :disabled="isPending">
+            {{ isPending ? '발급하는 중…' : '발급하기' }}</danji-button
           >
         </div>
       </div>
