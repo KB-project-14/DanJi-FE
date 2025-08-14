@@ -22,6 +22,6 @@ export const login = async (payload: LoginRequest): Promise<LoginResponse> => {
 }
 
 export const signUp = async (payload: SignUpRequest): Promise<SignUpResponse> => {
-  const { data } = await post<SignUpResponse>('/api/auth/signup', payload)
+  const { data } = await post<SignUpResponse>('api/auth/signup', payload)
   return data.data
 }
