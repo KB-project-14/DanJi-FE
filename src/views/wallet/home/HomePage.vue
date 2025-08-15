@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 import Layout from '@/components/layout/Layout.vue'
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
@@ -10,9 +10,25 @@ import NoCardSection from '@/components/wallet/NoCardSection.vue'
 
 import useHomeCardList from '@/composables/home/useHomeCardList'
 import { useWalletStore } from '@/stores/useWalletStore'
+import { useMemberStore } from '@/stores/useMemberStore'
+import { useLocation } from '@/composables/pay/useLocation'
 
 const router = useRouter()
 const walletStore = useWalletStore()
+const memberStore = useMemberStore()
+
+// 위치 정보 가져오기
+const { isLoading: isLocationLoading, error: locationError, fetchCurrentProvince } = useLocation()
+
+// 페이지 진입 시 현재 위치 가져오기
+const initializeLocation = async () => {
+  try {
+    const province = await fetchCurrentProvince()
+    console.log('현재 위치 저장 완료:', province)
+  } catch (error) {
+    console.error('위치 정보 가져오기 실패:', error)
+  }
+}
 
 const { sortedLocalWallets, localWalletCount } = useHomeCardList()
 
@@ -38,6 +54,11 @@ const goExchange = () => {
   const selectedCard = sortedLocalWallets.value[currentIndex.value]
   if (selectedCard) router.push(`/card/exchange/${selectedCard.walletId}`)
 }
+
+// 컴포넌트 마운트 시 위치 정보 초기화
+onMounted(() => {
+  initializeLocation()
+})
 </script>
 
 <template>
