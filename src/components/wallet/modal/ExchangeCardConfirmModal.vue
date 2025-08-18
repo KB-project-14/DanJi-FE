@@ -18,7 +18,6 @@ const emit = defineEmits<{
   (e: 'confirm'): void
 }>()
 
-// 계산 결과 가져오기
 const exchangeResult = computed(() => {
   const fromCardPercentage = isIncentiveWallet(props.fromCard.benefitType)
     ? props.fromCard.percentage
@@ -51,7 +50,6 @@ const exchangeCalculationDescription = computed(() => {
       <h2 class="pb-[2.4rem] Head02 text-center">최종 환전 금액 확인</h2>
 
       <div class="flex flex-col items-center mb-[2rem]">
-        <!-- From -->
         <div class="w-full rounded-xl py-[1.6rem] px-[1rem] bg-Gray-1 text-center mb-[1rem]">
           <p class="pb-[0.6rem] Body02">{{ props.fromCard.name }}</p>
           <p class="Body03 text-Gray-6 mt-[1rem]">
@@ -64,7 +62,6 @@ const exchangeCalculationDescription = computed(() => {
           <ArrowDown />
         </div>
 
-        <!-- To -->
         <div class="w-full bg-Gray-1 rounded-xl py-[1.6rem] px-[1rem] text-center">
           <p class="pb-[0.6rem] Body02">{{ props.toCard.name }}</p>
           <p class="Body03 text-Gray-6 mb-[0.2rem]">

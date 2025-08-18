@@ -18,7 +18,7 @@ const props = defineProps<{
   percentage: { fromCard: number; toCard: number }
   cardName?: string
   modelValue: number | null
-  mode?: 'region' | 'cash' // 지역→지역인지, 지역→현금인지 구분
+  mode?: 'region' | 'cash'
   fromCardName: string
   benefitType: { fromCard: BenefitType; toCard: BenefitType }
   toCardList: WalletResponseDtoType[]
@@ -29,21 +29,17 @@ const emit = defineEmits<{
   (e: 'select-card', value: string): void
 }>()
 
-// To 카드 선택 (지역→지역 모드일 때만 사용)
 const selectedCard = ref('')
 
-// 금액 입력 처리
 const handleInput = (e: Event) => {
   const value = Number((e.target as HTMLInputElement).value)
   emit('update:modelValue', value)
 }
 
-// 카드 선택 처리
 const handleSelect = () => {
   emit('select-card', selectedCard.value)
 }
 
-// 혜택 문구 (지역→지역에서만 사용)
 const selectedCardBenefit = computed(() => {
   const card = props.toCardList.find((c) => c.localCurrencyName === selectedCard.value)
   return card
@@ -51,7 +47,6 @@ const selectedCardBenefit = computed(() => {
     : ''
 })
 
-//지역화폐 환전 금액 계산
 const excludedIncentive = computed(() => {
   if (!props.modelValue || !props.percentage.toCard) return ' - '
 
@@ -72,7 +67,6 @@ const excludedIncentive = computed(() => {
 
 <template>
   <div class="flex flex-col gap-3 p-[2rem] pb-[8rem] rounded-lg shadow-sm bg-White-1">
-    <!-- 환전 가능한 금액 -->
     <div>
       <p class="Body02 text-Gray-5">환전 가능한 금액</p>
       <div class="flex items-center gap-2">
@@ -81,7 +75,6 @@ const excludedIncentive = computed(() => {
       </div>
     </div>
 
-    <!-- 내가 충전한 금액 / 인센티브 -->
     <div class="Body03 text-Gray-6">
       {{ currentMonthLabel }} 충전한 금액:
       <span class="Body02 text-Black-2">{{ props.chargedAmount.toLocaleString() }}원</span><br />
@@ -91,7 +84,6 @@ const excludedIncentive = computed(() => {
       <span class="Body02 text-Black-2">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 
-    <!-- 입력 UI -->
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
@@ -108,7 +100,6 @@ const excludedIncentive = computed(() => {
         class="p-[1.6rem] border rounded text-Gray-6 text-right Body02"
       />
 
-      <!-- 지역→지역 모드일 때만 카드 선택 -->
       <div
         v-if="props.mode === 'region'"
         class="flex items-center justify-between border rounded p-[1.6rem]"
@@ -131,7 +122,6 @@ const excludedIncentive = computed(() => {
         <div class="Head04 text-Black-2">{{ excludedIncentive }}원</div>
       </div>
 
-      <!-- 혜택 문구 -->
       <p v-if="props.mode === 'region' && selectedCard" class="text-Gray-6">
         {{ selectedCardBenefit }}
       </p>
