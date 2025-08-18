@@ -4,7 +4,6 @@ type ToastKind = 'success' | 'error' | 'warning' | 'info'
 interface NextToast {
   type: ToastKind
   msg: string
-  // vue3-toastify 옵션 그대로 전달 가능 (autoClose, position 등)
   opts?: Record<string, any>
 }
 
