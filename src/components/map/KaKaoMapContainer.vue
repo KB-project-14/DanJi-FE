@@ -35,7 +35,7 @@ const selectedCluster = ref<string>()
 const selectedStore = ref<string>()
 
 const isSameLocation = (lat1: number, lng1: number, lat2: number, lng2: number) => {
-  const precision = 0.000001 // 약 10cm 정밀도
+  const precision = 0.000001
   return Math.abs(lat1 - lat2) < precision && Math.abs(lng1 - lng2) < precision
 }
 

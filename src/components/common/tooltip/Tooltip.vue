@@ -13,17 +13,6 @@ const props = withDefaults(
     align: 'center',
   },
 )
-// 사용법
-// 1. 아래쪽/왼쪽 중앙
-// <Tooltip message="원하는 메세지 적기" position="bottom" align="center" />
-// <Tooltip message="" position="left" align="center" />
-
-// 2. 왼/오른쪽 상단
-// <Tooltip message="" position="top" align="start" />
-// <Tooltip message="" position="top" align="end" />
-
-// 3. 오른쪽 하단
-// <Tooltip message="" position="right" align="end" />
 
 const showTooltip = ref(false)
 const tooltipRef = ref<HTMLElement | null>(null)

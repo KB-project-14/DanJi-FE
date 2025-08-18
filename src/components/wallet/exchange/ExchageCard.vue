@@ -8,7 +8,6 @@ import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType
 import { isIncentiveWallet } from '@/utils/checkIncentiveType'
 import { calculateExchangeRegionToRegion } from '@/utils/exchange'
 
-// 충전/인센티브 금액 알기위해 날짜 받기
 const currentMonthLabel = format(new Date(), 'M월')
 
 const props = defineProps<{

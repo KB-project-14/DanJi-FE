@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 
 export default function useGeolocation() {
-  const currentLatitude = ref<number>(37.5665) // 서울시청 기본 좌표
+  const currentLatitude = ref<number>(37.5665)
   const currentLongitude = ref<number>(126.978)
   const isLocationLoading = ref<boolean>(false)
   const locationError = ref<string | null>(null)

@@ -28,11 +28,8 @@ const showInfoModal = ref(false)
 
 const currentLocation = computed(() => memberStore.currentLocation)
 
-// 현재 지역의 지역화폐 찾기
 const currentLocalWallet = computed(() => {
-  // const location = currentLocation.value
-  const location = '제주특별자치도' // 시연을 위해 고정값 임시 부여
-  console.log('현재 위치:', location)
+  const location = '제주특별자치도'
 
   if (!location) return null
 
@@ -49,7 +46,7 @@ const currentLocalWallet = computed(() => {
 const localBalance = computed(() => currentLocalWallet.value?.balance || 0)
 const cashBalance = computed(() => walletStore.cashWallet?.balance || 0)
 
-const paymentAmount = ref(30000) // 전체 결제요금 임시 설정
+const paymentAmount = ref(30000)
 const localPaymentAmount = ref(paymentAmount.value)
 
 const paymentData = computed((): payRequestDtoType => {
@@ -93,20 +90,17 @@ const onClickPay = () => {
   if (selectedPayment.value === 'local') {
     if (localPaymentAmount.value === 0) return
 
-    // 1. 지역화폐 잔액 부족 확인
     if (localPaymentAmount.value > localBalance.value) {
       showLocalFailModal.value = true
       return
     }
 
-    // 2. 나머지 금액(일반 결제)이 현금 잔액보다 큰지 확인
     const remainingAmount = paymentAmount.value - localPaymentAmount.value
     if (remainingAmount > cashBalance.value) {
       alert('현금 계좌 잔액이 부족합니다.')
       return
     }
   } else if (selectedPayment.value === 'cash') {
-    // 3. 현금 계좌 잔액이 전체 결제 금액보다 적은지 확인
     if (paymentAmount.value > cashBalance.value) {
       alert('현금 계좌 잔액이 부족합니다.')
       return
