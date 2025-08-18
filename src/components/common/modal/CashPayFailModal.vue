@@ -10,16 +10,14 @@ const emit = defineEmits<{
 
 const goToChargePage = () => {
   emit('close')
-  router.push('/') // 임시로 홈 이동 설정(나중에 아마도 변경 예정)
+  router.push('/')
 }
 </script>
 
 <template>
   <div class="fixed inset-0 z-[1000] flex items-center justify-center">
-    <!-- 오버레이 -->
     <div class="absolute inset-0 bg-Black-1 bg-opacity-50 z-[1000]" />
 
-    <!-- 모달 박스 -->
     <div
       class="z-[1001] flex flex-col items-center justify-center w-[33.8rem] h-[23.9rem] rounded-[1.6rem] bg-White-0"
     >
