@@ -9,6 +9,7 @@ import KakaoMapContainer from '@/components/map/KaKaoMapContainer.vue'
 import LocalStoreListModal from '@/components/map/LocalStoreListModal.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
 import LocalStoreDetailItem from '@/components/map/LocalStoreDetailItem.vue'
+import { showErrorToast } from '@/utils/toast'
 
 import useLocalSelector from '@/composables/local/useLocalSelector'
 import useGeolocation from '@/composables/map/useGeolocation'
@@ -80,7 +81,7 @@ const handlePlaceSelect = async (payload: {
 
     mapRef.value?.panTo(payload.lat, payload.lng)
   } catch (error) {
-    alert('장소 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.')
+    showErrorToast('장소 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.')
   }
 }
 
