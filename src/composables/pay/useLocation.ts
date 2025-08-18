@@ -103,14 +103,11 @@ export const useLocation = () => {
 
       const province = fullRegionName
 
-      console.log('현재 위치:', { r1, r2, fullRegionName, province })
-
       memberStore.setCurrentLocation(province)
       return province
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '위치 정보를 가져올 수 없습니다.'
       error.value = errorMessage
-      console.error('위치 정보 조회 오류:', err)
       throw new Error(errorMessage)
     } finally {
       isLoading.value = false
