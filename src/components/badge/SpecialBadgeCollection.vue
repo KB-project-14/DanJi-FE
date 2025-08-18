@@ -15,8 +15,10 @@ const { currentBadges, handleBadgeClick } = useBadgeCollection()
       <img
         :key="badge.badge_id"
         :src="badge.image"
-        :alt="`${badge.name} 뱃지 ${index + 1}`"
-        class="w-[7rem] h-[7rem] bg-Gray-0"
+        :alt="`${badge.name} 뱃지`"
+        class="w-[7rem] h-[7rem] object-contain"
+        loading="lazy"
+        decoding="async"
       />
       <span class="Body01">{{ badge.name }}</span>
     </div>

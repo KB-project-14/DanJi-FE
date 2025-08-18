@@ -13,4 +13,7 @@ export interface WalletResponseDtoType {
   displayOrder: number
   backgroundImageUrl?: string | null
   maximum?: number
+  regionId?: number
+  province?: string
+  city?: string
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import Layout from '@/components/layout/Layout.vue'
@@ -12,10 +12,13 @@ import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import { useRouter } from 'vue-router'
 import PayInfoModal from '@/components/common/modal/PayInfoModal.vue'
 import type { payRequestDtoType } from '@/types/pay/payTypes'
+import { useMemberStore } from '@/stores/useMemberStore'
+import { useWalletStore } from '@/stores/useWalletStore'
 
 const router = useRouter()
+const memberStore = useMemberStore()
+const walletStore = useWalletStore()
 
-// 결제 방식 타입 (최대 하나만 선택)
 type PaymentType = 'local' | 'cash'
 
 const selectedPayment = ref<PaymentType>('local')
@@ -23,36 +26,72 @@ const showLocalFailModal = ref(false)
 const showCashFailModal = ref(false)
 const showInfoModal = ref(false)
 
-// 지갑 단건조회 GET 추가 예정
+const currentLocation = computed(() => memberStore.currentLocation)
 
-const cashBalance = ref(100000) // 현금 결제 금액 (임시로 0원 설정, 추후 API에서 가져올 예정)
-const localBalance = ref(50000) // 실제로는 API에서 가져온 지역화폐 잔액
-const paymentAmount = ref(60000) // 전체 결제요금 임시 설정 (6만원)
-const localPaymentAmount = ref(paymentAmount.value) // 지역화폐로 결제할 금액
+// 현재 지역의 지역화폐 찾기
+const currentLocalWallet = computed(() => {
+  // const location = currentLocation.value
+  const location = '제주특별자치도' // 시연을 위해 고정값 임시 부여
+  console.log('현재 위치:', location)
 
-// 임시로 지정한 post body 내용들
+  if (!location) return null
+
+  return (
+    walletStore.localWallets.find((wallet) => {
+      const parsedLocation = location.replace(/특별시|광역시|특별자치시|특별자치도|도$/g, '')
+
+      console.log('parsedLocation:', parsedLocation)
+      return wallet.province?.includes(parsedLocation) || wallet.city?.includes(parsedLocation)
+    }) || null
+  )
+})
+
+const localBalance = computed(() => currentLocalWallet.value?.balance || 0)
+const cashBalance = computed(() => walletStore.cashWallet?.balance || 0)
+
+const paymentAmount = ref(30000) // 전체 결제요금 임시 설정
+const localPaymentAmount = ref(paymentAmount.value)
+
 const paymentData = computed((): payRequestDtoType => {
   return {
     availableMerchantId: '12DF8BC1-30A4-4608-A33D-50CC939C4430', // 임시로 가맹점 ID 설정(고정)
     inputAmount: localPaymentAmount.value,
-    localWalletId: '74695305-1379-4FBE-A780-8ECB56FAB441', //추후 pinia에서 전역 값 가져오기
+    localWalletId: currentLocalWallet.value?.walletId ?? '',
     merchantAmount: paymentAmount.value,
     type: selectedPayment.value === 'local' ? 'LOCAL_CURRENCY' : 'GENERAL',
     walletPin: '',
   }
 })
 
-// 결제 방식 선택 함수 (라디오 버튼처럼 동작)
+onMounted(() => {
+  if (!currentLocation.value) {
+    console.warn('위치 정보가 없습니다.')
+  }
+
+  if (!currentLocalWallet.value) {
+    console.warn('현재 지역의 지역화폐 지갑이 없습니다.')
+  }
+
+  if (currentLocalWallet.value && localBalance.value >= 0) {
+    selectedPayment.value = 'local'
+  } else {
+    selectedPayment.value = 'cash'
+  }
+})
+
 const selectPayment = (type: PaymentType) => {
+  if (type === 'local' && !currentLocalWallet.value) {
+    alert('현재 지역의 지역화폐 카드가 없습니다.')
+    return
+  }
   selectedPayment.value = type
 }
 
-// 결제 버튼 클릭 함수
 const onClickPay = () => {
   if (selectedPayment.value === null) return
 
   if (selectedPayment.value === 'local') {
-    if (localPaymentAmount.value === 0) return // 지역화폐 0원 결제 방지
+    if (localPaymentAmount.value === 0) return
 
     // 1. 지역화폐 잔액 부족 확인
     if (localPaymentAmount.value > localBalance.value) {
@@ -74,7 +113,6 @@ const onClickPay = () => {
     }
   }
 
-  // 모든 검증 통과 시 결제 정보 모달 표시
   showInfoModal.value = true
 }
 
@@ -84,31 +122,22 @@ const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
   const value = target.value
 
-  // 숫자만 추출
   const numericValue = value.replace(/[^\d]/g, '')
   const cleanedValue = numericValue.replace(/^0+/, '')
 
-  // 즉시 input 값 업데이트 (문자 제거)
   target.value = cleanedValue ? parseInt(cleanedValue).toLocaleString() : ''
 
-  // 상태 업데이트
   localPaymentAmount.value = parseInt(cleanedValue) || 0
 }
 
-// 결제버튼 비활성화 여부 판단 함수
 const isPayDisabled = computed(() => {
-  // 결제 수단 미선택 시 비활성화
   if (!selectedPayment.value) return true
 
-  // 지역화폐 결제 선택 시
   if (selectedPayment.value === 'local') {
-    // 0원 입력 또는 잔액 초과 시 비활성화
     if (localPaymentAmount.value === 0 || localPaymentAmount.value > localBalance.value) {
       return true
     }
   }
-
-  // 그 외엔 활성화
   return false
 })
 
@@ -150,7 +179,6 @@ const handleInfoConfirm = async () => {
           <span class="text-Black-2 Head03">결제 수단</span>
           <div class="w-full h-[1px] mt-[0.5rem] mb-[1.8rem] bg-Gray-9" />
 
-          <!-- 결제수단 체크박스 영역 / 재사용 가능할듯? -->
           <!-- 지역화폐 결제 -->
           <div class="flex flex-col items-center">
             <div
@@ -176,16 +204,25 @@ const handleInfoConfirm = async () => {
 
             <!-- 카드 div(체크됐을 때만 표시) -->
             <div v-if="selectedPayment === 'local'">
-              <div class="relative w-[21rem] aspect-[1586/1000] rounded-[1.6rem] bg-Gray-10">
+              <div class="relative w-[21rem] aspect-[1586/1000] rounded-[0.8rem] bg-Gray-10">
                 <img
-                  :src="`http://danji.cloud/static/images/localCurrency/gunsan.jpg`"
+                  class="object-cover w-full aspect-[1586/1000] rounded-[0.8rem]"
+                  :src="
+                    currentLocalWallet?.backgroundImageUrl
+                      ? `http://danji.cloud${currentLocalWallet.backgroundImageUrl}`
+                      : ''
+                  "
                   alt="지역화폐-카드-이미지"
                 />
                 <div
                   class="absolute flex flex-col bottom-[1.4rem] left-[2.1rem] px-[0.7rem] py-[0.2rem] bg-White-1/50"
                 >
-                  <span class="text-Black-1 Head03">부산페이</span>
-                  <span class="text-Black-2 Body01">부산 지역화폐</span>
+                  <span class="text-Black-1 Head03">{{
+                    currentLocalWallet?.localCurrencyName
+                  }}</span>
+                  <span class="text-Black-2 Body01"
+                    >{{ currentLocalWallet?.province }} 지역화폐</span
+                  >
                 </div>
               </div>
             </div>

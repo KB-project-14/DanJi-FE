@@ -29,6 +29,9 @@ const useGetWallet = (walletId: string) => {
         displayOrder: 0,
         backgroundImageUrl: '',
         maximum: 0,
+        regionId: 0,
+        province: '',
+        city: '',
       },
   )
 }

@@ -15,7 +15,7 @@ const { selectedBadge } = useBadgeCollection()
       <img
         :src="selectedBadge?.image"
         :alt="`${selectedBadge?.name} 뱃지`"
-        class="w-[15.4rem] h-[15.4rem] bg-Gray-1"
+        class="w-[15.4rem] h-[15.4rem]"
       />
     </div>
     <div
