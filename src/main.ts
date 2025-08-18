@@ -16,11 +16,6 @@ import './assets/styles/main.css'
 import App from './App.vue'
 import router from './router'
 
-// if (import.meta.env.DEV) {
-//   const { worker } = await import('./mocks/browser.test')
-//   await worker.start({ onUnhandledRequest: 'bypass' })
-// }
-
 useKakao(import.meta.env.VITE_KAKAO_APP_API_KEY, ['clusterer'])
 const app = createApp(App)
 

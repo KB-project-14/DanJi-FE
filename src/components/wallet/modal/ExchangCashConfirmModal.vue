@@ -33,7 +33,6 @@ const calculateFinalAmount = () => {
       <h2 class="pb-[2.4rem] Head02 text-center">최종 환전 금액 확인</h2>
 
       <div class="flex flex-col items-center mb-[2rem]">
-        <!-- From -->
         <div
           class="w-full rounded-xl py-[1.6rem] px-[1rem] h-[9rem] bg-Gray-1 text-center mb-[1rem]"
         >
@@ -52,7 +51,6 @@ const calculateFinalAmount = () => {
           <ArrowDown />
         </div>
 
-        <!-- To (통합지갑) -->
         <div class="w-full py-[1.6rem] px-[1rem] h-[9rem] bg-Gray-1 rounded-xl text-center">
           <p class="pb-[0.6rem] Body02">통합지갑</p>
           <p class="mt-[0.8rem] Body03 text-Gray-6">

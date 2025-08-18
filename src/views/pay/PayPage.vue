@@ -14,6 +14,7 @@ import PayInfoModal from '@/components/common/modal/PayInfoModal.vue'
 import type { payRequestDtoType } from '@/types/pay/payTypes'
 import { useMemberStore } from '@/stores/useMemberStore'
 import { useWalletStore } from '@/stores/useWalletStore'
+import { showWarningToast, showErrorToast } from '@/utils/toast'
 
 const router = useRouter()
 const memberStore = useMemberStore()
@@ -28,19 +29,14 @@ const showInfoModal = ref(false)
 
 const currentLocation = computed(() => memberStore.currentLocation)
 
-// 현재 지역의 지역화폐 찾기
 const currentLocalWallet = computed(() => {
-  // const location = currentLocation.value
-  const location = '제주특별자치도' // 시연을 위해 고정값 임시 부여
-  console.log('현재 위치:', location)
+  const location = '제주특별자치도'
 
   if (!location) return null
 
   return (
     walletStore.localWallets.find((wallet) => {
       const parsedLocation = location.replace(/특별시|광역시|특별자치시|특별자치도|도$/g, '')
-
-      console.log('parsedLocation:', parsedLocation)
       return wallet.province?.includes(parsedLocation) || wallet.city?.includes(parsedLocation)
     }) || null
   )
@@ -49,12 +45,12 @@ const currentLocalWallet = computed(() => {
 const localBalance = computed(() => currentLocalWallet.value?.balance || 0)
 const cashBalance = computed(() => walletStore.cashWallet?.balance || 0)
 
-const paymentAmount = ref(30000) // 전체 결제요금 임시 설정
+const paymentAmount = ref(30000)
 const localPaymentAmount = ref(paymentAmount.value)
 
 const paymentData = computed((): payRequestDtoType => {
   return {
-    availableMerchantId: '12DF8BC1-30A4-4608-A33D-50CC939C4430', // 임시로 가맹점 ID 설정(고정)
+    availableMerchantId: '12DF8BC1-30A4-4608-A33D-50CC939C4430',
     inputAmount: localPaymentAmount.value,
     localWalletId: currentLocalWallet.value?.walletId ?? '',
     merchantAmount: paymentAmount.value,
@@ -65,11 +61,11 @@ const paymentData = computed((): payRequestDtoType => {
 
 onMounted(() => {
   if (!currentLocation.value) {
-    console.warn('위치 정보가 없습니다.')
+    showWarningToast('위치 정보가 없습니다.')
   }
 
   if (!currentLocalWallet.value) {
-    console.warn('현재 지역의 지역화폐 지갑이 없습니다.')
+    showWarningToast('현재 지역의 지역화폐 지갑이 없습니다.')
   }
 
   if (currentLocalWallet.value && localBalance.value >= 0) {
@@ -81,7 +77,7 @@ onMounted(() => {
 
 const selectPayment = (type: PaymentType) => {
   if (type === 'local' && !currentLocalWallet.value) {
-    alert('현재 지역의 지역화폐 카드가 없습니다.')
+    showWarningToast('현재 지역의 지역화폐 카드가 없습니다.')
     return
   }
   selectedPayment.value = type
@@ -93,22 +89,19 @@ const onClickPay = () => {
   if (selectedPayment.value === 'local') {
     if (localPaymentAmount.value === 0) return
 
-    // 1. 지역화폐 잔액 부족 확인
     if (localPaymentAmount.value > localBalance.value) {
       showLocalFailModal.value = true
       return
     }
 
-    // 2. 나머지 금액(일반 결제)이 현금 잔액보다 큰지 확인
     const remainingAmount = paymentAmount.value - localPaymentAmount.value
     if (remainingAmount > cashBalance.value) {
-      alert('현금 계좌 잔액이 부족합니다.')
+      showErrorToast('현금 계좌 잔액이 부족합니다.')
       return
     }
   } else if (selectedPayment.value === 'cash') {
-    // 3. 현금 계좌 잔액이 전체 결제 금액보다 적은지 확인
     if (paymentAmount.value > cashBalance.value) {
-      alert('현금 계좌 잔액이 부족합니다.')
+      showErrorToast('현금 계좌 잔액이 부족합니다.')
       return
     }
   }
@@ -162,7 +155,6 @@ const handleInfoConfirm = async () => {
   >
     <template #content>
       <div class="flex flex-col items-center px-[1.6rem] pt-[1.1rem] bg-Gray-0">
-        <!-- 결제 금액 섹션 -->
         <section
           class="relative flex flex-col w-full h-[10rem] px-[2.4rem] py-[2rem] mb-[1.4rem] bg-White-0 rounded-[1.6rem]"
         >
@@ -172,23 +164,19 @@ const handleInfoConfirm = async () => {
           >
         </section>
 
-        <!-- 결제 수단 섹션 -->
         <section
           class="relative flex flex-col w-full px-[2.4rem] pt-[2rem] pb-[2.5rem] mb-[3rem] bg-White-0 rounded-[1.6rem]"
         >
           <span class="text-Black-2 Head03">결제 수단</span>
           <div class="w-full h-[1px] mt-[0.5rem] mb-[1.8rem] bg-Gray-9" />
 
-          <!-- 지역화폐 결제 -->
           <div class="flex flex-col items-center">
             <div
               class="flex items-center self-start mb-[0.5rem] cursor-pointer"
               @click="selectPayment('local')"
             >
-              <!-- 원래 체크박스는 숨김 -->
               <input type="checkbox" class="sr-only" />
 
-              <!-- 커스텀 체크박스 이미지  적용 -->
               <div class="mr-[1rem] w-[2.4rem] h-[2.4rem] flex-shrink-0">
                 <img
                   :src="selectedPayment === 'local' ? checkboxSelected : checkboxUnselected"
@@ -202,7 +190,6 @@ const handleInfoConfirm = async () => {
               <span class="text-Black-1 Head04">지역화폐 결제</span>
             </div>
 
-            <!-- 카드 div(체크됐을 때만 표시) -->
             <div v-if="selectedPayment === 'local'">
               <div class="relative w-[21rem] aspect-[1586/1000] rounded-[0.8rem] bg-Gray-10">
                 <img
@@ -230,16 +217,13 @@ const handleInfoConfirm = async () => {
 
           <div class="w-full h-[1px] mt-[2rem] mb-[0.8rem] bg-Gray-9" />
 
-          <!-- 일반결제 -->
           <div class="flex flex-col items-center">
             <div
               class="flex items-center self-start mb-[0.8rem] cursor-pointer"
               @click="selectPayment('cash')"
             >
-              <!-- 원래 체크박스는 숨김 -->
               <input type="checkbox" class="sr-only" />
 
-              <!-- 커스텀 체크박스 이미지 적용 -->
               <div class="mr-[1rem] w-[2.4rem] h-[2.4rem] flex-shrink-0">
                 <img
                   :src="selectedPayment === 'cash' ? checkboxSelected : checkboxUnselected"
@@ -253,7 +237,6 @@ const handleInfoConfirm = async () => {
           </div>
         </section>
 
-        <!-- 결제할 금액 나타내는 섹션 -->
         <section
           v-if="selectedPayment === 'local'"
           class="relative flex flex-col w-full px-[2.4rem] py-[2rem] mb-[2.1rem] bg-White-0 rounded-[1.6rem]"

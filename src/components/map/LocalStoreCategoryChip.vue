@@ -22,9 +22,7 @@ const props = defineProps<{
   category: string
 }>()
 
-// 카테고리별 고유 색상을 생성하는 함수
 const getCategoryColor = (category: string): string => {
-  // 카테고리 문자열을 해시값으로 변환
   let hash = 0
   for (let i = 0; i < category.length; i++) {
     const char = category.charCodeAt(i)
@@ -32,7 +30,6 @@ const getCategoryColor = (category: string): string => {
     hash = hash >>> 0
   }
 
-  // 칩 색상 조합 배열
   const colorCombinations = [
     { bg: 'bg-red-100', text: 'text-red-700' },
     { bg: 'bg-blue-100', text: 'text-blue-700' },
@@ -51,14 +48,12 @@ const getCategoryColor = (category: string): string => {
     { bg: 'bg-amber-100', text: 'text-amber-700' },
   ]
 
-  // 해시값을 색상 배열 인덱스로 변환
   const colorIndex = Math.abs(hash) % colorCombinations.length
   const colors = colorCombinations[colorIndex]
 
   return `${colors.bg} ${colors.text}`
 }
 
-// 칩 스타일 클래스 계산
 const chipClass = computed(() => {
   const baseClass =
     'inline-flex items-center justify-center px-[1.5rem] py-[0.2rem] rounded-full Body03'

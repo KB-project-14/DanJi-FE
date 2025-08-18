@@ -1,9 +1,7 @@
 import type { TRANSACTION_TYPE } from '@/constants/Transaction'
 
-// 거래 방향
 export type TransactionDirection = 'INCOME' | 'EXPENSE'
 
-// 거래 유형
 export type TransactionType = (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE]
 
 export interface Transaction {

@@ -9,15 +9,12 @@ import { useWalletStore } from '@/stores/useWalletStore'
 
 const walletStore = useWalletStore()
 
-// 스토어에서 정렬된 지역화폐 지갑 목록 가져오기
 const localWallets = computed(() => walletStore.sortedLocalWallets)
 
-// 카드 총 잔액 계산
 const totalBalance = computed(() =>
   (localWallets.value ?? []).reduce((sum, card) => sum + (card.balance || 0), 0),
 )
 
-// 색상 배열 (순서 고정)
 const bgColors = [
   'bg-[#0078D7] text-White-1',
   'bg-[#77C3E4] text-White-1',
@@ -36,7 +33,6 @@ const bgColors = [
   >
     <template #content>
       <div class="flex flex-col h-full px-[1rem] py-[2.4rem] bg-Background gap-4">
-        <!-- 상단 총 잔액 영역 -->
         <div class="flex items-center justify-between p-[2rem] rounded-lg shadow-sm bg-White-1">
           <p class="Body00 text-Gray-4">
             사용자의 지역화폐 총 잔액은
@@ -51,7 +47,6 @@ const bgColors = [
           />
         </div>
 
-        <!-- 카드 리스트 -->
         <div class="flex flex-col gap-4 flex-1 p-4 rounded-lg shadow-sm bg-White-1">
           <wallet-item
             v-for="(card, index) in localWallets"

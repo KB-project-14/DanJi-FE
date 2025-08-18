@@ -46,7 +46,6 @@ const menuItems = [
           <span class="Body02 text-Black-0/50">ID : {{ member?.username }}</span>
         </section>
 
-        <!-- 메뉴 섹션 -->
         <section class="w-full max-w-[34.2rem]">
           <div
             v-for="(item, index) in menuItems"

@@ -85,12 +85,10 @@ const handleFocus = (event: FocusEvent) => {
 
 <template>
   <div class="flex w-full items-center">
-    <!-- 아이콘 영역 (아이콘이 있을 때만 표시됨) -->
     <div v-if="$slots.icon" class="mr-[0.8rem] flex items-center">
       <slot name="icon" />
     </div>
 
-    <!-- 입력창 -->
     <input
       :value="modelValue"
       :type="type || 'text'"

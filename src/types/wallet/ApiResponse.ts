@@ -1,4 +1,3 @@
-// 응답값
 export interface ApiError {
   code: string
   message: string

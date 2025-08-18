@@ -4,7 +4,6 @@ import { useBadgeCollection } from '@/composables/badge/useBadgeCollection'
 const { currentBadges, handleBadgeClick } = useBadgeCollection()
 </script>
 <template>
-  <!-- 뱃지 리스트 아이템 -->
   <div class="flex w-full h-full justify-center items-start flex-wrap gap-[1.3rem]">
     <div
       v-for="(badge, index) in currentBadges"
