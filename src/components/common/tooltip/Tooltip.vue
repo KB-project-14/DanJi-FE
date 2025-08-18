@@ -44,7 +44,6 @@ const handleClickOutside = (e: MouseEvent) => {
 onMounted(() => document.addEventListener('click', handleClickOutside))
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 
-// 위치별 계산
 const tooltipPositionClass = computed(() => {
   const pos = props.position || 'top'
   const align = props.align || 'center'
