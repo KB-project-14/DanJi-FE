@@ -16,19 +16,15 @@ export default function useLocalCurrencyInfo(
 
   const localCurrencies = useGetLocalCurrencies(localCurrencyQuery)
 
-  // 첫 번째 지역화폐 정보
   const primaryLocalCurrency = computed(() => {
     if (!localCurrencies.value || localCurrencies.value.length === 0) return null
     return localCurrencies.value[0]
   })
 
-  // 지역화폐 이름
   const localCurrencyName = computed(() => primaryLocalCurrency.value?.name || '')
 
-  // 지역화폐 id
   const localCurrencyId = computed(() => primaryLocalCurrency.value?.localCurrencyId || '')
 
-  // 혜택 정보 (타입, 퍼센테이지, 최대 충전 가능 금액)
   const benefitInfo = computed(() => {
     const currency = primaryLocalCurrency.value
     if (!currency) return null
@@ -41,7 +37,6 @@ export default function useLocalCurrencyInfo(
     }
   })
 
-  // 혜택 정보 텍스트
   const benefitDescription = computed(() => {
     const benefit = benefitInfo.value
     if (!benefit) return ''
