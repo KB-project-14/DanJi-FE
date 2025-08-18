@@ -19,7 +19,6 @@ const router = useRouter()
 const memberStore = useMemberStore()
 const walletStore = useWalletStore()
 
-// 결제 방식 타입 (최대 하나만 선택)
 type PaymentType = 'local' | 'cash'
 
 const selectedPayment = ref<PaymentType>('local')
@@ -28,7 +27,6 @@ const showCashFailModal = ref(false)
 const showInfoModal = ref(false)
 
 const currentLocation = computed(() => memberStore.currentLocation)
-console.log('현재 위치:', currentLocation.value)
 
 // 현재 지역의 지역화폐 찾기
 const currentLocalWallet = computed(() => {
@@ -42,6 +40,7 @@ const currentLocalWallet = computed(() => {
     walletStore.localWallets.find((wallet) => {
       const parsedLocation = location.replace(/특별시|광역시|특별자치시|특별자치도|도$/g, '')
 
+      console.log('parsedLocation:', parsedLocation)
       return wallet.province?.includes(parsedLocation) || wallet.city?.includes(parsedLocation)
     }) || null
   )
@@ -50,25 +49,20 @@ const currentLocalWallet = computed(() => {
 const localBalance = computed(() => currentLocalWallet.value?.balance || 0)
 const cashBalance = computed(() => walletStore.cashWallet?.balance || 0)
 
-console.log('현금계좌 잔액', cashBalance.value)
-console.log('지역화폐 잔액', localBalance.value)
-
 const paymentAmount = ref(30000) // 전체 결제요금 임시 설정
-const localPaymentAmount = ref(paymentAmount.value) // 지역화폐로 결제할 금액
+const localPaymentAmount = ref(paymentAmount.value)
 
-// 임시로 지정한 post body 내용들
 const paymentData = computed((): payRequestDtoType => {
   return {
     availableMerchantId: '12DF8BC1-30A4-4608-A33D-50CC939C4430', // 임시로 가맹점 ID 설정(고정)
     inputAmount: localPaymentAmount.value,
-    localWalletId: '74695305-1379-4FBE-A780-8ECB56FAB441', //추후 pinia에서 전역 값 가져오기
+    localWalletId: currentLocalWallet.value?.walletId ?? '',
     merchantAmount: paymentAmount.value,
     type: selectedPayment.value === 'local' ? 'LOCAL_CURRENCY' : 'GENERAL',
     walletPin: '',
   }
 })
 
-// 컴포넌트 마운트 시 위치 정보 및 지갑 정보 확인
 onMounted(() => {
   if (!currentLocation.value) {
     console.warn('위치 정보가 없습니다.')
@@ -78,7 +72,6 @@ onMounted(() => {
     console.warn('현재 지역의 지역화폐 지갑이 없습니다.')
   }
 
-  // 지역화폐 여부에 따라 초기 결제 방식 자동 선택
   if (currentLocalWallet.value && localBalance.value >= 0) {
     selectedPayment.value = 'local'
   } else {
@@ -86,9 +79,7 @@ onMounted(() => {
   }
 })
 
-// 결제 방식 선택 함수 (라디오 버튼처럼 동작)
 const selectPayment = (type: PaymentType) => {
-  // 지역화폐 선택 시 해당 지역의 지갑이 있는지 확인
   if (type === 'local' && !currentLocalWallet.value) {
     alert('현재 지역의 지역화폐 카드가 없습니다.')
     return
@@ -96,12 +87,11 @@ const selectPayment = (type: PaymentType) => {
   selectedPayment.value = type
 }
 
-// 결제 버튼 클릭 함수
 const onClickPay = () => {
   if (selectedPayment.value === null) return
 
   if (selectedPayment.value === 'local') {
-    if (localPaymentAmount.value === 0) return // 지역화폐 0원 결제 방지
+    if (localPaymentAmount.value === 0) return
 
     // 1. 지역화폐 잔액 부족 확인
     if (localPaymentAmount.value > localBalance.value) {
@@ -123,7 +113,6 @@ const onClickPay = () => {
     }
   }
 
-  // 모든 검증 통과 시 결제 정보 모달 표시
   showInfoModal.value = true
 }
 
@@ -133,25 +122,18 @@ const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
   const value = target.value
 
-  // 숫자만 추출
   const numericValue = value.replace(/[^\d]/g, '')
   const cleanedValue = numericValue.replace(/^0+/, '')
 
-  // 즉시 input 값 업데이트
   target.value = cleanedValue ? parseInt(cleanedValue).toLocaleString() : ''
 
-  // 상태 업데이트
   localPaymentAmount.value = parseInt(cleanedValue) || 0
 }
 
-// 결제버튼 비활성화 여부 판단 함수
 const isPayDisabled = computed(() => {
-  // 결제 수단 미선택 시 비활성화
   if (!selectedPayment.value) return true
 
-  // 지역화폐 결제 선택 시
   if (selectedPayment.value === 'local') {
-    // 0원 입력 또는 잔액 초과 시 비활성화
     if (localPaymentAmount.value === 0 || localPaymentAmount.value > localBalance.value) {
       return true
     }
@@ -197,7 +179,6 @@ const handleInfoConfirm = async () => {
           <span class="text-Black-2 Head03">결제 수단</span>
           <div class="w-full h-[1px] mt-[0.5rem] mb-[1.8rem] bg-Gray-9" />
 
-          <!-- 결제수단 체크박스 영역 / 재사용 가능할듯? -->
           <!-- 지역화폐 결제 -->
           <div class="flex flex-col items-center">
             <div
