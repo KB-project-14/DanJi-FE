@@ -39,7 +39,7 @@ const selectPayment = async (type: PaymentType) => {
 }
 
 const startScan = async () => {
-  if (!videoRef.value || isScanning.value) return // 이미 스캔 중이면 중복 실행 방지
+  if (!videoRef.value || isScanning.value) return
 
   codeReader = new BrowserMultiFormatReader()
   isScanning.value = true
@@ -69,10 +69,11 @@ const startScan = async () => {
       selectedDevice.deviceId,
       videoRef.value,
       (result: Result | undefined) => {
-        if (result) {
+        if (result && isScanning.value) {
+          isScanning.value = false
           resultText.value = result.getText()
-          router.push('/pay')
           stopScan()
+          router.push('/pay')
         }
       },
     )
