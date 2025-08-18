@@ -29,10 +29,28 @@ export const useLocation = () => {
 
       // 현재 위치 가져오기
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-        })
+        navigator.geolocation.getCurrentPosition(
+          resolve,
+          (error) => {
+            if (error.code === error.PERMISSION_DENIED) {
+              reject(
+                new Error(
+                  '위치 권한이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요.',
+                ),
+              )
+            } else if (error.code === error.POSITION_UNAVAILABLE) {
+              reject(new Error('위치 정보를 사용할 수 없습니다.'))
+            } else if (error.code === error.TIMEOUT) {
+              reject(new Error('위치 정보 요청 시간이 초과되었습니다.'))
+            } else {
+              reject(new Error('위치 정보를 가져올 수 없습니다.'))
+            }
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+          },
+        )
       })
 
       const baseUrl = 'https://dapi.kakao.com/v2/local/geo/coord2address.json'

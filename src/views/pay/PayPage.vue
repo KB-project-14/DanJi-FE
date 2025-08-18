@@ -40,14 +40,9 @@ const currentLocalWallet = computed(() => {
 
   return (
     walletStore.localWallets.find((wallet) => {
-      return (
-        // 임시로 설정(추후 백엔드 수정 후 수정 예정)
-        wallet.walletId === location ||
-        wallet.province?.includes(
-          location.replace(/특별시|광역시|특별자치시|특별자치도|도$/g, ''),
-        ) ||
-        wallet.city?.includes(location.replace(/특별시|광역시|특별자치시|특별자치도|도$/g, ''))
-      )
+      const parsedLocation = location.replace(/특별시|광역시|특별자치시|특별자치도|도$/g, '')
+
+      return wallet.province?.includes(parsedLocation) || wallet.city?.includes(parsedLocation)
     }) || null
   )
 })
@@ -228,10 +223,14 @@ const handleInfoConfirm = async () => {
 
             <!-- 카드 div(체크됐을 때만 표시) -->
             <div v-if="selectedPayment === 'local'">
-              <div class="relative w-[21rem] aspect-[1586/1000] rounded-[1.6rem] bg-Gray-10">
+              <div class="relative w-[21rem] aspect-[1586/1000] rounded-[0.8rem] bg-Gray-10">
                 <img
-                  class="object-cover w-full aspect-[1586/1000] rounded-[1.6rem]"
-                  :src="`http://danji.cloud${currentLocalWallet?.backgroundImageUrl}`"
+                  class="object-cover w-full aspect-[1586/1000] rounded-[0.8rem]"
+                  :src="
+                    currentLocalWallet?.backgroundImageUrl
+                      ? `http://danji.cloud${currentLocalWallet.backgroundImageUrl}`
+                      : ''
+                  "
                   alt="지역화폐-카드-이미지"
                 />
                 <div
