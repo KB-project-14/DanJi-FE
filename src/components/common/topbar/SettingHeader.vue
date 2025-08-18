@@ -39,7 +39,6 @@ const onRightClick = () => {
 
 <template>
   <div class="relative flex items-center justify-center px-3 h-[7.2rem] bg-white">
-    <!-- 왼쪽 아이콘 -->
     <div
       v-if="showLeftIcon"
       class="absolute left-0 pl-3 flex items-center cursor-pointer"
@@ -50,10 +49,8 @@ const onRightClick = () => {
       <ChevronLeft :size="24" />
     </div>
 
-    <!-- 제목 -->
     <div class="text-center Head01">{{ title }}</div>
 
-    <!-- 오른쪽 아이콘 -->
     <div
       v-if="showRightIcon"
       class="absolute right-0 pr-3 flex items-center cursor-pointer"

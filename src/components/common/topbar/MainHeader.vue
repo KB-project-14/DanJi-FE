@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import danjiLogo from '@/assets/images/danji-logo-main.png'
 
-// 추후 홈 화면으로 이동 처리 예정
 defineEmits(['left-click'])
 </script>
 
