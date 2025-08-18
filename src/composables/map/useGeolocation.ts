@@ -1,8 +1,8 @@
 import { ref } from 'vue'
 
 export default function useGeolocation() {
-  const currentLatitude = ref<number>(37.5665)
-  const currentLongitude = ref<number>(126.978)
+  const currentLatitude = ref<number>(33.515555)
+  const currentLongitude = ref<number>(126.513179)
   const isLocationLoading = ref<boolean>(false)
   const locationError = ref<string | null>(null)
 
@@ -61,6 +61,13 @@ export default function useGeolocation() {
     })
   }
 
+  const getCurrentLocationForJeju = (): Promise<{ lat: number; lng: number }> => {
+    return Promise.resolve({
+      lat: currentLatitude.value,
+      lng: currentLongitude.value,
+    })
+  }
+
   const resetToDefaultLocation = () => {
     currentLatitude.value = 37.5665
     currentLongitude.value = 126.978
@@ -75,5 +82,6 @@ export default function useGeolocation() {
 
     getCurrentLocation,
     resetToDefaultLocation,
+    getCurrentLocationForJeju,
   }
 }
