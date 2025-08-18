@@ -22,10 +22,7 @@ const { isLoading: isLocationLoading, error: locationError, fetchCurrentProvince
 const initializeLocation = async () => {
   try {
     const province = await fetchCurrentProvince()
-    console.log('현재 위치 저장 완료:', province)
-  } catch (error) {
-    console.error('위치 정보 가져오기 실패:', error)
-  }
+  } catch (error) {}
 }
 
 const { sortedLocalWallets, localWalletCount } = useHomeCardList()
