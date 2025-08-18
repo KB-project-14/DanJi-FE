@@ -3,6 +3,7 @@ import '@/assets/styles/main.css'
 import { defineProps, defineEmits } from 'vue'
 import { ChevronLeft, Settings } from 'lucide-vue-next'
 import { useRouter, useRoute } from 'vue-router'
+import { showErrorToast } from '@/utils/toast'
 
 const router = useRouter()
 const route = useRoute()
@@ -32,7 +33,7 @@ const onRightClick = () => {
   if (walletId) {
     router.push(`/card/setting/${walletId}`)
   } else {
-    console.error('walletId 없음!')
+    showErrorToast('해당하는 카드 ID가 없습니다')
   }
 }
 </script>

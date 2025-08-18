@@ -21,10 +21,8 @@ const goToCardRemove = () => {
   showDeleteModal.value = true
 }
 
-// 해지
 const handleCardDelete = () => {
   if (!walletId) {
-    console.error('walletId 없음!')
     useUiStore().setNextToast({
       type: 'error',
       msg: '해당 카드는 존재하지 않습니다. ',
@@ -33,7 +31,6 @@ const handleCardDelete = () => {
     return
   }
 
-  // 삭제 API
   deleteWallet(walletId, {
     onSuccess: async () => {
       showDeleteModal.value = false
