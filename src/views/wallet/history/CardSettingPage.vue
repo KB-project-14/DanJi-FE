@@ -59,7 +59,6 @@ const handleCardDelete = () => {
   >
     <template #content>
       <div class="flex flex-col bg-White-1 h-full">
-        <!-- 카드 해지 -->
         <div
           class="flex justify-between items-center py-[2rem] px-[2.4rem] cursor-pointer"
           @click="goToCardRemove"
@@ -68,7 +67,6 @@ const handleCardDelete = () => {
           <ChevronRight class="w-[1.2rem] h-[1.2rem] text-Gray-5" />
         </div>
 
-        <!-- 해지 모달 -->
         <card-delete-modal
           :is-open="showDeleteModal"
           @close="showDeleteModal = false"

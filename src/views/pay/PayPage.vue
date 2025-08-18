@@ -50,7 +50,7 @@ const localPaymentAmount = ref(paymentAmount.value)
 
 const paymentData = computed((): payRequestDtoType => {
   return {
-    availableMerchantId: '12DF8BC1-30A4-4608-A33D-50CC939C4430', // 임시로 가맹점 ID 설정(고정)
+    availableMerchantId: '12DF8BC1-30A4-4608-A33D-50CC939C4430',
     inputAmount: localPaymentAmount.value,
     localWalletId: currentLocalWallet.value?.walletId ?? '',
     merchantAmount: paymentAmount.value,
