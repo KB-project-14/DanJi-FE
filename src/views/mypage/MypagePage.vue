@@ -3,25 +3,33 @@ import Layout from '@/components/layout/Layout.vue'
 import profile from '@/assets/icons/profile.svg'
 import rightArrow from '@/assets/icons/right-arrow.svg'
 import useGetMember from '@/composables/queries/member/useGetMember'
+import { useRouter } from 'vue-router'
+import { useQueryClient } from '@tanstack/vue-query'
 
-const member = useGetMember();
+const router = useRouter()
+const queryClient = useQueryClient()
+const member = useGetMember()
 
-// 메뉴 아이템들을 배열로 관리
+function handleMenuClick(label: string) {
+  if (label === '로그아웃') {
+    for (const k of ['accessToken']) {
+      localStorage.removeItem(k)
+    }
+    sessionStorage.clear()
+
+    queryClient.clear()
+
+    router.replace('/login')
+    return
+  }
+}
 const menuItems = [
-  {
-    label: '정보수정',
-    rounded: 'rounded-t-[1.6rem]',
-  },
-  {
-    label: '로그아웃',
-    rounded: '',
-  },
-  {
-    label: '탈퇴하기',
-    rounded: 'rounded-b-[1.6rem]',
-  },
+  { label: '정보수정', rounded: 'rounded-t-[1.6rem]' },
+  { label: '로그아웃', rounded: '' },
+  { label: '탈퇴하기', rounded: 'rounded-b-[1.6rem]' },
 ]
 </script>
+
 <template>
   <layout :header-type="'basic'" :header-title="'마이페이지'">
     <template #content>
@@ -45,6 +53,7 @@ const menuItems = [
             :key="item.label"
             class="flex items-center justify-between w-full h-[7rem] px-[2rem] bg-White-0 cursor-pointer hover:bg-gray-50 transition-colors"
             :class="item.rounded"
+            @click="handleMenuClick(item.label)"
           >
             <span class="Body00 select-none">{{ item.label }}</span>
             <img class="w-[2.2rem] h-[2.6rem]" :src="rightArrow" alt="화살표" />
@@ -54,4 +63,3 @@ const menuItems = [
     </template>
   </layout>
 </template>
-<style scoped></style>

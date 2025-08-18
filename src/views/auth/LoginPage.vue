@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
 import { Lock, User, ChevronRight } from 'lucide-vue-next'
-import { useRouter } from 'vue-router'
 import { login } from '@/api/auth'
 import type { LoginRequest, LoginResponse } from '@/types/auth'
 import axios from 'axios'
+import { queryClient } from '@/api/queryClient'
+import { instance } from '@/api/api'
 
+const route = useRoute()
 const router = useRouter()
+
 const username = ref('')
 const password = ref('')
 const isLoading = ref(false)
@@ -20,26 +24,21 @@ async function onLogin() {
   errorMessage.value = ''
 
   try {
-    const loginData: LoginRequest = {
-      username: username.value,
-      password: password.value,
-    }
+    const payload: LoginRequest = { username: username.value, password: password.value }
+    const res: LoginResponse = await login(payload)
+    const { accessToken } = res
 
-    const response: LoginResponse | null = await login(loginData)
+    localStorage.setItem('accessToken', accessToken)
+    instance.defaults.headers.common.Authorization = `Bearer ${accessToken}`
 
-    if (!response) {
-      errorMessage.value = '서버에서 응답이 없습니다.'
-      isLoading.value = false
-      return
-    }
+    const redirect = (route.query.redirect as string) || '/home'
+    await router.replace(redirect)
 
-    const { accessToken } = response
-    localStorage.setItem('ACCESS_TOKEN', accessToken)
+    window.location.assign(redirect)
 
-    router.push('/home')
+    void queryClient.invalidateQueries({ queryKey: ['member'], exact: true }).catch(() => {})
   } catch (err: unknown) {
     console.error('로그인 오류:', err)
-
     if (axios.isAxiosError(err)) {
       errorMessage.value = err.response?.data?.message || '로그인에 실패했습니다.'
     } else if (err instanceof Error) {
@@ -69,7 +68,11 @@ async function onLogin() {
           </p>
         </div>
 
-        <div class="w-[365px] bg-white rounded-[12px] p-[24px] flex flex-col gap-[3px] mt-[25px]">
+        <!-- 입력 폼 -->
+        <form
+          class="w-[365px] bg-white rounded-[12px] p-[24px] flex flex-col gap-[3px] mt-[25px]"
+          @submit.prevent="onLogin"
+        >
           <!-- 아이디 입력 -->
           <div class="h-[64px] flex items-center relative">
             <danji-input
@@ -106,22 +109,28 @@ async function onLogin() {
           <!-- 회원가입 링크 -->
           <router-link
             to="/signup"
-            class="flex items-center justify-end text-[1.3rem] text-[#c7c7c7] mt-[0.4rem] mb-[-2rem] mr-[1rem]"
+            class="flex items-center justify-end text-[1.09rem] text-[#c7c7c7] mt-[1rem] mb-[-1.95rem] mr-[0.625rem]"
           >
             단지의 첫 지갑을 만들어볼까요?
             <span class="mx-[4px]"></span>
             <strong class="font-normal">회원가입</strong>
             <ChevronRight class="w-[14px] h-[14px] stroke-[2.5] text-[#c7c7c7]" />
           </router-link>
-        </div>
 
-        <!-- 로그인 버튼 -->
-        <button
-          class="w-full max-w-[360px] mt-[20px] py-[16px] text-[16px] font-medium text-white bg-[#60584c] rounded-[12px] cursor-pointer"
-          @click="onLogin"
-        >
-          로그인
-        </button>
+          <!-- 로그인 버튼 -->
+          <button
+            type="submit"
+            class="w-full max-w-[360px] mt-[20px] py-[16px] text-[16px] font-medium text-white bg-[#60584c] rounded-[12px] cursor-pointer disabled:bg-[#b9b3ab] disabled:cursor-not-allowed"
+            :disabled="isLoading"
+          >
+            로그인
+          </button>
+
+          <!-- 에러 메시지 -->
+          <p v-if="errorMessage" class="mt-3 text-[13px] text-red-500 text-center">
+            {{ errorMessage }}
+          </p>
+        </form>
       </div>
     </template>
   </Layout>
