@@ -29,13 +29,10 @@ const onClickWallet = () => {
   <layout :header-type="'basic'" :header-title="'결제하기'" :is-bottom-nav="false">
     <template #content>
       <div class="relative flex flex-col items-center h-full px-[2rem] pt-[6rem] bg-Gray-0">
-        <!-- 결제 성공 -->
         <PaySuccess v-if="paySuccess === true" />
 
-        <!-- 결제 실패 -->
         <PayFail v-else-if="paySuccess === false" />
 
-        <!-- (null)초기 상태 또는 로딩 상태 -->
         <div v-else class="flex items-center justify-center">
           <span class="Head03">결제 처리 중...</span>
         </div>
