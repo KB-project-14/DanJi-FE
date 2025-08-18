@@ -5,6 +5,8 @@ import { HandCoins } from 'lucide-vue-next'
 import type { BenefitType } from '@/types/local/localTypes'
 import { benefitTypeTextMap } from '@/constants/BenefitMapper'
 import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType'
+import { isIncentiveWallet } from '@/utils/checkIncentiveType'
+import { calculateExchangeRegionToRegion } from '@/utils/exchange'
 
 // 충전/인센티브 금액 알기위해 날짜 받기
 const currentMonthLabel = format(new Date(), 'M월')
@@ -13,12 +15,12 @@ const props = defineProps<{
   balance: number
   chargedAmount: number
   incentiveAmount: number
-  percentage: number
+  percentage: { fromCard: number; toCard: number }
   cardName?: string
   modelValue: number | null
   mode?: 'region' | 'cash' // 지역→지역인지, 지역→현금인지 구분
   fromCardName: string
-  benefitType: BenefitType
+  benefitType: { fromCard: BenefitType; toCard: BenefitType }
   toCardList: WalletResponseDtoType[]
 }>()
 
@@ -45,8 +47,26 @@ const handleSelect = () => {
 const selectedCardBenefit = computed(() => {
   const card = props.toCardList.find((c) => c.localCurrencyName === selectedCard.value)
   return card
-    ? `${card.localCurrencyName} 혜택 : ${benefitTypeTextMap[props.benefitType]} ${card.percentage}%`
+    ? `${card.localCurrencyName} 혜택 : ${benefitTypeTextMap[props.benefitType.toCard]} ${card.percentage}%`
     : ''
+})
+
+//지역화폐 환전 금액 계산
+const excludedIncentive = computed(() => {
+  if (!props.modelValue || !props.percentage.toCard) return ' - '
+
+  const fromCardPercentage = isIncentiveWallet(props.benefitType.fromCard)
+    ? props.percentage.fromCard
+    : 0
+
+  const toCardPercentage = isIncentiveWallet(props.benefitType.toCard) ? props.percentage.toCard : 0
+
+  const { finalAmount } = calculateExchangeRegionToRegion(
+    fromCardPercentage,
+    toCardPercentage,
+    props.modelValue,
+  )
+  return finalAmount.toLocaleString()
 })
 </script>
 
@@ -65,7 +85,9 @@ const selectedCardBenefit = computed(() => {
     <div class="Body03 text-Gray-6">
       {{ currentMonthLabel }} 충전한 금액:
       <span class="Body02 text-Black-2">{{ props.chargedAmount.toLocaleString() }}원</span><br />
-      {{ currentMonthLabel }} 받은 인센티브({{ props.percentage }}%):
+      {{ currentMonthLabel }} 받은 {{ benefitTypeTextMap[benefitType.fromCard] }}({{
+        props.percentage.fromCard
+      }}%):
       <span class="Body02 text-Black-2">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 
@@ -73,7 +95,9 @@ const selectedCardBenefit = computed(() => {
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
-        <div class="Body04 text-Gray-5">인센티브는 제외하고 환전됩니다</div>
+        <div v-if="isIncentiveWallet(benefitType.fromCard)" class="Body04 text-Gray-5">
+          인센티브는 제외하고 환전됩니다
+        </div>
       </div>
 
       <input
@@ -104,9 +128,7 @@ const selectedCardBenefit = computed(() => {
           </option>
         </select>
 
-        <div class="Head04 text-Black-2">
-          {{ props.modelValue ? props.modelValue.toLocaleString() + '원' : '0원' }}
-        </div>
+        <div class="Head04 text-Black-2">{{ excludedIncentive }}원</div>
       </div>
 
       <!-- 혜택 문구 -->

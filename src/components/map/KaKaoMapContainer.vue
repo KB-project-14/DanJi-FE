@@ -292,7 +292,7 @@ watch(
           emit('current-location')
         }
       "
-      class="absolute bottom-[15rem] right-[1.6rem] z-[200] p-[1.5rem] bg-White-0 rounded-full shadow-lg"
+      class="absolute bottom-[10rem] right-[1.6rem] z-[200] p-[1.5rem] bg-White-0 rounded-full shadow-lg"
       aria-label="현재 위치로 이동"
     >
       <crosshair :size="15" color="#0062ff" />
