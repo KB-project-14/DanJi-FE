@@ -9,7 +9,6 @@ const getLocalStores = async (query: LocalStoreQueryParams): Promise<LocalStoreR
     params: query,
   })
 
-  // 카테고리 빈 문자열인 경우 '기타'로 대체
   const mappedData = response.data.data.map((store) => ({
     ...store,
     category: store.category?.trim() === '' ? '기타' : store.category,

@@ -4,9 +4,9 @@ import { useMemberStore } from '@/stores/useMemberStore'
 interface KakaoAddressResponse {
   documents: Array<{
     address: {
-      region_1depth_name: string // 시/도
-      region_2depth_name: string // 시/군/구
-      region_3depth_name: string // 읍/면/동
+      region_1depth_name: string
+      region_2depth_name: string
+      region_3depth_name: string
     }
     road_address?: {
       region_1depth_name: string
@@ -27,7 +27,6 @@ export const useLocation = () => {
       isLoading.value = true
       error.value = null
 
-      // 현재 위치 가져오기
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
           resolve,
@@ -77,11 +76,9 @@ export const useLocation = () => {
         throw new Error('주소를 찾을 수 없습니다.')
       }
 
-      // 지역명 추출
       const address = data.documents[0].address
       const { region_1depth_name: r1, region_2depth_name: r2 } = address
 
-      // 서버 DB와 일치하는 지명 매핑
       const regionFullNameMap: Record<string, string> = {
         서울: '서울특별시',
         부산: '부산광역시',
@@ -106,14 +103,11 @@ export const useLocation = () => {
 
       const province = fullRegionName
 
-      console.log('현재 위치:', { r1, r2, fullRegionName, province })
-
       memberStore.setCurrentLocation(province)
       return province
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '위치 정보를 가져올 수 없습니다.'
       error.value = errorMessage
-      console.error('위치 정보 조회 오류:', err)
       throw new Error(errorMessage)
     } finally {
       isLoading.value = false

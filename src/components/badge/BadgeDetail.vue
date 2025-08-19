@@ -5,12 +5,10 @@ const { selectedBadge } = useBadgeCollection()
 </script>
 <template>
   <div class="flex flex-col w-full h-[32.3rem] justify-center items-center">
-    <!-- 뱃지 코멘트 -->
     <div class="flex flex-col justify-center items-center mb-[0.5rem] Body02 text-Gray-4">
       <span>{{ selectedBadge?.comment }}</span>
     </div>
 
-    <!-- 뱃지 이미지 -->
     <div class="flex justify-center items-center mb-[1.5rem]">
       <img
         :src="selectedBadge?.image"

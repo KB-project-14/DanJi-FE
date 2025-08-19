@@ -27,7 +27,6 @@ const handleInput = (e: Event) => {
   const value = Number((e.target as HTMLInputElement).value)
   emit('update:modelValue', value)
 }
-// 현금 환전 금액 계산
 const excludedIncentive = computed(() => {
   if (!props.modelValue || !props.percentage) return 0
 
@@ -40,7 +39,6 @@ const excludedIncentive = computed(() => {
 
 <template>
   <div class="flex flex-col gap-3 p-[2rem] pb-[9rem] rounded-lg shadow-sm bg-White-1">
-    <!-- 환전 가능 금액 -->
     <div>
       <p class="Body02 text-Gray-5">환전 가능한 금액</p>
       <div class="flex items-center gap-2">
@@ -49,7 +47,6 @@ const excludedIncentive = computed(() => {
       </div>
     </div>
 
-    <!-- 내가 충전한 금액 / 인센티브 -->
     <div class="Body03 text-Gray-6">
       {{ currentMonthLabel }} 충전한 금액:
       <span class="Body02 text-Black-2">{{ props.chargedAmount.toLocaleString() }}원</span><br />
@@ -59,7 +56,6 @@ const excludedIncentive = computed(() => {
       <span class="Body02 text-Black-2">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 
-    <!-- 입력 UI -->
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>

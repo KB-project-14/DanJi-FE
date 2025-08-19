@@ -7,6 +7,7 @@ import { useMemberStore } from '@/stores/useMemberStore'
 import { signUp } from '@/api/auth'
 import type { SignUpRequest } from '@/types/auth'
 import type { AxiosError } from 'axios'
+import { showSuccessToast, showWarningToast, showErrorToast } from '@/utils/toast'
 
 const store = useMemberStore()
 const router = useRouter()
@@ -33,7 +34,7 @@ function resetPin() {
 async function confirmPin() {
   if (step.value === 1) {
     if (currentPin.value.length < 4) {
-      alert('핀번호 4자리를 입력해주세요.')
+      showWarningToast('핀번호 4자리를 입력해주세요.')
       return
     }
     firstPin.value = currentPin.value
@@ -43,12 +44,12 @@ async function confirmPin() {
   }
 
   if (currentPin.value.length < 4) {
-    alert('핀번호 4자리를 입력해주세요.')
+    showWarningToast('핀번호 4자리를 입력해주세요.')
     return
   }
 
   if (firstPin.value !== currentPin.value) {
-    alert('핀번호가 일치하지 않습니다. 다시 시도해주세요.')
+    showWarningToast('핀번호가 일치하지 않습니다. 다시 시도해주세요.')
     resetPin()
     return
   }
@@ -62,7 +63,7 @@ async function confirmPin() {
     }
 
     await signUp(signUpPayload)
-    alert('회원가입 완료!')
+    showSuccessToast('회원가입 완료!')
     store.$reset()
     router.push('/login')
   } catch (err: unknown) {
@@ -81,14 +82,12 @@ async function confirmPin() {
     :show-left-icon="false"
   >
     <template #content>
-      <!-- 왼쪽 상단 아이콘: 회원가입 페이지로 이동 -->
       <button class="absolute top-11 left-10 z-10" @click="router.push('/signup')">
         <ChevronLeft class="w-10 h-10 text-gray-500 hover:text-gray-800" />
       </button>
 
       <div class="w-full border-t border-gray-300 mt-0"></div>
       <div class="flex flex-col h-screen bg-white">
-        <!-- 문구 영역 -->
         <div class="mt-10 mb-10 px-10 w-full">
           <p class="text-black text-3xl font-extrabold leading-snug whitespace-pre-line text-left">
             {{
@@ -99,7 +98,6 @@ async function confirmPin() {
           </p>
         </div>
 
-        <!-- 원 영역 -->
         <div class="flex justify-center space-x-10 mt-8">
           <div
             v-for="i in 4"
@@ -110,7 +108,6 @@ async function confirmPin() {
           ></div>
         </div>
 
-        <!-- 키패드 + 버튼 전체 래퍼 -->
         <div class="mt-auto pb-40">
           <div
             class="bg-white rounded-t-3xl px-8 pt-6 pb-10 w-full shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
@@ -133,7 +130,6 @@ async function confirmPin() {
             </div>
           </div>
 
-          <!-- 확인 버튼 -->
           <div class="flex justify-center mt-6 mb-4">
             <button
               class="w-[315px] py-5 text-3xl text-white bg-[#4e3d31] rounded-xl cursor-pointer disabled:bg-[#cccccc] disabled:text-white disabled:cursor-not-allowed"

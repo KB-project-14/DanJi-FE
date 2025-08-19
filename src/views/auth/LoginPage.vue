@@ -55,7 +55,7 @@ async function onLogin() {
 <template>
   <Layout header-type="basic" :is-bottom-nav="false" :show-left-icon="false">
     <template #content>
-      <div class="flex flex-col items-center bg-white box-border p-[24px]">
+      <div class="flex flex-col h-full items-center bg-white box-border p-[24px]">
         <div class="text-center mt-[24px] mb-[32px]">
           <img
             src="@/assets/images/danji-logo-main.png"
@@ -68,12 +68,10 @@ async function onLogin() {
           </p>
         </div>
 
-        <!-- 입력 폼 -->
         <form
           class="w-[365px] bg-white rounded-[12px] p-[24px] flex flex-col gap-[3px] mt-[25px]"
           @submit.prevent="onLogin"
         >
-          <!-- 아이디 입력 -->
           <div class="h-[64px] flex items-center relative">
             <danji-input
               v-model="username"
@@ -89,7 +87,6 @@ async function onLogin() {
             </danji-input>
           </div>
 
-          <!-- 비밀번호 입력 -->
           <div class="h-[64px] flex items-center relative">
             <danji-input
               v-model="password"
@@ -106,7 +103,6 @@ async function onLogin() {
             </danji-input>
           </div>
 
-          <!-- 회원가입 링크 -->
           <router-link
             to="/signup"
             class="flex items-center justify-end text-[1.09rem] text-[#c7c7c7] mt-[1rem] mb-[-1.95rem] mr-[0.625rem]"
@@ -117,7 +113,6 @@ async function onLogin() {
             <ChevronRight class="w-[14px] h-[14px] stroke-[2.5] text-[#c7c7c7]" />
           </router-link>
 
-          <!-- 로그인 버튼 -->
           <button
             type="submit"
             class="w-full max-w-[360px] mt-[20px] py-[16px] text-[16px] font-medium text-white bg-[#60584c] rounded-[12px] cursor-pointer disabled:bg-[#b9b3ab] disabled:cursor-not-allowed"
@@ -126,7 +121,6 @@ async function onLogin() {
             로그인
           </button>
 
-          <!-- 에러 메시지 -->
           <p v-if="errorMessage" class="mt-3 text-[13px] text-red-500 text-center">
             {{ errorMessage }}
           </p>

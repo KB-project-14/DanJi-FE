@@ -1,14 +1,11 @@
 import { ref } from 'vue'
 
 export default function useGeolocation() {
-  const currentLatitude = ref<number>(37.5665) // 서울시청 기본 좌표
-  const currentLongitude = ref<number>(126.978)
+  const currentLatitude = ref<number>(33.515555)
+  const currentLongitude = ref<number>(126.513179)
   const isLocationLoading = ref<boolean>(false)
   const locationError = ref<string | null>(null)
 
-  /**
-   * 현재 위치를 가져오는 함수
-   */
   const getCurrentLocation = (): Promise<{ lat: number; lng: number }> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
@@ -28,12 +25,10 @@ export default function useGeolocation() {
             lng: position.coords.longitude,
           }
 
-          // ref 값 업데이트
           currentLatitude.value = coords.lat
           currentLongitude.value = coords.lng
           isLocationLoading.value = false
 
-          console.log('현재 위치 업데이트:', coords)
           resolve(coords)
         },
         (error) => {
@@ -55,7 +50,6 @@ export default function useGeolocation() {
           }
 
           locationError.value = errorMessage
-          console.error('위치 정보 오류:', error)
           reject(new Error(errorMessage))
         },
         {
@@ -67,9 +61,13 @@ export default function useGeolocation() {
     })
   }
 
-  /**
-   * 기본 위치로 리셋하는 함수
-   */
+  const getCurrentLocationForJeju = (): Promise<{ lat: number; lng: number }> => {
+    return Promise.resolve({
+      lat: currentLatitude.value,
+      lng: currentLongitude.value,
+    })
+  }
+
   const resetToDefaultLocation = () => {
     currentLatitude.value = 37.5665
     currentLongitude.value = 126.978
@@ -77,14 +75,13 @@ export default function useGeolocation() {
   }
 
   return {
-    // 반응형 상태
     currentLatitude,
     currentLongitude,
     isLocationLoading,
     locationError,
 
-    // 메서드
     getCurrentLocation,
     resetToDefaultLocation,
+    getCurrentLocationForJeju,
   }
 }

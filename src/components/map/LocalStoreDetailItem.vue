@@ -15,7 +15,6 @@ interface Emit {
 const props = defineProps<Props>()
 const emit = defineEmits<Emit>()
 
-// 카테고리 정보 파싱
 const categoryInfo = computed(() => {
   if (!props.place?.category_name) return []
 
@@ -25,7 +24,6 @@ const categoryInfo = computed(() => {
     .filter(Boolean)
 })
 
-// 전화번호 포맷팅
 const formattedPhone = computed(() => {
   if (!props.place?.phone) return null
 
@@ -38,14 +36,12 @@ const formattedPhone = computed(() => {
   return props.place.phone
 })
 
-// 카카오맵으로 이동
 const openInKakaoMap = () => {
   if (props.place?.place_url) {
     window.open(props.place.place_url, '_blank')
   }
 }
 
-// 전화걸기
 const makeCall = () => {
   if (props.place?.phone) {
     window.location.href = `tel:${props.place.phone}`
@@ -59,13 +55,10 @@ const makeCall = () => {
     class="fixed bottom-0 left-0 right-0 max-h-[50vh] overflow-y-auto shadow-2xl"
   >
     <div v-if="place" class="relative w-full bg-White-0 shadow-2xl overflow-hidden" @click.stop>
-      <!-- Modal Content -->
       <div class="flex items-center justify-between p-[2rem]">
         <div class="flex-1">
-          <!-- 장소 이름 -->
           <span class="Head02 text-Black-1">{{ place.place_name }}</span>
 
-          <!-- 장소 카테고리 -->
           <div class="flex flex-wrap gap-[0.4rem] mb-[0.8rem] mt-[0.6rem]">
             <span
               v-for="category in categoryInfo"
@@ -76,7 +69,6 @@ const makeCall = () => {
             </span>
           </div>
 
-          <!-- 전화번호 -->
           <div v-if="place.phone" class="flex items-center gap-[0.5rem]">
             <phone :size="12" class="text-Gray-5 flex-shrink-0" />
             <button @click="makeCall" class="Body03 text-Gray-5">
@@ -84,9 +76,7 @@ const makeCall = () => {
             </button>
           </div>
 
-          <!-- 주소 정보 -->
           <div class="space-y-[0.6rem] mt-[0.6rem]">
-            <!-- 도로명 주소 -->
             <div v-if="place.road_address_name" class="flex items-start gap-[0.6rem]">
               <span
                 class="flex-shrink-0 px-[0.4rem] py-[0.2rem] Body05 text-Gray-6 border border-Gray-2 rounded-[0.4rem]"
@@ -95,7 +85,6 @@ const makeCall = () => {
               <span class="flex-1 Body03 text-Gray-5 break-all">{{ place.road_address_name }}</span>
             </div>
 
-            <!-- 지번 주소 -->
             <div v-if="place.address_name" class="flex items-start gap-[0.6rem]">
               <span
                 class="flex-shrink-0 px-[0.4rem] py-[0.2rem] Body05 text-Gray-6 border border-Gray-2 rounded-[0.4rem]"
@@ -110,7 +99,6 @@ const makeCall = () => {
         </button>
       </div>
 
-      <!-- 카카오맵가기 Button -->
       <div class="p-[1.2rem] border-t border-Gray-1">
         <div class="flex">
           <button
@@ -124,7 +112,6 @@ const makeCall = () => {
       </div>
     </div>
 
-    <!-- Place 정보가 없을 때 -->
     <div v-else class="relative w-full bg-White-0 shadow-2xl overflow-hidden" @click.stop>
       <div class="flex items-center justify-between p-[2rem]">
         <div class="flex-1 text-center mt-[2rem]">

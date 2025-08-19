@@ -3,15 +3,14 @@ import { onMounted, ref, computed } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import { useScrollLock } from '@vueuse/core'
 
-// Components
 import MapHeader from '@/components/map/MapHeader.vue'
 import MapFilters from '@/components/map/MapFilters.vue'
 import KakaoMapContainer from '@/components/map/KaKaoMapContainer.vue'
 import LocalStoreListModal from '@/components/map/LocalStoreListModal.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
 import LocalStoreDetailItem from '@/components/map/LocalStoreDetailItem.vue'
+import { showErrorToast } from '@/utils/toast'
 
-// Composables & Types
 import useLocalSelector from '@/composables/local/useLocalSelector'
 import useGeolocation from '@/composables/map/useGeolocation'
 import useGetLocalStores from '@/composables/queries/local/useGetLocalStores'
@@ -19,19 +18,23 @@ import useKakaoPlacesSearch from '@/composables/queries/store/useGetKakaoPlaceDe
 import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
 import type { KakaoPlace } from '@/types/store/kakaoMapTypes'
 
-// Constants
 import { LOCAL_COORDINATES } from '@/constants/LocalCenterCoordinates'
 
 const isLocked = useScrollLock(document.body)
 isLocked.value = true
 
 const mapRef = ref<InstanceType<typeof KakaoMapContainer> | null>(null)
-const mapLatitude = ref<number>(37.5665) // 서울시청 기본 좌표
-const mapLongitude = ref<number>(126.978)
+const mapLatitude = ref<number>(33.515555)
+const mapLongitude = ref<number>(126.513179)
 const isLocationReady = ref<boolean>(false)
 
-const { currentLatitude, currentLongitude, isLocationLoading, locationError, getCurrentLocation } =
-  useGeolocation()
+const {
+  currentLatitude,
+  currentLongitude,
+  isLocationLoading,
+  locationError,
+  getCurrentLocationForJeju,
+} = useGeolocation()
 
 const { data: localStoresData } = useGetLocalStores(
   computed(() => (isLocationReady.value ? mapLatitude.value : null)),
@@ -68,9 +71,6 @@ const selectedPlaceId = ref<string>('')
 
 const { findPlaceByCoordinatesAndName } = useKakaoPlacesSearch()
 
-/**
- * 장소/마커 선택 핸들러
- */
 const handlePlaceSelect = async (payload: {
   lat: number
   lng: number
@@ -86,22 +86,16 @@ const handlePlaceSelect = async (payload: {
 
     mapRef.value?.panTo(payload.lat, payload.lng)
   } catch (error) {
-    alert('장소 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.')
+    showErrorToast('장소 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.')
   }
 }
 
-/**
- * 장소 상세 모달 닫기
- */
 const handleClosePlace = () => {
   showPlaceDetail.value = false
   selectedPlace.value = null
   selectedPlaceId.value = ''
 }
 
-/**
- * 필터 모달 열기/닫기
- */
 const handleFilterToggle = () => {
   isFilterModalVisible.value = !isFilterModalVisible.value
   if (isFilterModalVisible.value) {
@@ -109,20 +103,15 @@ const handleFilterToggle = () => {
   }
 }
 
-/**
- * 지역 선택 핸들러
- */
 const handleLocationSelect = (region: string, city: string) => {
   setLocal(region, city)
   isFilterModalVisible.value = false
   foldLocalStoreModal.value = false
 
-  // 검색창 업데이트
   const locationName = city || region
   searchValue.value = locationName
   isSearchActive.value = true
 
-  // 지도 이동
   const key = city || region
   const coordinates = LOCAL_COORDINATES[key].center
 
@@ -131,9 +120,6 @@ const handleLocationSelect = (region: string, city: string) => {
   mapRef.value?.panTo(coordinates.lat, coordinates.lng)
 }
 
-/**
- * 현재 위치로 이동
- */
 const handleCurrentLocation = () => {
   resetSelection()
   foldLocalStoreModal.value = true
@@ -141,16 +127,12 @@ const handleCurrentLocation = () => {
   mapLatitude.value = currentLatitude.value
   mapLongitude.value = currentLongitude.value
 
-  // 검색창 초기화
   searchValue.value = ''
   isSearchActive.value = false
 
   handleClosePlace()
 }
 
-/**
- * 지역 재검색
- */
 const handleResearch = () => {
   const center = mapRef.value?.getMapCenterCoordinates()
   if (center) {
@@ -159,9 +141,6 @@ const handleResearch = () => {
   }
 }
 
-/**
- * 검색창 초기화
- */
 const handleSearchClear = () => {
   searchValue.value = ''
   isSearchActive.value = false
@@ -169,30 +148,17 @@ const handleSearchClear = () => {
   mapRef.value?.panTo(mapLatitude.value, mapLongitude.value)
 }
 
-/**
- * 앱 초기화
- */
 const initializeApp = async () => {
   try {
-    console.log('앱 초기화 시작')
-
-    // 1. 지역 데이터 로드 대기
     await new Promise((resolve) => setTimeout(resolve, 100))
 
-    // 2. 현재 위치 가져오기
-    const location = await getCurrentLocation()
+    const location = await getCurrentLocationForJeju()
 
-    // 3. 지도 좌표 설정
     mapLatitude.value = location.lat
     mapLongitude.value = location.lng
 
-    // 4. 가맹점 데이터 로드 허용
     isLocationReady.value = true
-
-    console.log('앱 초기화 완료')
   } catch (error) {
-    console.error('초기화 실패:', error)
-    // 오류 시에도 기본 좌표로 진행
     isLocationReady.value = true
   }
 }
@@ -206,14 +172,12 @@ onMounted(async () => {
   <Layout header-type="none" :is-bottom-nav="foldLocalStoreModal">
     <template #content>
       <div class="flex flex-col h-full bg-White-1">
-        <!-- 헤더 영역 -->
         <map-header
           :search-value="searchValue"
           :is-search-active="isSearchActive"
           @search-clear="handleSearchClear"
         />
 
-        <!-- 필터 영역 -->
         <map-filters
           :selected-filter="selectedFilter"
           :selected-city="selectedCity !== '' ? selectedCity : selectedRegion"
@@ -223,9 +187,7 @@ onMounted(async () => {
           @update:selected-filter="selectedFilter = $event"
         />
 
-        <!-- 지도 영역 -->
         <div class="flex-1 overflow-hidden relative mt-[2.2rem]">
-          <!-- 로딩 상태 -->
           <div
             v-if="!isLocationReady || isLocationLoading"
             class="absolute inset-0 flex items-center justify-center bg-gray-100 z-10"
@@ -241,7 +203,6 @@ onMounted(async () => {
             </div>
           </div>
 
-          <!-- 지도 컨테이너 -->
           <kakao-map-container
             ref="mapRef"
             :user-latitude="currentLatitude"
@@ -254,7 +215,6 @@ onMounted(async () => {
             @select-place="handlePlaceSelect"
           />
 
-          <!-- 가맹점 리스트 모달 -->
           <local-store-list-modal
             class="absolute bottom-[7rem] z-[300]"
             :is-modal-fold="foldLocalStoreModal || showPlaceDetail"
@@ -262,7 +222,6 @@ onMounted(async () => {
             @select-place="handlePlaceSelect"
           />
 
-          <!-- 지역 필터 모달 -->
           <local-filter-modal
             class="z-[400]"
             :is-visible="isFilterModalVisible"
@@ -271,7 +230,6 @@ onMounted(async () => {
             @confirm="handleLocationSelect"
           />
 
-          <!-- 장소 상세 모달 -->
           <local-store-detail-item
             class="z-[400]"
             :place="selectedPlace"

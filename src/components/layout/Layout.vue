@@ -51,7 +51,6 @@ const headerProps = withDefaults(defineProps<LayoutProps>(), {
   isBottomNav: true,
 })
 
-// 표준 뒤로가기
 const handleBack = () => {
   if (window.history.length > 1) {
     router.back()
@@ -73,7 +72,6 @@ const handleRightClick = () => {
 </script>
 <template>
   <div class="flex flex-col h-screen-mobile w-screen">
-    <!-- 헤더 타입에 따라 다른 컴포넌트 렌더링 -->
     <MainHeader v-if="headerProps.headerType === 'main'" />
     <PayHeader v-else-if="headerProps.headerType === 'pay'" @right-click="handleRightClick" />
     <Header
@@ -93,15 +91,12 @@ const handleRightClick = () => {
       @right-click="emit('right-click')"
     />
 
-    <!-- 메인 콘텐츠 영역 (페이지별 컴포넌트가 들어갈 곳) -->
     <section class="flex-1 overflow-auto w-full h-full bg-Gray-0">
       <slot name="content">
-        <!-- 기본 fallback 콘텐츠 -->
         <div class="w-full h-full p-4 text-center text-Gray-5">페이지 콘텐츠를 추가해주세요</div>
       </slot>
     </section>
 
-    <!-- 바텀네비는 true 설정해줄 때만 렌더링 -->
     <BottomNav v-if="headerProps.isBottomNav" />
   </div>
 </template>

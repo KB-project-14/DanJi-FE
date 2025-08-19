@@ -113,7 +113,6 @@ const routes = [
   },
   { path: '/payment-pin', name: 'PaymentPin', component: PaymentPin },
 
-  // 게스트 허용
   {
     path: '/login',
     name: 'Login',
