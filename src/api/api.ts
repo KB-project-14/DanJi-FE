@@ -10,7 +10,7 @@ export interface ApiResponse<T> {
 
 export const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
-  withCredentials: true,
+  withCredentials: false,
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -18,18 +18,13 @@ instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken')
   const url = config.url ?? ''
 
-  const normalizedUrl = url.startsWith('/') ? url : '/' + url
-
-  const publicEndpoints = ['api/members', 'api/members/login']
-
-  publicEndpoints.forEach((endpoint, index) => {
-    const matches = normalizedUrl.includes(endpoint)
-  })
-
-  const isPublic = publicEndpoints.some((endpoint) => normalizedUrl.includes(endpoint))
+  const isPublic =
+    (url.includes('api/members') && !url.includes('api/members/me')) ||
+    url.includes('api/members/login')
 
   if (token && !isPublic) {
     config.headers.Authorization = `Bearer ${token}`
+    config.withCredentials = false
   }
 
   return config
