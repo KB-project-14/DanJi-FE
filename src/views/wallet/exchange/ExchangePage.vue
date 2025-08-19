@@ -111,7 +111,7 @@ const postExchange = (cost: number, toWalletId: string, type: TransactionType) =
   const requestBody: TransferRequestDTO = {
     amount: cost,
     fromWalletId: cardId,
-    toWalletId,
+    toWalletId: toWalletId,
     transactionLogging: true,
     type,
   }
