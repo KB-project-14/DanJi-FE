@@ -7,11 +7,10 @@ import Layout from '@/components/layout/Layout.vue'
 import CardHistoryItemList from '@/components/common/history/CardHistoryItemList.vue'
 import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 
-import useGetWalletList from '@/composables/queries/wallet/getWalletList'
-import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
+import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
+import { useGetWalletTransaction } from '@/composables/queries/wallet/useGetWalletTransaction'
 import type { FilterType } from '@/types/wallet/FilterType'
 import type { Transaction, WalletTransactionParams } from '@/types/transaction/TransactionType'
-import { ShowerHeadIcon } from 'lucide-vue-next'
 
 // 라우트에서 카드 ID
 const route = useRoute()
@@ -141,7 +140,11 @@ const handleFilterUpdate = (newFilter: FilterType) => {
                 <tooltip
                   position="top"
                   align="start"
-                  :message="`이번달 ${cardInfo?.localCurrencyName}의 ${cardInfo?.benefitType}은 ${cardInfo?.percentage}% 입니다.`"
+                  :message="
+                    cardInfo?.percentage != null
+                      ? `이번달 ${cardInfo.localCurrencyName}의 인센티브는 ${cardInfo.percentage}% 입니다.`
+                      : ''
+                  "
                 />
               </div>
               <p class="Head0 text-Black-2">{{ cardInfo?.balance?.toLocaleString() }} 원</p>

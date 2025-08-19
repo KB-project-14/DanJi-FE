@@ -4,10 +4,10 @@ import { useRouter } from 'vue-router'
 import { ChevronLeft } from 'lucide-vue-next'
 import Layout from '@/components/layout/Layout.vue'
 import DanjiInput from '@/components/common/form/DanjiInput.vue'
-import { useSignUpStore } from '@/stores/signupStore'
+import { useMemberStore } from '@/stores/useMemberStore'
 
+const store = useMemberStore()
 const router = useRouter()
-const store = useSignUpStore()
 const name = ref<string>('')
 const username = ref<string>('')
 const password = ref<string>('')
@@ -38,7 +38,6 @@ function onNext(): void {
   >
     <template #content>
       <div class="p-6 h-[595px] bg-[#f5f6f8] box-border flex flex-col items-center">
-        <!-- 이전 버튼: 로그인 페이지로 이동 -->
         <button class="absolute top-11 left-10" @click="router.push('/login')">
           <ChevronLeft class="w-10 h-10 text-gray-500 hover:text-gray-800" />
         </button>
@@ -62,7 +61,6 @@ function onNext(): void {
           <danji-input v-model="password" type="password" placeholder="비밀번호를 입력해주세요." />
         </div>
 
-        <!-- 버튼 -->
         <button
           class="w-full max-w-[360px] mt-6 py-7 text-[16px] text-white bg-[#4e3d31] rounded-xl cursor-pointer disabled:bg-[#cccccc] disabled:text-white disabled:cursor-not-allowed"
           :disabled="!isValid"

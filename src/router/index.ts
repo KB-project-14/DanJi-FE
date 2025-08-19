@@ -1,6 +1,6 @@
 import type { RouteRecordRaw, RouteLocationNormalized } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
-
+import { isGuest } from '@/utils/auth'
 import PayPage from '@/views/pay/PayPage.vue'
 import QRPage from '@/views/qr/QRPage.vue'
 import PayCompletePage from '@/views/pay/PayCompletePage.vue'
@@ -108,13 +108,12 @@ const routes = [
     component: LocalCardCreateSuccessPage,
   },
   {
-    path: '/map',
-    component: MapPage,
-  },
-  {
     path: '/badge',
     component: BadgePage,
   },
+  { path: '/payment-pin', name: 'PaymentPin', component: PaymentPin },
+  { path: '/pay-pin', name: 'PayPin', component: PayPinPage },
+
   {
     path: '/login',
     name: 'Login',
@@ -125,13 +124,25 @@ const routes = [
     name: 'SignUp',
     component: SignUpPage,
   },
-  { path: '/payment-pin', name: 'PaymentPin', component: PaymentPin },
-  { path: '/pay-pin', name: 'PayPin', component: PayPinPage },
+  {
+    path: '/map',
+    component: MapPage,
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+})
+
+const guestAllowed = new Set(['/map', '/login', '/signup'])
+router.beforeEach((to, _from, next) => {
+  if (!isGuest() && to.path === '/login') return next('/home')
+  if (to.path === '/login' || to.path === '/signup') return next()
+  if (isGuest() && !guestAllowed.has(to.path)) {
+    return next({ path: '/login', query: { redirect: to.fullPath } })
+  }
+  next()
 })
 
 export default router

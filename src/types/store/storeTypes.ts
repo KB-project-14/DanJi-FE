@@ -1,4 +1,3 @@
-//가맹점 정보 타입
 export interface LocalStoreQueryParams {
   category?: string
   latitude?: number

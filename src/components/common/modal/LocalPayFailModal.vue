@@ -9,8 +9,8 @@ const emit = defineEmits<{
 const router = useRouter()
 
 const goToChargePage = () => {
-  emit('close') // 모달 닫기 이벤트 발생
-  router.push('/') // 임시로 홈 이동 설정(나중에 충전 페이지로 변경 예정)
+  emit('close')
+  router.push('/')
 }
 </script>
 
@@ -23,10 +23,8 @@ const goToChargePage = () => {
     aria-modal="true"
     aria-label="지역화폐 잔액 부족 안내"
   >
-    <!-- 오버레이 -->
     <div class="absolute inset-0 bg-Black-1 bg-opacity-50 z-[1000]" />
 
-    <!-- 모달 박스 -->
     <div
       class="z-[1001] flex flex-col items-center justify-center w-[33.8rem] h-[23.9rem] rounded-[1.6rem] bg-White-0"
     >

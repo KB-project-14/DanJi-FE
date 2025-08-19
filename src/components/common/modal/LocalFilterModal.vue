@@ -62,7 +62,6 @@ const {
   resetCity,
 } = useLocalSelector()
 
-// 지역 변경 시 시/구/군 초기화
 const handleRegionChange = () => {
   resetCity()
 }
@@ -88,7 +87,6 @@ watch(
       class="flex flex-col w-full h-[45rem] px-[2.6rem] mt-auto pt-[2.8rem] pb-[0.8rem] bg-white rounded-t-[2rem] overflow-y-auto transition-transform duration-300 ease-out"
       :class="isVisible ? 'translate-y-0' : 'translate-y-full'"
     >
-      <!-- 행정구역(도) 선택 -->
       <div class="mb-[4rem]">
         <h4 class="mb-[1rem] text-Black-2 Body00">행정구역</h4>
         <danji-chip-group
@@ -98,13 +96,11 @@ watch(
         />
       </div>
 
-      <!-- 지역(시) 선택 -->
       <div class="mb-[4.4rem]" v-if="shouldShowCitySelector">
         <h4 class="mb-[1rem] text-Black-2 Body00">지역(시/군/구)</h4>
         <danji-chip-group :options="cityNames" v-model="selectedCity" />
       </div>
 
-      <!-- 확인 버튼 -->
       <div class="flex justify-center mt-auto mb-[0.8rem]">
         <danji-button
           variant="large"

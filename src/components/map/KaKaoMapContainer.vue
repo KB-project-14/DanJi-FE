@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted, watch } from 'vue'
 import {
   KakaoMap,
   KakaoMapMarker,
@@ -15,11 +15,14 @@ interface Props {
   userLatitude: number
   userLongitude: number
   filteredStores: LocalStoreResponseDTO[]
+  selectedPlaceId: string
+  isMakerSelected: boolean
 }
 
 interface Emit {
   (e: 'current-location'): void
   (e: 'research'): void
+  (e: 'select-place', payload: { lat: number; lng: number; name: string; id: string }): void
 }
 
 const props = defineProps<Props>()
@@ -31,13 +34,11 @@ const showResearchButton = ref<Boolean>(false)
 const selectedCluster = ref<string>()
 const selectedStore = ref<string>()
 
-// 좌표가 동일한지 확인하는 함수 (소수점 6자리까지 비교)
 const isSameLocation = (lat1: number, lng1: number, lat2: number, lng2: number) => {
-  const precision = 0.000001 // 약 10cm 정밀도
+  const precision = 0.000001
   return Math.abs(lat1 - lat2) < precision && Math.abs(lng1 - lng2) < precision
 }
 
-// 매장들을 좌표별로 클러스터링
 const clusteredStores = computed(() => {
   const clusters: ClusteredStore[] = []
   const processed = new Set<string>()
@@ -46,15 +47,12 @@ const clusteredStores = computed(() => {
     const storeId = store.availableMerchantId
     if (processed.has(storeId)) return
 
-    // 동일한 좌표의 다른 매장들 찾기
     const sameLocationStores = props.filteredStores.filter((otherStore) =>
       isSameLocation(store.latitude, store.longitude, otherStore.latitude, otherStore.longitude),
     )
 
-    // 처리된 것으로 마킹
     sameLocationStores.forEach((s) => processed.add(s.availableMerchantId))
 
-    // 클러스터 생성
     const clusterKey = `${store.latitude.toFixed(6)}_${store.longitude.toFixed(6)}`
     clusters.push({
       key: clusterKey,
@@ -109,11 +107,12 @@ const getMapCenterCoordinates = () => map.value?.getCenter()
 
 const handleClusterClick = (cluster: ClusteredStore) => {
   if (cluster.stores.length === 1) {
-    // 단일 매장인 경우 바로 선택
-    selectedStore.value = cluster.stores[0].availableMerchantId
+    const store = cluster.stores[0]
+    selectedStore.value = store.availableMerchantId
     selectedCluster.value = undefined
+
+    emitPlace(cluster.latitude, cluster.longitude, store.name, store.availableMerchantId)
   } else {
-    // 다중 매장인 경우 클러스터 선택 토글
     if (selectedCluster.value === cluster.key) {
       selectedCluster.value = undefined
     } else {
@@ -124,16 +123,21 @@ const handleClusterClick = (cluster: ClusteredStore) => {
 }
 
 const handleStoreSelect = (store: LocalStoreResponseDTO) => {
-  selectedStore.value = store.name
+  selectedStore.value = store.availableMerchantId
   selectedCluster.value = undefined
+
+  emitPlace(store.latitude, store.longitude, store.name, store.availableMerchantId)
 }
 
-// 클릭된 클러스터의 매장들
 const selectedClusterStores = computed(() => {
   if (!selectedCluster.value) return []
   const cluster = clusteredStores.value.find((c) => c.key === selectedCluster.value)
   return cluster?.stores || []
 })
+
+const emitPlace = (lat: number, lng: number, name: string, id: string) => {
+  emit('select-place', { lat, lng, name, id })
+}
 
 defineExpose({
   panTo,
@@ -145,11 +149,31 @@ onUnmounted(() => {
     ;(window as any).kakao.maps.event.removeListener(listener)
   })
 })
+
+watch(
+  () => props.isMakerSelected,
+  (on) => {
+    if (!on) {
+      selectedStore.value = undefined
+      selectedCluster.value = undefined
+    } else if (props.selectedPlaceId) {
+      selectedStore.value = props.selectedPlaceId
+    }
+  },
+)
+
+watch(
+  () => props.selectedPlaceId,
+  (id) => {
+    if (!props.isMakerSelected) return
+    selectedStore.value = id
+    selectedCluster.value = undefined
+  },
+)
 </script>
 
 <template>
   <div class="relative w-full h-full">
-    <!-- Kakao Map -->
     <kakao-map
       :lat="userLatitude"
       :lng="userLongitude"
@@ -159,7 +183,6 @@ onUnmounted(() => {
       height="100%"
       @onLoadKakaoMap="onLoadKakaoMap"
     >
-      <!-- Current Location Marker -->
       <kakao-map-marker
         :lat="userLatitude"
         :lng="userLongitude"
@@ -167,7 +190,6 @@ onUnmounted(() => {
         title="현재 위치"
       />
 
-      <!-- Clustered Store Markers -->
       <kakao-map-custom-overlay
         v-for="cluster in clusteredStores"
         :key="cluster.key"
@@ -180,8 +202,9 @@ onUnmounted(() => {
         <local-store-marker
           :cluster="cluster"
           :is-selected="
-            selectedCluster === cluster.key ||
-            (cluster.stores.length === 1 && selectedStore === cluster.stores[0].availableMerchantId)
+            props.isMakerSelected &&
+            (selectedCluster === cluster.key ||
+              cluster.stores.some((s) => s.availableMerchantId === selectedStore))
           "
           :map-level="mapLevel"
           @click="handleClusterClick(cluster)"
@@ -189,10 +212,9 @@ onUnmounted(() => {
       </kakao-map-custom-overlay>
     </kakao-map>
 
-    <!-- 클러스터 선택 시 매장 목록 표시 -->
     <div
       v-if="selectedCluster && selectedClusterStores.length > 1"
-      class="absolute bottom-[21rem] left-[1.6rem] right-[1.6rem] z-[300] bg-White-0 rounded-[1.2rem] shadow-xl max-h-[20rem] overflow-hidden"
+      class="absolute bottom-[21rem] left-[1.6rem] right-[1.6rem] z-[450] bg-White-0 rounded-[1.2rem] shadow-xl max-h-[20rem] overflow-hidden"
     >
       <div class="p-[1.6rem] border-b border-Gray-1">
         <h3 class="Head02 text-Black-1">이 위치의 매장들</h3>
@@ -229,9 +251,7 @@ onUnmounted(() => {
       이 지역 재검색
     </span>
 
-    <!-- Map Controls -->
     <div class="absolute flex flex-col gap-2 top-[1.7rem] right-[1.6rem] z-[200]">
-      <!-- Zoom In Button -->
       <button
         @click="zoomIn"
         class="p-[1.5rem] bg-White-0 rounded-[0.8rem] shadow-lg"
@@ -240,7 +260,6 @@ onUnmounted(() => {
         <plus :size="15" />
       </button>
 
-      <!-- Zoom Out Button -->
       <button
         @click="zoomOut"
         class="p-[1.5rem] bg-White-0 rounded-[0.8rem] shadow-lg"
@@ -250,7 +269,6 @@ onUnmounted(() => {
       </button>
     </div>
 
-    <!-- Current Location Button -->
     <button
       @click="
         () => {
@@ -258,7 +276,7 @@ onUnmounted(() => {
           emit('current-location')
         }
       "
-      class="absolute bottom-[15rem] right-[1.6rem] z-[200] p-[1.5rem] bg-White-0 rounded-full shadow-lg"
+      class="absolute bottom-[10rem] right-[1.6rem] z-[200] p-[1.5rem] bg-White-0 rounded-full shadow-lg"
       aria-label="현재 위치로 이동"
     >
       <crosshair :size="15" color="#0062ff" />

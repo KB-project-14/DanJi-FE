@@ -12,8 +12,8 @@ import DanjiButton from '@/components/common/button/DanjiButton.vue'
 import ExchangeCardConfirmModal from '@/components/wallet/modal/ExchangeCardConfirmModal.vue'
 import ExchangCashConfirmModal from '@/components/wallet/modal/ExchangCashConfirmModal.vue'
 import { calculateExchangeRegionToRegion, calculateExchangeRegionToCash } from '@/utils/exchange'
-import useGetWalletList from '@/composables/queries/wallet/getWalletList'
-import { useGetWalletTransaction } from '@/composables/queries/wallet/getWalletTransaction'
+import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
+import { useGetWalletTransaction } from '@/composables/queries/wallet/useGetWalletTransaction'
 import type { BenefitType } from '@/types/local/localTypes'
 import type {
   TransactionType,
@@ -160,12 +160,18 @@ const confirmExchange = (isConvert: boolean) => {
               mode="region"
               @select-card="(value) => (selectedToCard = value)"
               :balance="selectedCard.balance"
-              :percentage="selectedCard.percentage"
+              :percentage="{
+                fromCard: selectedCard.percentage,
+                toCard: selectedToCardData.percentage,
+              }"
               :chargedAmount="chargedAmountThisMonth"
               :incentiveAmount="incentiveAmount"
               :cardName="selectedCard.localCurrencyName"
               :fromCardName="selectedCard.localCurrencyName"
-              :benefit-type="selectedToCardData.benefitType"
+              :benefit-type="{
+                fromCard: selectedCard.benefitType,
+                toCard: selectedToCardData.benefitType,
+              }"
               :to-card-list="cardList.filter((item) => item.walletId !== cardId)"
             />
 
@@ -179,6 +185,7 @@ const confirmExchange = (isConvert: boolean) => {
               :incentiveAmount="incentiveAmount"
               :cardName="selectedCard.localCurrencyName"
               :percentage="selectedCard.percentage"
+              :from-card-benefit="selectedCard.benefitType"
             />
           </div>
 
@@ -200,10 +207,12 @@ const confirmExchange = (isConvert: boolean) => {
             :from-card="{
               name: selectedCard.localCurrencyName,
               percentage: selectedCard.percentage,
+              benefitType: selectedCard.benefitType,
             }"
             :to-card="{
               name: selectedToCardData.localCurrencyName,
               percentage: selectedToCardData.percentage,
+              benefitType: selectedToCardData.benefitType,
             }"
             :total-amount="exchangeInput || 0"
             :result="exchangeResult"
@@ -217,6 +226,7 @@ const confirmExchange = (isConvert: boolean) => {
             :from-card="{
               name: selectedCard.localCurrencyName,
               percentage: selectedCard.percentage,
+              benefitType: selectedCard.benefitType,
             }"
             :total-amount="exchangeInput || 0"
             :result="exchangeResult"

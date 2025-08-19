@@ -1,5 +1,7 @@
 import type { BenefitType } from '../local/localTypes'
 
+export type WalletType = 'CASH' | 'LOCAL'
+
 export interface WalletResponseDtoType {
   walletId: string
   walletType: 'CASH' | 'LOCAL'
@@ -11,4 +13,7 @@ export interface WalletResponseDtoType {
   displayOrder: number
   backgroundImageUrl?: string | null
   maximum?: number
+  regionId?: number
+  province?: string
+  city?: string
 }

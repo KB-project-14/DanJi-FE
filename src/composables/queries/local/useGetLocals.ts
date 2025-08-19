@@ -4,7 +4,7 @@ import { LOCAL_KEYS } from '@/constants/QueryKey'
 import type { LocalResponseDTO } from '@/types/local/localTypes'
 
 export const getLocals = async (): Promise<LocalResponseDTO[]> => {
-  const response = await get<LocalResponseDTO[]>('/api/regions', {
+  const response = await get<LocalResponseDTO[]>('api/regions', {
     params: {
       hasLocalCurrency: true,
     },
@@ -16,7 +16,8 @@ const useGetLocals = () => {
   const { data } = useQuery<LocalResponseDTO[]>({
     queryKey: LOCAL_KEYS.all,
     queryFn: getLocals,
-    staleTime: 1000 * 60,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   })
 
   return data ?? []

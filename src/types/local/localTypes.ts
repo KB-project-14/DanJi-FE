@@ -28,7 +28,6 @@ export interface LocalcurrencyResponseDTO {
   imageUrl: string
 }
 
-//TODO:: walletType을 나중에 지갑 쪽 타입이랑 합치기
 export interface LocalCardCreateRequestDTO {
   localCurrencyId: string
   walletType: 'LOCAL'

@@ -28,14 +28,12 @@ const displayText = computed(() => {
   return `${props.cluster.stores.length}`
 })
 
-// 단일 매장인지 여부
 const isSingleStore = computed(() => props.cluster.stores.length === 1)
 </script>
 
 <template>
   <div @click.stop="emit('click')" class="relative flex flex-col items-center cursor-pointer">
     <div v-if="mapLevel <= 13" class="flex flex-col items-center">
-      <!-- 단일 매장 마커 -->
       <svg
         v-if="isSingleStore"
         width="25.8"
@@ -81,7 +79,6 @@ const isSingleStore = computed(() => props.cluster.stores.length === 1)
         </defs>
       </svg>
 
-      <!-- 클러스터 마커 (다중 매장) -->
       <svg
         v-else
         width="35"
@@ -135,7 +132,6 @@ const isSingleStore = computed(() => props.cluster.stores.length === 1)
       </svg>
     </div>
 
-    <!-- 매장명/클러스터 정보 표시 (줌 레벨에 따라) -->
     <div
       v-if="mapLevel <= 4"
       class="bg-White-1/50 Body03 text-center leading-tight truncate mt-[0.2rem]"
@@ -145,7 +141,6 @@ const isSingleStore = computed(() => props.cluster.stores.length === 1)
       <span v-else>{{ cluster.stores.length }}개 매장</span>
     </div>
 
-    <!-- 선택 표시 마커 -->
     <transition
       enter-active-class="animate-fade-in-scale"
       leave-active-class="animate-fade-out-scale"

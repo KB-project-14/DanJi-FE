@@ -4,7 +4,6 @@ import { computed } from 'vue'
 
 const { currentBadges, handleBadgeClick } = useBadgeCollection()
 
-// 3개씩 묶는 함수 임시 설정
 const chunkedBadges = computed(() => {
   const chunks = []
   for (let i = 0; i < currentBadges.value.length; i += 3) {
@@ -14,7 +13,6 @@ const chunkedBadges = computed(() => {
 })
 </script>
 <template>
-  <!-- 뱃지 리스트 아이템 -->
   <div
     v-for="(badgeGroup, groupIndex) in chunkedBadges"
     :key="`group-${groupIndex}`"
@@ -27,7 +25,7 @@ const chunkedBadges = computed(() => {
         :key="badge.badge_id"
         :src="badge.image"
         :alt="`${badge.name} 뱃지 ${badgeIndex + 1}`"
-        class="w-[6rem] h-[6rem] bg-Gray-1 cursor-pointer"
+        class="w-[6rem] h-[6rem] cursor-pointer"
         @click="handleBadgeClick(badge)"
       />
     </div>

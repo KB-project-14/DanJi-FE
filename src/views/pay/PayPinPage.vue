@@ -3,12 +3,15 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ChevronLeft } from 'lucide-vue-next'
 import Layout from '@/components/layout/Layout.vue'
-import { useSignUpStore } from '@/stores/signupStore'
+import { useMemberStore } from '@/stores/useMemberStore'
 import usePostPayment from '@/composables/queries/payment/usePostPayment'
 import type { payRequestDtoType } from '@/types/pay/payTypes'
+import { useUiStore } from '@/stores/useUiStore'
+import { AxiosError } from 'axios'
+import { showWarningToast, showErrorToast } from '@/utils/toast'
 
+const store = useMemberStore()
 const router = useRouter()
-const signUpStore = useSignUpStore()
 const { makePayment, isPending } = usePostPayment()
 
 const currentPin = ref('')
@@ -20,7 +23,7 @@ onMounted(() => {
   if (state?.paymentData) {
     paymentData.value = JSON.parse(state.paymentData)
   } else {
-    alert('잘못된 접근입니다.')
+    showWarningToast('잘못된 접근입니다.')
     router.push('/pay')
   }
 })
@@ -39,18 +42,17 @@ function resetPin() {
 
 async function confirmPin() {
   if (currentPin.value.length < 4) {
-    alert('결제 비밀번호 4자리를 입력해주세요.')
+    showWarningToast('결제 비밀번호 4자리를 입력해주세요.')
     return
   }
 
   if (!paymentData.value) {
-    alert('결제 정보가 없습니다.')
+    showErrorToast('결제 정보가 없습니다.')
     router.push('/pay')
     return
   }
 
   try {
-    // walletPin 업데이트
     paymentData.value.walletPin = currentPin.value
 
     await makePayment(paymentData.value)
@@ -62,6 +64,22 @@ async function confirmPin() {
       },
     })
   } catch (error) {
+    if (
+      error instanceof AxiosError &&
+      error?.response?.data?.error?.message?.includes('결제 비밀번호가 일치하지 않습니다')
+    ) {
+      // useUiStore().setNextToast({
+      //   type: 'error',
+      //   msg: '결제 비밀번호가 일치하지 않습니다.',
+      //   opts: { position: 'bottom-center', autoClose: 1000 },
+      // })
+
+      resetPin()
+
+      await router.push('/pay')
+      return
+    }
+
     router.push({
       path: '/pay-complete',
       state: {
@@ -82,7 +100,6 @@ async function confirmPin() {
     <template #content>
       <div class="w-full border-t border-gray-300 mt-0"></div>
       <div class="flex flex-col h-screen bg-white">
-        <!-- 문구 영역 -->
         <div class="mt-10 mb-10 px-10 w-full">
           <p class="text-black text-3xl font-extrabold leading-snug whitespace-pre-line text-left">
             결제비밀번호 4자리를<br />
@@ -90,7 +107,6 @@ async function confirmPin() {
           </p>
         </div>
 
-        <!-- 원 영역 -->
         <div class="flex justify-center space-x-10 mt-8">
           <div
             v-for="i in 4"
@@ -101,7 +117,6 @@ async function confirmPin() {
           ></div>
         </div>
 
-        <!-- 키패드 + 버튼 전체 래퍼 -->
         <div class="mt-auto pb-40">
           <div
             class="bg-white rounded-t-3xl px-8 pt-6 pb-10 w-full shadow-[0_-4px_20px_rgba(0,0,0,0.08)]"
@@ -124,7 +139,6 @@ async function confirmPin() {
             </div>
           </div>
 
-          <!-- 확인 버튼 -->
           <div class="flex justify-center mt-6 mb-4">
             <button
               class="w-[315px] py-5 text-3xl text-white bg-[#4e3d31] rounded-xl cursor-pointer disabled:bg-[#cccccc] disabled:text-white disabled:cursor-not-allowed"

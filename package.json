@@ -32,6 +32,7 @@
     "lucide-vue-next": "^0.525.0",
     "moment": "^2.30.1",
     "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.5.0",
     "qrcode.vue": "^3.6.0",
     "swiper": "^11.2.10",
     "tailwind-scrollbar-hide": "^4.0.0",
@@ -40,6 +41,7 @@
     "vue-router": "^4.5.1",
     "vue3-datepicker": "^0.4.0",
     "vue3-kakao-maps": "^2.3.10",
+    "vue3-toastify": "^0.2.8",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

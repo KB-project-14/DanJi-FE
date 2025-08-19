@@ -2,7 +2,6 @@ import type { ApiError } from '@/types/types'
 import axios, { type AxiosInstance } from 'axios'
 import type { AxiosResponse } from 'axios'
 
-// API Response 공통 타입 - error 등 구체적인 타입은 수정 가능성 있음
 export interface ApiResponse<T> {
   data: T
   error: ApiError
@@ -12,15 +11,16 @@ export interface ApiResponse<T> {
 export const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
   withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${import.meta.env.VITE_DEV_ACCESS_TOKEN}`,
-  },
+  headers: { 'Content-Type': 'application/json' },
 })
 
 instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('ACCESS_TOKEN')
-  if (token) {
+  const token = localStorage.getItem('accessToken')
+  const url = config.url ?? ''
+
+  const isPublic = url.includes('/api') || url.includes('/api/members')
+
+  if (token && !isPublic) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config

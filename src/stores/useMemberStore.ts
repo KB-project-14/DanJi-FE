@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 
-export const useSignUpStore = defineStore('signUp', {
+export const useMemberStore = defineStore('member', {
   state: () => ({
     name: '',
     username: '',
     password: '',
     paymentPin: '',
+    currentLocation: '',
   }),
   actions: {
     setInfo(payload: { name: string; username: string; password: string }) {
@@ -16,11 +17,17 @@ export const useSignUpStore = defineStore('signUp', {
     setPaymentPin(pin: string) {
       this.paymentPin = pin
     },
+    setCurrentLocation(location: string) {
+      this.currentLocation = location
+    },
+
     reset() {
       this.name = ''
       this.username = ''
       this.password = ''
       this.paymentPin = ''
+      this.currentLocation = ''
     },
   },
+  persist: true,
 })

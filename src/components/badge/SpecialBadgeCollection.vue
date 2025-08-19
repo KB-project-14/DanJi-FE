@@ -4,7 +4,6 @@ import { useBadgeCollection } from '@/composables/badge/useBadgeCollection'
 const { currentBadges, handleBadgeClick } = useBadgeCollection()
 </script>
 <template>
-  <!-- 뱃지 리스트 아이템 -->
   <div class="flex w-full h-full justify-center items-start flex-wrap gap-[1.3rem]">
     <div
       v-for="(badge, index) in currentBadges"
@@ -15,8 +14,10 @@ const { currentBadges, handleBadgeClick } = useBadgeCollection()
       <img
         :key="badge.badge_id"
         :src="badge.image"
-        :alt="`${badge.name} 뱃지 ${index + 1}`"
-        class="w-[7rem] h-[7rem] bg-Gray-0"
+        :alt="`${badge.name} 뱃지`"
+        class="w-[7rem] h-[7rem] object-contain"
+        loading="lazy"
+        decoding="async"
       />
       <span class="Body01">{{ badge.name }}</span>
     </div>

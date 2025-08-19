@@ -96,14 +96,11 @@ onUnmounted(() => {
 
 <template>
   <div class="w-full" ref="selectRef">
-    <!-- 라벨 -->
     <label v-if="label" class="block mb-[0.4rem] text-Black-1 Head02">
       {{ label }}
     </label>
 
-    <!-- 셀렉트 박스 -->
     <div class="relative">
-      <!-- 선택 영역 -->
       <div :class="selectClass" class="flex" @click="toggleDropdown">
         {{ displayText }}
         <ChevronDown
@@ -117,7 +114,6 @@ onUnmounted(() => {
         />
       </div>
 
-      <!-- 드롭다운 영역 (분리된 컴포넌트) -->
       <Transition
         enter-active-class="transition duration-200 ease-out"
         enter-from-class="transform scale-95 opacity-0"

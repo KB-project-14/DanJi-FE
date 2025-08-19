@@ -3,6 +3,9 @@ import { computed } from 'vue'
 import { format } from 'date-fns'
 import { calculateExchangeRegionToCash } from '@/utils/exchange'
 import { HandCoins } from 'lucide-vue-next'
+import { benefitTypeTextMap } from '@/constants/BenefitMapper'
+import type { BenefitType } from '@/types/local/localTypes'
+import { isIncentiveWallet } from '@/utils/checkIncentiveType'
 
 const currentMonthLabel = format(new Date(), 'M월')
 
@@ -13,6 +16,7 @@ const props = defineProps<{
   cardName?: string
   modelValue: number | null
   percentage?: number
+  fromCardBenefit: BenefitType
 }>()
 
 const emit = defineEmits<{
@@ -23,17 +27,18 @@ const handleInput = (e: Event) => {
   const value = Number((e.target as HTMLInputElement).value)
   emit('update:modelValue', value)
 }
-// 현금 환전 금액 계산
 const excludedIncentive = computed(() => {
   if (!props.modelValue || !props.percentage) return 0
-  const { finalAmount } = calculateExchangeRegionToCash(props.percentage, props.modelValue)
+
+  const fromCardPercentage = isIncentiveWallet(props.fromCardBenefit) ? props.percentage : 0
+
+  const { finalAmount } = calculateExchangeRegionToCash(fromCardPercentage, props.modelValue)
   return finalAmount
 })
 </script>
 
 <template>
   <div class="flex flex-col gap-3 p-[2rem] pb-[9rem] rounded-lg shadow-sm bg-White-1">
-    <!-- 환전 가능 금액 -->
     <div>
       <p class="Body02 text-Gray-5">환전 가능한 금액</p>
       <div class="flex items-center gap-2">
@@ -42,19 +47,21 @@ const excludedIncentive = computed(() => {
       </div>
     </div>
 
-    <!-- 내가 충전한 금액 / 인센티브 -->
     <div class="Body03 text-Gray-6">
       {{ currentMonthLabel }} 충전한 금액:
-      <span class="text-Yellow-1">{{ props.chargedAmount.toLocaleString() }}원</span><br />
-      {{ currentMonthLabel }} 받은 인센티브({{ props.percentage }}%):
-      <span class="text-Yellow-1">{{ props.incentiveAmount.toLocaleString() }}원</span>
+      <span class="Body02 text-Black-2">{{ props.chargedAmount.toLocaleString() }}원</span><br />
+      {{ currentMonthLabel }} 받은 {{ benefitTypeTextMap[fromCardBenefit] }}({{
+        props.percentage
+      }}%):
+      <span class="Body02 text-Black-2">{{ props.incentiveAmount.toLocaleString() }}원</span>
     </div>
 
-    <!-- 입력 UI -->
     <div class="flex flex-col gap-3 mt-[1rem]">
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
-        <div class="Body04 text-Gray-5">인센티브 비율만큼 차감된 금액으로 환전됩니다</div>
+        <div v-if="isIncentiveWallet(fromCardBenefit)" class="Body04 text-Gray-5">
+          인센티브 비율만큼 차감된 금액으로 환전됩니다
+        </div>
       </div>
 
       <input
@@ -72,7 +79,7 @@ const excludedIncentive = computed(() => {
 
       <p class="mt-1 text-Yellow-1 Body03" :class="{ invisible: !props.modelValue }">
         <span class="line-through">예상 수수료(1%)</span>
-        <span class="text-Red-0"> 수수료 면제 대상입니다!</span>
+        <span class="text-Red-1"> 수수료 면제 대상입니다!</span>
       </p>
     </div>
   </div>

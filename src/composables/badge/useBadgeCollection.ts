@@ -9,7 +9,6 @@ export function provideBadgeCollection(): BadgeCollection {
   const selectedBadge = ref<Badge | null>(null)
   const showBadgeDetail = ref(false)
 
-  // 카테고리별 뱃지 임시 mock 데이터
   const regionBadges: Badge[] = [
     {
       badge_id: '1',

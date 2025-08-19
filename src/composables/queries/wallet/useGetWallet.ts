@@ -5,7 +5,7 @@ import type { WalletResponseDtoType } from '@/types/wallet/WalletResponseDtoType
 import { computed } from 'vue'
 
 export const getWallet = async (walletId: string): Promise<WalletResponseDtoType> => {
-  const response = await get<WalletResponseDtoType>(`/api/wallets/${walletId}`)
+  const response = await get<WalletResponseDtoType>(`api/wallets/${walletId}`)
   return response.data.data
 }
 
@@ -29,6 +29,9 @@ const useGetWallet = (walletId: string) => {
         displayOrder: 0,
         backgroundImageUrl: '',
         maximum: 0,
+        regionId: 0,
+        province: '',
+        city: '',
       },
   )
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import Layout from '@/components/layout/Layout.vue'
 import { useScrollLock } from '@vueuse/core'
 
@@ -8,94 +8,42 @@ import MapFilters from '@/components/map/MapFilters.vue'
 import KakaoMapContainer from '@/components/map/KaKaoMapContainer.vue'
 import LocalStoreListModal from '@/components/map/LocalStoreListModal.vue'
 import LocalFilterModal from '@/components/common/modal/LocalFilterModal.vue'
-import useLocalSelector from '@/composables/local/useLocalSelector'
+import LocalStoreDetailItem from '@/components/map/LocalStoreDetailItem.vue'
+import { showErrorToast } from '@/utils/toast'
 
-import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
+import useLocalSelector from '@/composables/local/useLocalSelector'
+import useGeolocation from '@/composables/map/useGeolocation'
 import useGetLocalStores from '@/composables/queries/local/useGetLocalStores'
+import useKakaoPlacesSearch from '@/composables/queries/store/useGetKakaoPlaceDetail'
+import type { LocalStoreResponseDTO } from '@/types/store/storeTypes'
+import type { KakaoPlace } from '@/types/store/kakaoMapTypes'
+
 import { LOCAL_COORDINATES } from '@/constants/LocalCenterCoordinates'
 
 const isLocked = useScrollLock(document.body)
 isLocked.value = true
 
-const foldLocalStoreModal = ref<boolean>(true)
-
 const mapRef = ref<InstanceType<typeof KakaoMapContainer> | null>(null)
-const userCurrentLatitude = ref<number>(37.5665)
-const userCurrentLongitude = ref<number>(126.978)
-const mapLatitude = ref<number>(37.5665)
-const mapLongitude = ref<number>(126.978)
+const mapLatitude = ref<number>(33.515555)
+const mapLongitude = ref<number>(126.513179)
+const isLocationReady = ref<boolean>(false)
 
-// 헤더 검색창 상태 관리
-const searchValue = ref<string>('')
-const isSearchActive = ref<boolean>(false)
+const {
+  currentLatitude,
+  currentLongitude,
+  isLocationLoading,
+  locationError,
+  getCurrentLocationForJeju,
+} = useGeolocation()
 
-const getUserLocation = (): Promise<{ lat: number; lng: number }> => {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      const error = '위치 정보가 지원되지 않는 브라우저입니다.'
-      reject(new Error(error))
-      return
-    }
+const { data: localStoresData } = useGetLocalStores(
+  computed(() => (isLocationReady.value ? mapLatitude.value : null)),
+  computed(() => (isLocationReady.value ? mapLongitude.value : null)),
+)
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        userCurrentLatitude.value = position.coords.latitude
-        userCurrentLongitude.value = position.coords.longitude
-
-        const coords = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-
-        console.log('현재 위치 업데이트:', coords)
-        resolve(coords)
-      },
-      (error) => {
-        let errorMessage: string
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage = '위치 정보 접근이 거부되었습니다.'
-            break
-          case error.POSITION_UNAVAILABLE:
-            errorMessage = '위치 정보를 사용할 수 없습니다.'
-            break
-          case error.TIMEOUT:
-            errorMessage = '위치 정보 요청 시간이 초과되었습니다.'
-            break
-          default:
-            errorMessage = '알 수 없는 오류가 발생했습니다.'
-        }
-
-        console.error('위치 정보 오류:', error)
-        reject(new Error(errorMessage))
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000,
-      },
-    )
-  })
-}
-
-const { data } = useGetLocalStores(mapLatitude, mapLongitude)
-const localStores = computed(() => data.value ?? [])
-
+const localStores = computed(() => localStoresData.value ?? [])
 const selectedFilter = ref<string>('전체')
-const { selectedRegion, selectedCity, setLocal, resetSelection } = useLocalSelector()
-const isFilterModalVisible = ref<boolean>(false)
-const storeCategories = computed(() => {
-  const categories = Array.from(
-    new Set(localStores.value.map((store) => store.category).filter(Boolean)),
-  )
 
-  if (categories.length === 0) return []
-  return ['전체', ...categories]
-})
-
-/**
- * 선택된 필터에 따라 가맹점을 필터링
- */
 const filteredStores = computed((): LocalStoreResponseDTO[] => {
   if (selectedFilter.value === '전체') {
     return localStores.value
@@ -103,76 +51,120 @@ const filteredStores = computed((): LocalStoreResponseDTO[] => {
   return localStores.value.filter((store) => store.category === selectedFilter.value)
 })
 
-/**
- * 필터 칩 클릭 핸들러
- */
-const handleFilterChipClick = (): void => {
-  isFilterModalVisible.value = !isFilterModalVisible.value
+const storeCategories = computed(() => {
+  const categories = Array.from(
+    new Set(localStores.value.map((store) => store.category).filter(Boolean)),
+  )
+  return categories.length === 0 ? [] : ['전체', ...categories]
+})
+
+const searchValue = ref<string>('')
+const isSearchActive = ref<boolean>(false)
+const isFilterModalVisible = ref<boolean>(false)
+
+const { selectedRegion, selectedCity, setLocal, resetSelection } = useLocalSelector()
+
+const foldLocalStoreModal = ref<boolean>(true)
+const showPlaceDetail = ref<boolean>(false)
+const selectedPlace = ref<KakaoPlace | null>(null)
+const selectedPlaceId = ref<string>('')
+
+const { findPlaceByCoordinatesAndName } = useKakaoPlacesSearch()
+
+const handlePlaceSelect = async (payload: {
+  lat: number
+  lng: number
+  name: string
+  id: string
+}) => {
+  try {
+    const placeData = await findPlaceByCoordinatesAndName(payload.lat, payload.lng, payload.name)
+
+    selectedPlace.value = placeData
+    selectedPlaceId.value = payload.id
+    showPlaceDetail.value = true
+
+    mapRef.value?.panTo(payload.lat, payload.lng)
+  } catch (error) {
+    showErrorToast('장소 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.')
+  }
 }
 
-/**
- * 필터 모달 확인 핸들러
- */
-const handleFilterModalConfirm = (region: string, city: string): void => {
+const handleClosePlace = () => {
+  showPlaceDetail.value = false
+  selectedPlace.value = null
+  selectedPlaceId.value = ''
+}
+
+const handleFilterToggle = () => {
+  isFilterModalVisible.value = !isFilterModalVisible.value
+  if (isFilterModalVisible.value) {
+    handleClosePlace()
+  }
+}
+
+const handleLocationSelect = (region: string, city: string) => {
   setLocal(region, city)
   isFilterModalVisible.value = false
   foldLocalStoreModal.value = false
 
-  // 헤더 검색창에 지역명 표시
   const locationName = city || region
   searchValue.value = locationName
   isSearchActive.value = true
 
   const key = city || region
-  const localCoordinates = LOCAL_COORDINATES[key].center
-  console.log(localCoordinates)
-  mapLatitude.value = localCoordinates.lat
-  mapLongitude.value = localCoordinates.lng
-  mapRef.value?.panTo(localCoordinates.lat, localCoordinates.lng)
+  const coordinates = LOCAL_COORDINATES[key].center
+
+  mapLatitude.value = coordinates.lat
+  mapLongitude.value = coordinates.lng
+  mapRef.value?.panTo(coordinates.lat, coordinates.lng)
 }
 
-/**
- * 현재 위치 버튼 클릭 핸들러
- */
-const handleCurrencLocationBtnClick = () => {
+const handleCurrentLocation = () => {
   resetSelection()
   foldLocalStoreModal.value = true
 
-  mapLatitude.value = userCurrentLatitude.value
-  mapLongitude.value = userCurrentLongitude.value
+  mapLatitude.value = currentLatitude.value
+  mapLongitude.value = currentLongitude.value
+
+  searchValue.value = ''
+  isSearchActive.value = false
+
+  handleClosePlace()
 }
 
-/**
- * 이 지역 재검색 버튼 클릭 핸들러
- */
-const handleResearchBtnClick = () => {
-  if (!mapRef.value) return
-
-  const center = mapRef.value.getMapCenterCoordinates()
+const handleResearch = () => {
+  const center = mapRef.value?.getMapCenterCoordinates()
   if (center) {
-    mapLatitude.value = center?.getLat()!
-    mapLongitude.value = center?.getLng()!
+    mapLatitude.value = center.getLat()
+    mapLongitude.value = center.getLng()
   }
 }
 
-/**
- * 검색창 초기화 핸들러
- */
 const handleSearchClear = () => {
   searchValue.value = ''
   isSearchActive.value = false
-  resetSelection()
-  foldLocalStoreModal.value = true
+  handleCurrentLocation()
+  mapRef.value?.panTo(mapLatitude.value, mapLongitude.value)
+}
+
+const initializeApp = async () => {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    const location = await getCurrentLocationForJeju()
+
+    mapLatitude.value = location.lat
+    mapLongitude.value = location.lng
+
+    isLocationReady.value = true
+  } catch (error) {
+    isLocationReady.value = true
+  }
 }
 
 onMounted(async () => {
-  try {
-    await getUserLocation()
-    mapLatitude.value = userCurrentLatitude.value
-    mapLongitude.value = userCurrentLongitude.value
-  } catch (error) {
-    console.error('초기화 중 오류 발생:', error)
-  }
+  await initializeApp()
 })
 </script>
 
@@ -180,39 +172,54 @@ onMounted(async () => {
   <Layout header-type="none" :is-bottom-nav="foldLocalStoreModal">
     <template #content>
       <div class="flex flex-col h-full bg-White-1">
-        <!-- Header Section -->
         <map-header
           :search-value="searchValue"
           :is-search-active="isSearchActive"
           @search-clear="handleSearchClear"
         />
 
-        <!-- Filters Section -->
         <map-filters
           :selected-filter="selectedFilter"
           :selected-city="selectedCity !== '' ? selectedCity : selectedRegion"
           :filter-options="storeCategories"
           :fold-local-store-modal="foldLocalStoreModal"
-          @filter-chip-click="handleFilterChipClick"
+          @filter-chip-click="handleFilterToggle"
           @update:selected-filter="selectedFilter = $event"
         />
 
-        <!-- Map Section -->
         <div class="flex-1 overflow-hidden relative mt-[2.2rem]">
+          <div
+            v-if="!isLocationReady || isLocationLoading"
+            class="absolute inset-0 flex items-center justify-center bg-gray-100 z-10"
+          >
+            <div class="text-center">
+              <div
+                class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"
+              ></div>
+              <p class="text-gray-600">
+                {{ isLocationLoading ? '위치 정보를 가져오는 중...' : '데이터를 불러오는 중...' }}
+              </p>
+              <p v-if="locationError" class="text-red-500 text-sm mt-2">{{ locationError }}</p>
+            </div>
+          </div>
+
           <kakao-map-container
             ref="mapRef"
-            :user-latitude="userCurrentLatitude"
-            :user-longitude="userCurrentLongitude"
+            :user-latitude="currentLatitude"
+            :user-longitude="currentLongitude"
             :filtered-stores="filteredStores"
-            @current-location="handleCurrencLocationBtnClick"
-            @research="handleResearchBtnClick"
+            :selected-place-id="selectedPlaceId"
+            :is-maker-selected="showPlaceDetail"
+            @current-location="handleCurrentLocation"
+            @research="handleResearch"
+            @select-place="handlePlaceSelect"
           />
 
-          <!-- Modals -->
           <local-store-list-modal
             class="absolute bottom-[7rem] z-[300]"
-            v-model:is-modal-fold="foldLocalStoreModal"
+            :is-modal-fold="foldLocalStoreModal || showPlaceDetail"
             :local-store-list="filteredStores"
+            @select-place="handlePlaceSelect"
           />
 
           <local-filter-modal
@@ -220,7 +227,14 @@ onMounted(async () => {
             :is-visible="isFilterModalVisible"
             v-model:initial-region="selectedRegion"
             v-model:initial-city="selectedCity"
-            @confirm="handleFilterModalConfirm"
+            @confirm="handleLocationSelect"
+          />
+
+          <local-store-detail-item
+            class="z-[400]"
+            :place="selectedPlace"
+            :is-visible="showPlaceDetail"
+            @close="handleClosePlace"
           />
         </div>
       </div>

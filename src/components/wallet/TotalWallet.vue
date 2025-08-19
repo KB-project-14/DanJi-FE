@@ -1,29 +1,31 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import useGetMember from '@/composables/queries/member/useGetMember'
+
 import { ChevronRight } from 'lucide-vue-next'
 
 const router = useRouter()
+const member = useGetMember()
 
 defineProps<{
   walletAmount: number
 }>()
 
-// 통합 지갑 선택시 총자산보기 페이지 이동
 const goWalletPage = () => {
   router.push('/wallet/view')
 }
 </script>
 <template>
   <div class="aspect-[1586/700] rounded-xl overflow-hidden w-full shadow mx-auto flex flex-col">
-    <!-- 상단 영역: 2/3 비율 -->
     <div class="flex flex-col items-start p-4 bg-Yellow-0/40 flex-[2]">
-      <span class="mb-1 Head4 text-Gray-6">통합지갑</span>
+      <span class="mb-1 Body01 text-Gray-6"
+        >{{ member?.name }}님의 KB 저축 계좌 775102-00-097294
+      </span>
       <span class="self-center Head0 text-Black">
         {{ (walletAmount ?? 0).toLocaleString() }}원
       </span>
     </div>
 
-    <!-- 하단 영역: 1/3 비율 -->
     <div
       class="flex items-center justify-end flex-[1] gap-1 p-4 bg-White-0/40 p-4"
       @click="goWalletPage"
@@ -33,5 +35,3 @@ const goWalletPage = () => {
     </div>
   </div>
 </template>
-
-<style></style>

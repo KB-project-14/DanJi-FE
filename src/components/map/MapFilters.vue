@@ -19,7 +19,6 @@ defineEmits<Emits>()
 </script>
 
 <template>
-  <!-- 필터 -->
   <div class="overflow-x-auto scrollbar-hide">
     <div class="flex items-center px-[1.6rem] mt-[2.2rem] min-w-max">
       <danji-chip :is-icon="true" :is-active="true" @click="$emit('filter-chip-click')">
