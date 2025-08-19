@@ -55,7 +55,7 @@ async function onLogin() {
 <template>
   <Layout header-type="basic" :is-bottom-nav="false" :show-left-icon="false">
     <template #content>
-      <div class="flex flex-col items-center bg-white box-border p-[24px]">
+      <div class="flex flex-col h-full items-center bg-white box-border p-[24px]">
         <div class="text-center mt-[24px] mb-[32px]">
           <img
             src="@/assets/images/danji-logo-main.png"
