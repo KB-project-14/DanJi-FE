@@ -6,7 +6,7 @@ const COLORS = [
   '#00C7BE',
   '#007AFF',
   '#5856D6',
-  '#AF52DE',
+  '#0066FF',
   '#FF2D55',
   '#5AC8FA',
   '#FF9F0A',
