@@ -14,14 +14,6 @@ const localWallets = computed(() => walletStore.sortedLocalWallets)
 const totalBalance = computed(() =>
   (localWallets.value ?? []).reduce((sum, card) => sum + (card.balance || 0), 0),
 )
-
-const bgColors = [
-  'bg-[#0078D7] text-White-1',
-  'bg-[#77C3E4] text-White-1',
-  'bg-[#C89E59] text-White-1',
-  'bg-[#F1F1F1] text-Black-1',
-  'bg-[#FF8A65] text-White-1',
-]
 </script>
 
 <template>
@@ -49,11 +41,11 @@ const bgColors = [
 
         <div class="flex flex-col gap-4 flex-1 p-4 rounded-lg shadow-sm bg-White-1">
           <wallet-item
-            v-for="(card, index) in localWallets"
+            v-for="(card, _) in localWallets"
             :key="card.walletId"
             :name="card.localCurrencyName"
             :balance="card.balance"
-            :bgColorClass="bgColors[index % bgColors.length]"
+            :bgColorClass="walletStore.getWalletColor(card.walletId)"
             :showMenu="false"
           />
         </div>

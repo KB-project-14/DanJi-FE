@@ -40,7 +40,7 @@ const excludedIncentive = computed(() => {
 <template>
   <div class="flex flex-col gap-3 p-[2rem] pb-[9rem] rounded-lg shadow-sm bg-White-1">
     <div>
-      <p class="Body02 text-Gray-5">환전 가능한 금액</p>
+      <p class="Body02 text-Gray-5">환불 가능한 금액</p>
       <div class="flex items-center gap-2">
         <HandCoins class="w-[1.6rem] h-[1.6rem]" />
         <p class="Head0 text-Black-2">{{ props.balance.toLocaleString() }}원</p>
@@ -60,7 +60,7 @@ const excludedIncentive = computed(() => {
       <div class="flex items-center gap-2">
         <div class="Head04 text-Black-2">{{ props.cardName }}</div>
         <div v-if="isIncentiveWallet(fromCardBenefit)" class="Body04 text-Gray-5">
-          인센티브 비율만큼 차감된 금액으로 환전됩니다
+          인센티브 비율만큼 차감된 금액으로 환불됩니다
         </div>
       </div>
 
@@ -68,7 +68,7 @@ const excludedIncentive = computed(() => {
         :value="props.modelValue"
         @input="handleInput"
         type="number"
-        placeholder="환전할 금액을 입력해주세요"
+        placeholder="환불할 금액을 입력해주세요"
         class="p-[1.6rem] border rounded text-Gray-6 text-right Body02"
       />
 

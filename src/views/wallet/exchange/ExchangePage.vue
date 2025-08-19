@@ -133,7 +133,7 @@ const confirmExchange = (isConvert: boolean) => {
 <template>
   <Layout
     :header-type="'basic'"
-    :header-title="'환전하기'"
+    :header-title="activeTab == 0 ? '환전하기' : '환불하기'"
     :is-bottom-nav="false"
     :showLeftIcon="true"
   >
@@ -147,9 +147,12 @@ const confirmExchange = (isConvert: boolean) => {
 
           <div
             class="flex items-center justify-end pt-[1rem] pr-[2rem] pb-[1rem] gap-1 text-right text-Gray-7"
+            :style="activeTab !== 0 ? 'margin-top: 1.4rem;' : ''"
           >
-            <CircleAlert class="w-[1.2rem] h-[1.2rem]" />
-            <span>환전 시 수수료 1%가 부과됩니다.</span>
+            <template v-if="activeTab === 0">
+              <CircleAlert class="w-[1.2rem] h-[1.2rem]" />
+              <span>환전 시 수수료 1%가 부과됩니다.</span>
+            </template>
           </div>
 
           <div class="flex-1 overflow-y-auto px-[1.8rem]">
@@ -197,7 +200,7 @@ const confirmExchange = (isConvert: boolean) => {
               :disabled="!isButtonEnabled"
               @click="openModal"
             >
-              환전하기
+              {{ activeTab == 0 ? '환전하기' : '환불하기' }}
             </danji-button>
           </div>
 
