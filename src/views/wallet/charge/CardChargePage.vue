@@ -8,17 +8,15 @@ import type { TransferRequestDTO } from '@/types/transaction/TransactionType'
 import { TRANSACTION_TYPE } from '@/constants/Transaction'
 import useGetWallet from '@/composables/queries/wallet/useGetWallet'
 import { benefitTypeTextMap } from '@/constants/BenefitMapper'
-import useGetWalletList from '@/composables/queries/wallet/useGetWalletList'
 import { isIncentiveWallet } from '@/utils/checkIncentiveType'
+import { useWalletStore } from '@/stores/useWalletStore'
 
 const router = useRouter()
 const route = useRoute()
 
 const { mutate } = usePostTransfer()
 const routeWalletId = route.params.id as string
-const cashWallets = useGetWalletList('CASH')
-const CASH_WALLET_ID = computed(() => cashWallets.value?.[0]?.walletId || '').value
-const cashWalletInfo = useGetWallet(CASH_WALLET_ID)
+const cashWalletInfo = useWalletStore().cashWallet
 const localWalletInfo = useGetWallet(routeWalletId)
 
 // 런칭 이벤트: 수수료 면제 (표시는 하되 계산/차감에는 반영 X)
@@ -48,7 +46,7 @@ const handleBlur = (e: Event) => {
 }
 
 // 안전 기본값 (데이터 로딩 전 NaN/에러 방지)
-const walletCurrentBalance = computed(() => cashWalletInfo.value?.balance ?? 0)
+const walletCurrentBalance = computed(() => cashWalletInfo?.balance ?? 0)
 const localBalance = computed(() => localWalletInfo.value?.balance ?? 0)
 const localPercentage = computed(() => localWalletInfo.value?.percentage ?? 0)
 
@@ -99,7 +97,7 @@ const setAmount = (val: number) => {
 const postCharge = (cost: number): Promise<{ success: boolean }> => {
   const requestBody: TransferRequestDTO = {
     amount: cost,
-    fromWalletId: CASH_WALLET_ID,
+    fromWalletId: cashWalletInfo?.walletId ?? '',
     toWalletId: routeWalletId,
     transactionLogging: true,
     type: TRANSACTION_TYPE.CHARGE,
