@@ -112,7 +112,6 @@ const routes = [
     component: BadgePage,
   },
   { path: '/payment-pin', name: 'PaymentPin', component: PaymentPin },
-  { path: '/pay-pin', name: 'PayPin', component: PayPinPage },
 
   // 게스트 허용
   {
@@ -137,7 +136,7 @@ const router = createRouter({
 })
 
 // 게스트 허용 페이지
-const guestAllowed = new Set(['/map', '/login', '/signup'])
+const guestAllowed = new Set(['/map', '/login', '/signup', '/payment-pin'])
 router.beforeEach((to, _from, next) => {
   if (!isGuest() && to.path === '/login') return next('/home')
   if (to.path === '/login' || to.path === '/signup') return next()
