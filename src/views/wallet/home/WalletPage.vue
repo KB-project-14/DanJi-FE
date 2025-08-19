@@ -6,6 +6,7 @@ import WalletItem from '@/components/common/wallet/WalletItem.vue'
 import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 
 import { useWalletStore } from '@/stores/useWalletStore'
+import { bgColors } from '@/constants/CardBgColors'
 
 const walletStore = useWalletStore()
 
@@ -14,14 +15,6 @@ const localWallets = computed(() => walletStore.sortedLocalWallets)
 const totalBalance = computed(() =>
   (localWallets.value ?? []).reduce((sum, card) => sum + (card.balance || 0), 0),
 )
-
-const bgColors = [
-  'bg-[#0078D7] text-White-1',
-  'bg-[#77C3E4] text-White-1',
-  'bg-[#C89E59] text-White-1',
-  'bg-[#F1F1F1] text-Black-1',
-  'bg-[#FF8A65] text-White-1',
-]
 </script>
 
 <template>

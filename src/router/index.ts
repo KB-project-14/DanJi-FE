@@ -4,7 +4,6 @@ import { isGuest } from '@/utils/auth'
 import PayPage from '@/views/pay/PayPage.vue'
 import QRPage from '@/views/qr/QRPage.vue'
 import PayCompletePage from '@/views/pay/PayCompletePage.vue'
-import CashPayFailModal from '@/components/common/modal/CashPayFailModal.vue'
 import MypagePage from '@/views/mypage/MypagePage.vue'
 import HomePage from '@/views/wallet/home/HomePage.vue'
 import OrderChangePage from '@/views/wallet/change/OrderChangePage.vue'
@@ -23,7 +22,6 @@ import LocalCardCreateDetailPage from '@/views/wallet/create/LocalCardCreateDeta
 import PaymentPin from '@/views/auth/PaymentPinPage.vue'
 import BadgePage from '@/views/badge/BadgePage.vue'
 import LocalCardCreateSuccessPage from '@/views/wallet/create/LocalCardCreateSuccessPage.vue'
-import PayPinPage from '@/views/pay/PayPinPage.vue'
 
 const routes = [
   {
@@ -112,7 +110,6 @@ const routes = [
     component: BadgePage,
   },
   { path: '/payment-pin', name: 'PaymentPin', component: PaymentPin },
-  { path: '/pay-pin', name: 'PayPin', component: PayPinPage },
 
   {
     path: '/login',
@@ -135,7 +132,7 @@ const router = createRouter({
   routes,
 })
 
-const guestAllowed = new Set(['/map', '/login', '/signup'])
+const guestAllowed = new Set(['/map', '/login', '/signup', '/payment-pin'])
 router.beforeEach((to, _from, next) => {
   if (!isGuest() && to.path === '/login') return next('/home')
   if (to.path === '/login' || to.path === '/signup') return next()
