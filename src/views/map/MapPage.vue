@@ -24,12 +24,17 @@ const isLocked = useScrollLock(document.body)
 isLocked.value = true
 
 const mapRef = ref<InstanceType<typeof KakaoMapContainer> | null>(null)
-const mapLatitude = ref<number>(37.5665)
-const mapLongitude = ref<number>(126.978)
+const mapLatitude = ref<number>(33.515555)
+const mapLongitude = ref<number>(126.513179)
 const isLocationReady = ref<boolean>(false)
 
-const { currentLatitude, currentLongitude, isLocationLoading, locationError, getCurrentLocation } =
-  useGeolocation()
+const {
+  currentLatitude,
+  currentLongitude,
+  isLocationLoading,
+  locationError,
+  getCurrentLocationForJeju,
+} = useGeolocation()
 
 const { data: localStoresData } = useGetLocalStores(
   computed(() => (isLocationReady.value ? mapLatitude.value : null)),
@@ -147,7 +152,7 @@ const initializeApp = async () => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 100))
 
-    const location = await getCurrentLocation()
+    const location = await getCurrentLocationForJeju()
 
     mapLatitude.value = location.lat
     mapLongitude.value = location.lng
