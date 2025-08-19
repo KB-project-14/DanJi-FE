@@ -6,7 +6,6 @@ import WalletItem from '@/components/common/wallet/WalletItem.vue'
 import Tooltip from '@/components/common/tooltip/Tooltip.vue'
 
 import { useWalletStore } from '@/stores/useWalletStore'
-import { bgColors } from '@/constants/CardBgColors'
 
 const walletStore = useWalletStore()
 
@@ -42,11 +41,11 @@ const totalBalance = computed(() =>
 
         <div class="flex flex-col gap-4 flex-1 p-4 rounded-lg shadow-sm bg-White-1">
           <wallet-item
-            v-for="(card, index) in localWallets"
+            v-for="(card, _) in localWallets"
             :key="card.walletId"
             :name="card.localCurrencyName"
             :balance="card.balance"
-            :bgColorClass="bgColors[index % bgColors.length]"
+            :bgColorClass="walletStore.getWalletColor(card.walletId)"
             :showMenu="false"
           />
         </div>
