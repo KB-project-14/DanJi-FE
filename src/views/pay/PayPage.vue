@@ -45,7 +45,7 @@ const currentLocalWallet = computed(() => {
 const localBalance = computed(() => currentLocalWallet.value?.balance || 0)
 const cashBalance = computed(() => walletStore.cashWallet?.balance || 0)
 
-const paymentAmount = ref(30000)
+const paymentAmount = ref(55000)
 const localPaymentAmount = ref(paymentAmount.value)
 
 const paymentData = computed((): payRequestDtoType => {
